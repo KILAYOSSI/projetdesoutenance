@@ -1,0 +1,650 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}KilysAgri - Marketplace Agricole{% endblock %}
+
+{% block stylesheets %}
+<style>
+    /* ========================================
+       HERO SECTION
+       ======================================== */
+    .kb-hero {
+        position: relative;
+        padding: 4rem 0;
+        min-height: 60vh;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+    }
+    
+    .kb-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, var(--kb-primary-subtle) 0%, transparent 50%, rgba(5, 150, 105, 0.1) 100%);
+        z-index: 0;
+    }
+    
+    .kb-hero-pattern {
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(var(--kb-primary) 1px, transparent 1px);
+        background-size: 30px 30px;
+        opacity: 0.1;
+    }
+    
+    .kb-hero-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .kb-hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--kb-bg-card);
+        padding: 0.5rem 1rem;
+        border-radius: var(--kb-radius-full);
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--kb-primary);
+        margin-bottom: 1.5rem;
+        box-shadow: var(--kb-shadow);
+    }
+    
+    .kb-hero-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 3.5rem;
+        font-weight: 700;
+        line-height: 1.1;
+        color: var(--kb-text);
+        margin-bottom: 1.5rem;
+    }
+    
+    .kb-hero-title span {
+        background: linear-gradient(135deg, var(--kb-primary) 0%, var(--kb-primary-light) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .kb-hero-description {
+        font-size: 1.125rem;
+        color: var(--kb-text-secondary);
+        margin-bottom: 2rem;
+        max-width: 500px;
+    }
+    
+    .kb-hero-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .kb-hero-image {
+        position: relative;
+    }
+    
+    .kb-hero-image img {
+        width: 100%;
+        max-width: 500px;
+        border-radius: var(--kb-radius-xl);
+        box-shadow: var(--kb-shadow-xl);
+    }
+    
+    .kb-hero-stats {
+        display: flex;
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+    
+    .kb-stat {
+        text-align: center;
+    }
+    
+    .kb-stat-value {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--kb-primary);
+    }
+    
+    .kb-stat-label {
+        font-size: 0.875rem;
+        color: var(--kb-text-muted);
+    }
+    
+    /* ========================================
+       CATEGORIES SECTION
+       ======================================== */
+    .kb-section {
+        padding: 4rem 0;
+    }
+    
+    .kb-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+    }
+    
+    .kb-section-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.75rem;
+        font-weight: 700;
+    }
+    
+    .kb-category-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+    }
+    
+    .kb-category-card {
+        background: var(--kb-bg-card);
+        border: 1px solid var(--kb-border);
+        border-radius: var(--kb-radius-lg);
+        padding: 1.5rem;
+        text-align: center;
+        transition: var(--kb-transition);
+        cursor: pointer;
+    }
+    
+    .kb-category-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--kb-shadow-lg);
+        border-color: var(--kb-primary);
+    }
+    
+    .kb-category-icon {
+        width: 64px;
+        height: 64px;
+        background: var(--kb-primary-subtle);
+        border-radius: var(--kb-radius-lg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 1.5rem;
+        color: var(--kb-primary);
+        transition: var(--kb-transition);
+    }
+    
+    .kb-category-card:hover .kb-category-icon {
+        background: var(--kb-primary);
+        color: white;
+    }
+    
+    .kb-category-name {
+        font-weight: 600;
+        color: var(--kb-text);
+        margin-bottom: 0.25rem;
+    }
+    
+    .kb-category-count {
+        font-size: 0.875rem;
+        color: var(--kb-text-muted);
+    }
+    
+    /* ========================================
+       FEATURED PRODUCTS
+       ======================================== */
+    .kb-product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .kb-product-card {
+        background: var(--kb-bg-card);
+        border: 1px solid var(--kb-border);
+        border-radius: var(--kb-radius-lg);
+        overflow: hidden;
+        transition: var(--kb-transition);
+    }
+    
+    .kb-product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--kb-shadow-xl);
+        border-color: var(--kb-primary);
+    }
+    
+    .kb-product-image {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+        background: var(--kb-bg);
+    }
+    
+    .kb-product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .kb-product-card:hover .kb-product-image img {
+        transform: scale(1.1);
+    }
+    
+    .kb-product-badge {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+    }
+    
+    .kb-product-actions {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        opacity: 0;
+        transform: translateX(10px);
+        transition: var(--kb-transition);
+    }
+    
+    .kb-product-card:hover .kb-product-actions {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    
+    .kb-product-action {
+        width: 36px;
+        height: 36px;
+        background: var(--kb-bg-card);
+        border-radius: var(--kb-radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--kb-text);
+        cursor: pointer;
+        transition: var(--kb-transition);
+        box-shadow: var(--kb-shadow);
+    }
+    
+    .kb-product-action:hover {
+        background: var(--kb-primary);
+        color: white;
+    }
+    
+    .kb-product-body {
+        padding: 1.25rem;
+    }
+    
+    .kb-product-category {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--kb-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .kb-product-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--kb-text);
+        margin-bottom: 0.5rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .kb-product-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 1rem;
+    }
+    
+    .kb-product-price {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--kb-primary);
+    }
+    
+    .kb-product-price span {
+        font-size: 0.875rem;
+        color: var(--kb-text-muted);
+        font-weight: 400;
+    }
+    
+    .kb-product-stock {
+        font-size: 0.875rem;
+        color: var(--kb-text-muted);
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .kb-product-stock.in-stock {
+        color: var(--kb-primary);
+    }
+    
+    /* ========================================
+       HOW IT WORKS
+       ======================================== */
+    .kb-steps {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+    
+    .kb-step {
+        text-align: center;
+        padding: 2rem;
+    }
+    
+    .kb-step-number {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--kb-primary) 0%, var(--kb-primary-light) 100%);
+        border-radius: var(--kb-radius-full);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+        margin: 0 auto 1.5rem;
+    }
+    
+    .kb-step-title {
+        font-weight: 600;
+        font-size: 1.25rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .kb-step-description {
+        color: var(--kb-text-secondary);
+    }
+    
+    /* ========================================
+       CTA SECTION
+       ======================================== */
+    .kb-cta {
+        background: linear-gradient(135deg, var(--kb-primary) 0%, var(--kb-primary-dark) 100%);
+        border-radius: var(--kb-radius-xl);
+        padding: 4rem;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .kb-cta::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    .kb-cta h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        position: relative;
+    }
+    
+    .kb-cta p {
+        font-size: 1.125rem;
+        opacity: 0.9;
+        margin-bottom: 2rem;
+        position: relative;
+    }
+    
+    .kb-cta .kb-btn {
+        position: relative;
+        background: white;
+        color: var(--kb-primary);
+    }
+    
+    .kb-cta .kb-btn:hover {
+        background: var(--kb-accent);
+        color: #000;
+    }
+    
+    /* ========================================
+       RESPONSIVE
+       ======================================== */
+    @media (max-width: 991px) {
+        .kb-hero {
+            text-align: center;
+            min-height: auto;
+            padding: 3rem 0;
+        }
+        
+        .kb-hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .kb-hero-description {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .kb-hero-actions {
+            justify-content: center;
+        }
+        
+        .kb-hero-stats {
+            justify-content: center;
+        }
+        
+        .kb-hero-image {
+            display: none;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .kb-hero-title {
+            font-size: 2rem;
+        }
+        
+        .kb-hero-stats {
+            gap: 1.5rem;
+        }
+        
+        .kb-stat-value {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<!-- Hero Section -->
+<section class="kb-hero">
+    <div class="kb-hero-pattern"></div>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="kb-hero-content">
+                    <div class="kb-hero-badge animate-fade-in">
+                        <i class="fas fa-seedling"></i>
+                        Marketplace Agricole
+                    </div>
+                    <h1 class="kb-hero-title animate-fade-in">
+                        Achetez et vendez vos produits <span>agricoles</span> en toute confiance
+                    </h1>
+                    <p class="kb-hero-description animate-fade-in">
+                        KilysAgri connects les producteurs locaux avec les acheteurs. 
+                        Achetez des produits frais directement des fermes ou vendez vos récoltes.
+                    </p>
+                    <div class="kb-hero-actions animate-fade-in">
+                        <a href="{{ path('produits_index') }}" class="kb-btn kb-btn-primary">
+                            <i class="fas fa-compass"></i>
+                            Découvrir les produits
+                        </a>
+                        {% if not app.user %}
+                            <a href="{{ path('app_register') }}" class="kb-btn kb-btn-secondary">
+                                <i class="fas fa-user-plus"></i>
+                                Créer un compte
+                            </a>
+                        {% endif %}
+                    </div>
+                    <div class="kb-hero-stats animate-fade-in">
+                        <div class="kb-stat">
+                            <div class="kb-stat-value">500+</div>
+                            <div class="kb-stat-label">Producteurs</div>
+                        <div class="kb-stat">
+                            <div class="kb-stat-value">1000+</div>
+                            <div class="kb-stat-label">Produits</div>
+                        <div class="kb-stat">
+                            <div class="kb-stat-value">50+</div>
+                            <div class="kb-stat-label">Catégories</div>
+                    </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="kb-hero-image animate-fade-in">
+                    <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800" 
+                         alt="Produits agricoles">
+                </div>
+        </div>
+</section>
+
+<!-- Categories Section -->
+<section class="kb-section">
+    <div class="container">
+        <div class="kb-section-header">
+            <h2 class="kb-section-title">Catégories</h2>
+            <a href="{{ path('produits_index') }}" class="kb-btn kb-btn-ghost">
+                Voir tout <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        <div class="kb-category-grid stagger-children">
+            {% for categorie in categories|slice(0, 6) %}
+                <a href="{{ path('produits_categorie', {id: categorie.id}) }}" class="kb-category-card">
+                    <div class="kb-category-icon">
+                        <i class="fas fa-{% if categorie.nom == 'Légumes' %}carrot{% elseif categorie.nom == 'Fruits' %}apple-alt{% elseif categorie.nom == 'Céréales' %}wheat{% elseif categorie.nom == 'Tubercules' %}potato{% elseif categorie.nom == 'Viandes' %}drumstick{% elseif categorie.nom == 'Poissons' %}fish{% else %}seedling{% endif %}"></i>
+                    </div>
+                    <div class="kb-category-name">{{ categorie.nom }}</div>
+                    <div class="kb-category-count">{{ categorie.produits|length }} produits</div>
+                </a>
+            {% endfor %}
+        </div>
+</section>
+
+<!-- Featured Products Section -->
+{% if featuredProducts|length > 0 %}
+<section class="kb-section" style="background: var(--kb-bg);">
+    <div class="container">
+        <div class="kb-section-header">
+            <h2 class="kb-section-title">Produits en vedette</h2>
+            <a href="{{ path('produits_vedettes') }}" class="kb-btn kb-btn-ghost">
+                Voir tout <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        <div class="kb-product-grid stagger-children">
+            {% for produit in featuredProducts|slice(0, 8) %}
+                <div class="kb-product-card">
+                    <div class="kb-product-image">
+                        {% if produit.image %}
+                            <img src="{{ asset(produit.image) }}" alt="{{ produit.nom }}">
+                        {% else %}
+                            <div class="d-flex align-items-center justify-content-center h-100">
+                                <i class="fas fa-image fa-3x text-muted"></i>
+                            </div>
+                        {% endif %}
+                        <div class="kb-product-badge">
+                            <span class="kb-badge kb-badge-{% if produit.quantite > 0 %}success{% else %}danger{% endif %}">
+                                <i class="fas fa-{% if produit.quantite > 0 %}check-circle{% else %}times-circle{% endif %}"></i>
+                                {% if produit.quantite > 0 %}En stock{% else %}Rupture{% endif %}
+                            </span>
+                        </div>
+                        <div class="kb-product-actions">
+                            <button class="kb-product-action" title="Ajouter aux favoris">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                    <div class="kb-product-body">
+                        {% if produit.categorie %}
+                            <div class="kb-product-category">{{ produit.categorie.nom }}</div>
+                        {% endif %}
+                        <h3 class="kb-product-title">
+                            <a href="{{ path('produits_detail', {id: produit.id}) }}" style="text-decoration: none; color: inherit;">
+                                {{ produit.nom }}
+                            </a>
+                        </h3>
+                        <div class="kb-product-footer">
+                            <div class="kb-product-price">
+                                {{ produit.prix|number_format(0, ',', ' ') }} <span>FCA</span>
+                            </div>
+                            <div class="kb-product-stock {% if produit.quantite > 0 %}in-stock{% endif %}">
+                                <i class="fas fa-box"></i> {{ produit.quantite }}
+                            </div>
+                        {% if produit.quantite > 0 %}
+                            <a href="{{ path('panier_ajouter', {id: produit.id}) }}" class="kb-btn kb-btn-primary w-100 mt-3" 
+                               onclick="window.refreshCartBadge();">
+                                <i class="fas fa-cart-plus"></i> Ajouter au panier
+                            </a>
+                        {% else %}
+                            <button class="kb-btn kb-btn-secondary w-100 mt-3" disabled>
+                                <i class="fas fa-ban"></i> Indisponible
+                            </button>
+                        {% endif %}
+                    </div>
+            {% endfor %}
+        </div>
+</section>
+{% endif %}
+
+<!-- How It Works Section -->
+<section class="kb-section">
+    <div class="container">
+        <div class="kb-section-header">
+            <h2 class="kb-section-title">Comment ça marche</h2>
+        </div>
+        <div class="kb-steps stagger-children">
+            <div class="kb-step">
+                <div class="kb-step-number">1</div>
+                <h3 class="kb-step-title">Créez un compte</h3>
+                <p class="kb-step-description">
+                    Inscrivez-vous gratuitement en quelques secondes et accédez au marketplace.
+                </p>
+            </div>
+            <div class="kb-step">
+                <div class="kb-step-number">2</div>
+                <h3 class="kb-step-title">Parcourez les produits</h3>
+                <p class="kb-step-description">
+                    Découvrez des milliers de produits agricoles frais auprès de producteurs locaux.
+                </p>
+            </div>
+            <div class="kb-step">
+                <div class="kb-step-number">3</div>
+                <h3 class="kb-step-title">Commandez en ligne</h3>
+                <p class="kb-step-description">
+                    Ajoutez vos produits au panier et paiements sécurisés via Mobile Money.
+                </p>
+            </div>
+            <div class="kb-step">
+                <div class="kb-step-number">4</div>
+                <h3 class="kb-step-title">Recevez chez vous</h3>
+                <p class="kb-step-description">
+                    Récupérez votre commande ou faites-vous livrer dans les meilleurs délais.
+                </p>
+            </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="kb-section">
+    <div class="container">
+        <div class="kb-cta">
+            <h2>Prêt à commencer?</h2>
+            <p>Rejoignez des milliers de producteurs et acheteurs sur KilysAgri</p>
+            <div class="kb-hero-actions" style="justify-content: center;">
+                <a href="{{ path('app_register') }}" class="kb-btn">
+                    <i class="fas fa-user-plus"></i> Créer un compte
+                </a>
+                <a href="{{ path('produits_index') }}" class="kb-btn" style="background: rgba(255,255,255,0.2); color: white;">
+                    <i class="fas fa-compass"></i> Explorer
+                </a>
+            </div>
+    </div>
+</section>
+{% endblock %}

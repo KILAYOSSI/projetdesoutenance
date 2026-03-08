@@ -1,0 +1,4 @@
+# Import annotations routes
+controllers:
+    resource: ../src/Controller/
+    type: annotation

@@ -1,0 +1,267 @@
+@startuml KilysAgri_Class_Diagram
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #F7F7F7
+skinparam packageStyle rectangle
+skinparam arrowColor #198754
+skinparam entityBackgroundColor #FFFFFF
+skinparam entityBorderColor #198754
+skinparam entityFontColor #000000
+
+' ============== PACKAGES ==============
+
+package "Acteurs" {
+    class User <<Entity>> {
+        -id: Integer
+        -email: String
+        -password: String
+        -nomComplet: String
+        -telephone: String
+        -isVerified: Boolean
+        -isVendeur: Boolean
+        -isKycValidated: Boolean
+        -roles: JSON
+        -createdAt: DateTime
+        +canSell(): Boolean
+    }
+
+    class Admin <<Entity>> {
+        -id: Integer
+    }
+}
+
+package "E-commerce" {
+    class Produit <<Entity>> {
+        -id: Integer
+        -nom: String
+        -description: Text
+        -prix: Decimal
+        -quantite: Integer
+        -image: String
+        -createdAt: DateTime
+        -updatedAt: DateTime
+    }
+
+    class Categorie <<Entity>> {
+        -id: Integer
+        -nom: String
+        -description: String
+        -image: String
+    }
+
+    class Commande <<Entity>> {
+        -id: Integer
+        -montantTotal: Decimal
+        -status: String
+        -dateCommande: DateTime
+        -updatedAt: DateTime
+    }
+
+    class LigneCommande <<Entity>> {
+        -id: Integer
+        -quantite: Integer
+        -prixUnitaire: Decimal
+        +getSousTotal(): Decimal
+    }
+
+    class Paiement <<Entity>> {
+        -id: Integer
+        -montant: Decimal
+        -reference: String
+        -methode: String
+        -status: String
+        -datePaiement: DateTime
+    }
+}
+
+package "Vérification Identité" {
+    class Kyc <<Entity>> {
+        -id: Integer
+        -typePiece: String
+        -numeroPiece: String
+        -photoPieceRecto: String
+        -photoPieceVerso: String
+        -photoSelfie: String
+        -adresseComplete: String
+        -region: String
+        -superficieExploitee: Float
+        -typeAgriculture: String
+        -experience: Integer
+        -status: String
+        -createdAt: DateTime
+    }
+}
+
+package "Exploitation" {
+    class Exploitation <<Entity>> {
+        -id: Integer
+        -nom: String
+        -superficie: Decimal
+        -localisation: String
+        -typeSol: String
+        -sourceEau: String
+        -statut: String
+        -createdAt: DateTime
+    }
+
+    class SuiviCulture <<Entity>> {
+        -id: Integer
+        -typeCulture: String
+        -datePlantation: DateTime
+        -dateRecolteEstimee: DateTime
+        -superficie: Float
+        -observations: Text
+        -createdAt: DateTime
+    }
+
+    class Rendement <<Entity>> {
+        -id: Integer
+        -typeCulture: String
+        -quantite: Decimal
+        -rendementEstime: Decimal
+        -dateRecolte: DateTime
+    }
+
+    class Equipement <<Entity>> {
+        -id: Integer
+        -nom: String
+        -type: String
+        -quantite: Integer
+    }
+
+    class Stock <<Entity>> {
+        -id: Integer
+        -quantite: Integer
+        -dateMisAJour: DateTime
+    }
+}
+
+package "Communication" {
+    class Notification <<Entity>> {
+        -id: Integer
+        -titre: String
+        -message: String
+        -isRead: Boolean
+        -createdAt: DateTime
+    }
+
+    class Conversation <<Entity>> {
+        -id: Integer
+        -createdAt: DateTime
+        -updatedAt: DateTime
+    }
+
+    class Message <<Entity>> {
+        -id: Integer
+        -contenu: Text
+        -isRead: Boolean
+        -createdAt: DateTime
+    }
+}
+
+package "Conseil" {
+    class Conseil <<Entity>> {
+        -id: Integer
+        -titre: String
+        -contenu: Text
+        -createdAt: DateTime
+    }
+}
+
+' ============== RELATIONS ==============
+
+' User - Admin
+User "0..1" -- "1" Admin : est_un
+
+' User - Kyc (0..* car peut soumettre plusieurs demandes)
+User "1" --> "0..*" Kyc : soumet
+
+' User - Produit
+User "1" --> "0..*" Produit : publie
+
+' User - Commande
+User "1" --> "0..*" Commande : passe
+
+' User - Exploitation
+User "1" --> "0..*" Exploitation : possede
+
+' User - Notification
+User "1" --> "0..*" Notification : recoit
+
+' User - Conversation
+User "1" --> "0..*" Conversation : initie
+
+' User - Conseil
+User "1" --> "0..*" Conseil : redige
+
+' Categorie - Produit
+Categorie "1" --> "0..*" Produit : contient
+Produit "many" --> "1" Categorie : appartient_a
+
+' Commande - LigneCommande
+Commande "1" --> "0..*" LigneCommande : composee_de
+LigneCommande "many" --> "1" Commande : appartient_a
+
+' LigneCommande - Produit
+LigneCommande "many" --> "1" Produit : concerne
+
+' Commande - Paiement
+Commande "1" --> "0..1" Paiement : possede
+Paiement "many" --> "1" Commande : paiement_de
+
+' Exploitation - SuiviCulture
+Exploitation "1" --> "0..*" SuiviCulture : suivi
+SuiviCulture "many" --> "1" Exploitation : culture_de
+
+' Exploitation - Rendement
+Exploitation "1" --> "0..*" Rendement : rendements
+Rendement "many" --> "1" Exploitation : exploit
+
+' Exploitation - Equipement
+Exploitation "1" --> "0..*" Equipement : equipements
+Equipement "many" --> "1" Exploitation : equipement_de
+
+' Exploitation - Stock
+Exploitation "1" --> "0..*" Stock : stocks
+Stock "many" --> "1" Exploitation : stock_de
+
+' Produit - Stock
+Produit "1" --> "0..*" Stock : a_en_stock
+
+' Conversation - Message
+Conversation "1" --> "0..*" Message : messages
+Message "many" --> "1" Conversation : conversation
+
+' Conversation - Users (2 utilisateurs)
+Conversation "1" --> "1" User : utilisateur1
+Conversation "1" --> "1" User : utilisateur2
+Message "many" --> "1" User : auteur
+
+' ============== NOTES ==============
+
+note right of User::isVendeur
+  false = acheteur
+  true = producteur
+end note
+
+note right of User::isKycValidated
+  false = en_attente
+  true = valide
+end note
+
+note right of Kyc::status
+  en_attente, valide, rejete
+end note
+
+note right of Commande::status
+  en_attente, payee, en_cours, livree, annulee
+end note
+
+note right of Paiement::status
+  en_attente, valide, echoue
+end note
+
+note right of Exploitation::statut
+  active, inactive
+end note
+
+@enduml

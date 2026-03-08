@@ -1,0 +1,222 @@
+@startuml
+' Diagramme de Classes - KilysAgri
+
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+' ============== ENTITÉS ==============
+
+class User {
+    -id: Integer
+    -email: String
+    -password: String
+    -nomComplet: String
+    -telephone: String
+    -isVerified: Boolean
+    -isVendeur: Boolean
+    -isKycValidated: Boolean
+    -roles: JSON
+    -createdAt: DateTime
+    +canSell(): Boolean
+}
+
+class Kyc {
+    -id: Integer
+    -typePiece: String
+    -numeroPiece: String
+    -photoPieceRecto: String
+    -photoPieceVerso: String
+    -photoSelfie: String
+    -adresseComplete: String
+    -region: String
+    -superficieExploitee: Float
+    -typeAgriculture: String
+    -experience: Integer
+    -status: String
+    -createdAt: DateTime
+}
+
+class Produit {
+    -id: Integer
+    -nom: String
+    -description: Text
+    -prix: Decimal
+    -quantite: Integer
+    -image: String
+    -createdAt: DateTime
+    -updatedAt: DateTime
+}
+
+class Categorie {
+    -id: Integer
+    -nom: String
+    -description: String
+    -image: String
+}
+
+class Commande {
+    -id: Integer
+    -montantTotal: Decimal
+    -status: String
+    -dateCommande: DateTime
+    -updatedAt: DateTime
+}
+
+class LigneCommande {
+    -id: Integer
+    -quantite: Integer
+    -prixUnitaire: Decimal
+    -sousTotal: Decimal
+}
+
+class Paiement {
+    -id: Integer
+    -montant: Decimal
+    -reference: String
+    -methode: String
+    -status: String
+    -datePaiement: DateTime
+}
+
+class Exploitation {
+    -id: Integer
+    -nom: String
+    -superficie: Decimal
+    -localisation: String
+    -typeSol: String
+    -sourceEau: String
+    -statut: String
+    -createdAt: DateTime
+}
+
+class SuiviCulture {
+    -id: Integer
+    -typeCulture: String
+    -datePlantation: DateTime
+    -dateRecolteEstimee: DateTime
+    -superficie: Float
+    -observations: Text
+    -createdAt: DateTime
+}
+
+class Rendement {
+    -id: Integer
+    -typeCulture: String
+    -quantite: Decimal
+    -rendementEstime: Decimal
+    -dateRecolte: DateTime
+}
+
+class Equipement {
+    -id: Integer
+    -nom: String
+    -type: String
+    -quantite: Integer
+}
+
+class Stock {
+    -id: Integer
+    -quantite: Integer
+    -dateMisAJour: DateTime
+}
+
+class Notification {
+    -id: Integer
+    -titre: String
+    -message: String
+    -isRead: Boolean
+    -createdAt: DateTime
+}
+
+class Conversation {
+    -id: Integer
+    -createdAt: DateTime
+    -updatedAt: DateTime
+}
+
+class Message {
+    -id: Integer
+    -contenu: Text
+    -isRead: Boolean
+    -createdAt: DateTime
+}
+
+class Conseil {
+    -id: Integer
+    -titre: String
+    -contenu: Text
+    -createdAt: DateTime
+}
+
+class Admin {
+    -id: Integer
+}
+
+' ============== RELATIONS ==============
+
+User "1" --> "0..*" Kyc : soumet
+User "1" --> "0..*" Produit : publie
+User "1" --> "0..*" Commande : passe
+User "1" --> "0..*" Exploitation : possede
+User "1" --> "0..*" Notification : recoit
+User "1" --> "0..*" Conversation : initie
+User "1" --> "0..*" Conseil : redige
+User "0..1" -- "1" Admin : est_un
+
+Produit "1" --> "0..*" LigneCommande : contient
+Produit "1" --> "0..*" Stock : a_en_stock
+Produit "many" --> "1" Categorie : appartient_a
+
+Categorie "1" --> "0..*" Produit : contient
+
+Commande "1" --> "0..*" LigneCommande : composee_de
+Commande "1" --> "0..1" Paiement : possede
+
+LigneCommande "many" --> "1" Produit : concerne
+LigneCommande "many" --> "1" Commande : appartient_a
+
+Paiement "many" --> "1" Commande : paiement_de
+
+Exploitation "1" --> "0..*" SuiviCulture : suivi
+Exploitation "1" --> "0..*" Rendement : rendements
+Exploitation "1" --> "0..*" Equipement : equipements
+Exploitation "1" --> "0..*" Stock : stocks
+
+SuiviCulture "many" --> "1" Exploitation : culture_de
+Rendement "many" --> "1" Exploitation : exploit
+Equipement "many" --> "1" Exploitation : equipement_de
+Stock "many" --> "1" Exploitation : stock_de
+
+Conversation "1" --> "0..*" Message : messages
+Conversation "1" --> "1" User : utilisateur1
+Conversation "1" --> "1" User : utilisateur2
+Message "many" --> "1" User : auteur
+
+' ============== NOTES ==============
+
+note right of User::isVendeur
+  false = acheteur
+  true = producteur
+end note
+
+note right of Kyc::status
+  en_attente
+  valide
+  rejete
+end note
+
+note right of Commande::status
+  en_attente
+  payee
+  en_cours
+  livree
+  annulee
+end note
+
+note right of Paiement::status
+  en_attente
+  valide
+  echoue
+end note
+
+@enduml

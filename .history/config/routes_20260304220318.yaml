@@ -1,0 +1,14 @@
+# Import annotations routing
+controllers:
+    resource: '../src/Controller/'
+    type: annotation
+
+# Define routes directly in YAML
+app_home:
+    path: /
+    controller: App\Controller\HomeController::index
+    methods: [GET]
+
+kernel:
+    resource: '../../src/Kernel.php'
+    type: annotation

@@ -1,0 +1,256 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion - KilysAgri{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .kb-auth-page {
+        min-height: calc(100vh - 80px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        background: var(--kb-bg);
+    }
+    
+    .kb-auth-container {
+        width: 100%;
+        max-width: 440px;
+    }
+    
+    .kb-auth-card {
+        background: var(--kb-bg-card);
+        border: 1px solid var(--kb-border);
+        border-radius: var(--kb-radius-xl);
+        padding: 2.5rem;
+        box-shadow: var(--kb-shadow-lg);
+    }
+    
+    .kb-auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .kb-auth-logo {
+        width: 72px;
+        height: 72px;
+        background: linear-gradient(135deg, var(--kb-primary) 0%, var(--kb-primary-light) 100%);
+        border-radius: var(--kb-radius-lg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2rem;
+        color: white;
+    }
+    
+    .kb-auth-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .kb-auth-subtitle {
+        color: var(--kb-text-secondary);
+    }
+    
+    .kb-form-group {
+        margin-bottom: 1.25rem;
+    }
+    
+    .kb-form-label {
+        display: block;
+        font-weight: 600;
+        color: var(--kb-text);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .kb-form-input {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        background: var(--kb-bg);
+        border: 2px solid var(--kb-border);
+        border-radius: var(--kb-radius);
+        font-size: 1rem;
+        color: var(--kb-text);
+        transition: var(--kb-transition);
+    }
+    
+    .kb-form-input:focus {
+        outline: none;
+        border-color: var(--kb-primary);
+        box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1);
+    }
+    
+    .kb-form-input::placeholder {
+        color: var(--kb-text-muted);
+    }
+    
+    .kb-form-error {
+        color: #ef4444;
+        font-size: 0.8rem;
+        margin-top: 0.5rem;
+    }
+    
+    .kb-auth-btn {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1rem;
+        font-weight: 600;
+        margin-top: 1rem;
+    }
+    
+    .kb-auth-divider {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin: 1.5rem 0;
+        color: var(--kb-text-muted);
+        font-size: 0.875rem;
+    }
+    
+    .kb-auth-divider::before,
+    .kb-auth-divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--kb-border);
+    }
+    
+    .kb-auth-social {
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .kb-social-btn {
+        flex: 1;
+        padding: 0.75rem;
+        background: var(--kb-bg);
+        border: 2px solid var(--kb-border);
+        border-radius: var(--kb-radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: var(--kb-text);
+        transition: var(--kb-transition);
+        cursor: pointer;
+    }
+    
+    .kb-social-btn:hover {
+        border-color: var(--kb-primary);
+        color: var(--kb-primary);
+    }
+    
+    .kb-auth-footer {
+        text-align: center;
+        margin-top: 1.5rem;
+        color: var(--kb-text-secondary);
+    }
+    
+    .kb-auth-footer a {
+        color: var(--kb-primary);
+        font-weight: 600;
+        text-decoration: none;
+    }
+    
+    .kb-auth-footer a:hover {
+        text-decoration: underline;
+    }
+    
+    .kb-remember {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+    
+    .kb-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+    }
+    
+    .kb-checkbox input {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--kb-primary);
+    }
+    
+    .kb-forgot {
+        color: var(--kb-primary);
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+    }
+    
+    .kb-forgot:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="kb-auth-page">
+    <div class="kb-auth-container">
+        <div class="kb-auth-card animate-fade-in">
+            <div class="kb-auth-header">
+                <div class="kb-auth-logo">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <h1 class="kb-auth-title">Bon retour!</h1>
+                <p class="kb-auth-subtitle">Connectez-vous à votre compte KilysAgri</p>
+            </div>
+
+            {% if error %}
+                <div class="kb-alert kb-alert-error mb-4">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+            {% endif %}
+
+            {% if app.user %}
+                <div class="kb-alert kb-alert-success mb-4">
+                    <i class="fas fa-check-circle"></i>
+                    Vous êtes connecté en tant que {{ app.user.userIdentifier }}
+                </div>
+            {% endif %}
+
+            <form method="post">
+                <div class="kb-form-group">
+                    <label class="kb-form-label" for="inputEmail">Adresse email</label>
+                    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" 
+                           class="kb-form-input" placeholder="vous@exemple.com" required autofocus>
+                </div>
+
+                <div class="kb-form-group">
+                    <label class="kb-form-label" for="inputPassword">Mot de passe</label>
+                    <input type="password" name="password" id="inputPassword" 
+                           class="kb-form-input" placeholder="Votre mot de passe" required>
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <div class="kb-remember">
+                    <label class="kb-checkbox">
+                        <input type="checkbox" name="_remember_me">
+                        <span>Se souvenir de moi</span>
+                    </label>
+                    <a href="#" class="kb-forgot">Mot de passe oublié?</a>
+                </div>
+
+                <button type="submit" class="kb-btn kb-btn-primary kb-auth-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Se connecter
+                </button>
+            </form>
+
+            <div class="kb-auth-footer">
+                <p>Pas encore de compte? <a href="{{ path('app_register') }}">Créer un compte</a></p>
+            </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagramme de Classes - KilysAgri</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .diagram-wrapper {
+            padding: 20px;
+            background: #f8f9fa;
+            overflow-x: auto;
+        }
+        
+        .diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            min-width: 1200px;
+        }
+        
+        .package {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .package-header {
+            padding: 12px 20px;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .package-utilisateurs .package-header { background: #1976d2; }
+        .package-identification .package-header { background: #f57c00; }
+        .package-ecommerce .package-header { background: #7b1fa2; }
+        .package-exploitation .package-header { background: #f9a825; }
+        .package-communication .package-header { background: #0097a7; }
+        
+        .package-content {
+            padding: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .class {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            min-width: 160px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .class-header {
+            padding: 8px 12px;
+            color: white;
+            font-weight: 700;
+            font-size: 12px;
+            text-align: center;
+            border-radius: 6px 6px 0 0;
+        }
+        
+        .class-utilisateur .class-header { background: #1976d2; }
+        .class-administrateur .class-header { background: #d32f2f; }
+        .class-kyc .class-header { background: #f57c00; }
+        .class-categorie .class-header { background: #388e3c; }
+        .class-produit .class-header { background: #2e7d32; }
+        .class-commande .class-header { background: #7b1fa2; }
+        .class-lignecommande .class-header { background: #6a1b9a; }
+        .class-paiement .class-header { background: #c2185b; }
+        .class-exploitation .class-header { background: #f9a825; }
+        .class-suiviculture .class-header { background: #f57f17; }
+        .class-rendement .class-header { background: #ff8f00; }
+        .class-notification .class-header { background: #0097a7; }
+        .class-conseil .class-header { background: #00838f; }
+        
+        .class-body {
+            padding: 8px;
+            font-size: 10px;
+        }
+        
+        .class-attr {
+            padding: 3px 0;
+            border-bottom: 1px solid #f0f0f0;
+            color: #333;
+        }
+        
+        .class-attr:last-child {
+            border-bottom: none;
+        }
+        
+        .relations {
+            padding: 20px;
+            background: white;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+        
+        .relations h3 {
+            color: #198754;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .relation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 10px;
+        }
+        
+        .relation-item {
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            font-size: 12px;
+            border-left: 3px solid #198754;
+        }
+        
+        .legend {
+            padding: 20px;
+            background: #f8f9fa;
+            margin-top: 20px;
+        }
+        
+        .legend h3 {
+            color: #198754;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+        
+        .legend-item {
+            padding: 8px 12px;
+            background: white;
+            border-radius: 5px;
+            font-size: 11px;
+        }
+        
+        .legend-item strong {
+            color: #198754;
+        }
+        
+        footer {
+            background: #198754;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 12px;
+        }
+        
+        .cardinalities {
+            font-weight: bold;
+            color: #198754;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Diagramme de Classes - KilysAgri</h1>
+            <p>Plateforme Agricole - Projet de Soutenance</p>
+        </header>
+        
+        <div class="diagram-wrapper">
+            <div class="diagram">
+                
+                <!-- UTILISATEURS -->
+                <div class="package package-utilisateurs">
+                    <div class="package-header">Utilisateurs</div>
+                    <div class="package-content">
+                        <div class="class class-utilisateur">
+                            <div class="class-header">Utilisateur</div>
+                            <div class="class-body">
+                                <div class="class-attr">- id: Integer</div>
+                                <div class="class-attr">- email: String</div>
+                                <div class="class-attr">- motDePasse: String</div>
+                                <div class="class-attr">- nomComplet: String</div>
+                                <div class="class-attr">- telephone: String</div>
+                                <div class="class-attr">- roles: JSON</div>
+                                <div class="class-attr">- estVendeur: Boolean</div>
+                                <div class="class-attr">- estKycValide: Boolean</div>
+                                <div class="class-attr">- estVerifie: Boolean</div>
+                        </div>
+                        <div class="class class-administrateur">
+                            <div class="class-header">Administrateur</div>
+                            <div class="class-body">
+                                <div class="class-attr">- id: Integer</div>
+                        </div>
+                </div>
+                
+                <!-- IDENTIFICATION -->
+                <div class="package package-identification">
+                    <div class="package-header">Identification (KYC)</div>
+                    <div class="package-content">
+                        <div class="class class-kyc">
+                            <div class="class-header">Kyc</div>
+                            <div class="class-body">
+                                <div class="class-attr">- id: Integer</div>
+                                <div class="class-attr">- typePiece: String</div>
+                                <div class="class-attr">- numeroPiece: String</div>
+                                <div class="class-attr">- photoRecto: String</div>
+                                <div class="class-attr">- photoVerso: String</div>
+                                <div class="class-attr">- photoSelfie: String</div>
+                                <div class="class-attr">- adresseComplete: String</div>
+                                <div class="class-attr">- region: String</div>
+                                <div class="class-attr">- superficieExploitee: Float</div>
+                                <div class="class-attr">- typeAgriculture: String</div>
+                                <div class="class-attr">- experience: Integer</div>
+                                <div class="class-attr">- statut: String</div>
+                        </div>
+                </div>
+                
+                <!-- E-COMMERCE -->
+                <div class="package package-ecommerce">
+                    <div class="package-header">E-Commerce</div>
+                    <div class="package-content">
+                        <div class="class class-categorie">
+                            <div class="class-header">Categorie</div>
+                            <div class="class-body">
+                                <div class="class-attr">- id: Integer</div>
+                                <div class="class-attr">- nom: String</div>
+                                <div class="class-attr">- description: String</div>
+                        </div>
+                        <div class="class class-produit">
+                            <div class="class-header">Produit</div>
+                            <div class="class-body">
+                                <div class="class-attr">- id: Integer</div>
+                                <div class="class-attr">- nom: String</div>
+                                <div class="class-attr">- description: Text</div>
+                                <div class="class-attr">- prix: Decimal</div>
+                                <div class="class-attr">- quantite: Integer</div>
+                                <div class="class-attr">- image: String</div>
+                        </div>
+                        <div class="class class-commande">
+                            <div class="class-header">Commande</div>
+                            <div class="class-body">
+                                <div class="class-attr">- id: Integer</div>
+                                <div class="class-attr">- montantTotal: Decimal</div>
+                                <div class="class-attr">- statut: String</div>
+                                <div class="class-attr">- dateCommande: DateTime</div>
+                        </div>
+                        <div class="class class-lignecommande">
+                            <div class="class-header">LigneCommande</div>
+                            <div class="class-body">
+                                <div class="class-attr">- id: Integer</div>
+                                <div class="class-attr">- quantite: Integer</div>
+                                <div class="class-attr">- prixUnitaire: Decimal</div>
+                        </div>
+                        <div class="class class-paiement">
+                            <div class="class-header">Paiement</div>
+                            <div class="class-body">
+                                <div class="class-attr">- id: Integer</div>
+                                <div class="class-attr">- montant: Decimal</div>
+                                <div class="class-attr">- reference: String</div>
+                                <div class="class-attr">- methode: String</div>
+                                <div class="class-attr">- statut: String</div>
+                                <div class="class-attr">- datePaiement: DateTime</div>
+                        </div>
+                </div>
+                
+                <!-- EXPLOITATION -->
+                <div class="package package-exploitation">
+                    <div class="package-header">Exploitation</div>
+                    <div class="package-content">
+                        <div class="class class-exploitation">
+                            <div class="class-header">Exploitation</div>
+                            <div class="class-body">
+                                <div class="class-attr">- id: Integer</div>
+                                <div class="class-attr">- nom: String</div>
+                                <div class="class-attr">- superficie: Decimal</div>
+                                <div class="class-attr">- localisation: String</div>
+                                <div class="class-attr">- typeSol: String</div>
+                                <div class="class-attr">- sourceEau: String</div>
+                                <div class="class-attr">- statut: String</div>
+                        </div>
+                        <div class="class class-suiviculture">
+                            <div class="class-header">SuiviCulture</div>
+                            <div class="class-body">
+                                <div class="class-attr">- id: Integer</div>
+                                <div class="class-attr">- typeCulture: String</div>
+                                <div class="class-attr">- datePlantation: DateTime</div>
+                                <div class="class-attr">- dateRecolte: DateTime</div>
+                                <div class="class-attr">- superficie: Float</div>
+                                <div class="class-attr">- observations: Text</div>
+                        </div>
+                        <div class="class class-rendement">
+                            <div class="class-header">Rendement</div>
+                            <div class="class-body">
+                                <div class="class-attr">- id: Integer</div>
+                                <div class="class-attr">- typeCulture: String</div>
+                                <div class="class-attr">- quantite: Decimal</div>
+                                <div class="class-attr">- rendement: Decimal</div>
+                                <div class="class-attr">- dateRecolte: DateTime</div>
+                        </div>
+                </div>
+                
+                <!-- COMMUNICATION -->
+                <div class="package package-communication">
+                    <div class="package-header">Communication</div>
+                    <div class="package-content">
+                        <div class="class class-notification">
+                            <div class="class-header">Notification</div>
+                            <div class="class-body">
+                                <div class="class-attr">- id: Integer</div>
+                                <div class="class-attr">- titre: String</div>
+                                <div class="class-attr">- message: String</div>
+                                <div class="class-attr">- estLu: Boolean</div>
+                        </div>
+                        <div class="class class-conseil">
+                            <div class="class-header">Conseil</div>
+                            <div class="class-body">
+                                <div class="class-attr">- id: Integer</div>
+                                <div class="class-attr">- titre: String</div>
+                                <div class="class-attr">- contenu: Text</div>
+                        </div>
+                </div>
+        </div>
+        
+        <!-- Relations -->
+        <div class="relations">
+            <h3>Relations entre les Classes</h3>
+            <div class="relation-grid">
+                <div class="relation-item">
+                    <span class="cardinalities">Utilisateur → Kyc :</span> 1 utilisateur soumet 0 à plusieurs KYC
+                </div>
+                <div class="relation-item">
+                    <span class="cardinalities">Utilisateur → Produit :</span> 1 producteur publie 0 à plusieurs produits
+                </div>
+                <div class="relation-item">
+                    <span class="cardinalities">Utilisateur → Commande :</span> 1 client passe 0 à plusieurs commandes
+                </div>
+                <div class="relation-item">
+                    <span class="cardinalities">Utilisateur → Exploitation :</span> 1 agriculteur possède 0 à plusieurs exploitations
+                </div>
+                <div class="relation-item">
+                    <span class="cardinalities">Utilisateur → Notification :</span> 1 utilisateur reçoit 0 à plusieurs notifications
+                </div>
+                <div class="relation-item">
+                    <span class="cardinalities">Utilisateur → Conseil :</span> 1 utilisateur rédige 0 à plusieurs conseils
+                </div>
+                <div class="relation-item">
+                    <span class="cardinalities">Utilisateur → Administrateur :</span> 0 ou 1 utilisateur est un administrateur
+                </div>
+                <div class="relation-item">
+                    <span class="cardinalities">Categorie → Produit :</span> 1 catégorie contient 0 à plusieurs produits
+                </div>
+                <div class="relation-item">
+                    <span class="cardinalities">Commande → LigneCommande :</span> 1 commande contient 0 à plusieurs lignes
+                </div>
+                <div class="relation-item">
+                    <span class="cardinalities">Commande → Paiement :</span> 1 commande possède 0 ou 1 paiement
+                </div>
+                <div class="relation-item">
+                    <span class="cardinalities">LigneCommande → Produit :</span> plusieurs lignes concernent 1 produit
+                </div>
+                <div class="relation-item">
+                    <span class="cardinalities">Exploitation → SuiviCulture :</span> 1 exploitation a 0 à plusieurs suivis
+                </div>
+                <div class="relation-item">
+                    <span class="cardinalities">Exploitation → Rendement :</span> 1 exploitation a 0 à plusieurs rendements
+                </div>
+        </div>
+        
+        <!-- Legend -->
+        <div class="legend">
+            <h3>Légende des Statuts</h3>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <strong>Kyc.statut :</strong> en_attente, valide, rejete
+                </div>
+                <div class="legend-item">
+                    <strong>Commande.statut :</strong> en_attente, payee, en_cours, livree, annulee
+                </div>
+                <div class="legend-item">
+                    <strong>Paiement.statut :</strong> en_attente, valide, echoue
+                </div>
+                <div class="legend-item">
+                    <strong>Exploitation.statut :</strong> active, inactive
+                </div>
+        </div>
+        
+        <footer>
+            © 2024 KilysAgri - Projet de Soutenance
+        </footer>
+    </div>
+</body>
+</html>

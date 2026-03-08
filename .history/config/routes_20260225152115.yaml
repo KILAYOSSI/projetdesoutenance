@@ -1,0 +1,5 @@
+# Define routes directly in YAML
+app_home:
+    path: /
+    controller: App\Controller\HomeController::index
+    methods: [GET]

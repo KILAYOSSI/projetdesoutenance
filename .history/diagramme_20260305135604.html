@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagramme de Classes - KilysAgri</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default'
+        });
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: #f5f5f5; 
+            min-width: 1600px;
+            min-height: 900px;
+            padding: 20px;
+        }
+        h1 { color: #198754; text-align: center; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Diagramme de Classes - KilysAgri</h1>
+    
+    <div class="mermaid">
+classDiagram
+    direction LR
+    
+    class Utilisateur {
+        <<entity>>
+        -id: Integer
+        -email: String
+        -motDePasse: String
+        -nomComplet: String
+        -telephone: String
+        -roles: JSON
+        -estVendeur: Boolean
+        -estKycValide: Boolean
+        -estVerifie: Boolean
+    }
+    
+    class Administrateur {
+        <<entity>>
+        -id: Integer
+    }
+    
+    class Kyc {
+        <<entity>>
+        -id: Integer
+        -typePiece: String
+        -numeroPiece: String
+        -photoRecto: String
+        -photoVerso: String
+        -photoSelfie: String
+        -adresseComplete: String
+        -region: String
+        -superficieExploitee: Float
+        -typeAgriculture: String
+        -experience: Integer
+        -statut: String
+    }
+    
+    class Categorie {
+        <<entity>>
+        -id: Integer
+        -nom: String
+        -description: String
+    }
+    
+    class Produit {
+        <<entity>>
+        -id: Integer
+        -nom: String
+        -description: Text
+        -prix: Decimal
+        -quantite: Integer
+        -image: String
+    }
+    
+    class Commande {
+        <<entity>>
+        -id: Integer
+        -montantTotal: Decimal
+        -statut: String
+        -dateCommande: DateTime
+    }
+    
+    class LigneCommande {
+        <<entity>>
+        -id: Integer
+        -quantite: Integer
+        -prixUnitaire: Decimal
+    }
+    
+    class Paiement {
+        <<entity>>
+        -id: Integer
+        -montant: Decimal
+        -reference: String
+        -methode: String
+        -statut: String
+    }
+    
+    class Exploitation {
+        <<entity>>
+        -id: Integer
+        -nom: String
+        -superficie: Decimal
+        -localisation: String
+        -typeSol: String
+        -sourceEau: String
+        -statut: String
+    }
+    
+    class SuiviCulture {
+        <<entity>>
+        -id: Integer
+        -typeCulture: String
+        -datePlantation: DateTime
+        -dateRecolte: DateTime
+        -superficie: Float
+        -observations: Text
+    }
+    
+    class Rendement {
+        <<entity>>
+        -id: Integer
+        -typeCulture: String
+        -quantite: Decimal
+        -rendement: Decimal
+    }
+    
+    class Notification {
+        <<entity>>
+        -id: Integer
+        -titre: String
+        -message: String
+        -estLu: Boolean
+    }
+    
+    class Conseil {
+        <<entity>>
+        -id: Integer
+        -titre: String
+        -contenu: Text
+    }
+    
+    %% Relations avec cardinalites
+    Utilisateur "1" --> "0..*" Kyc : soumet
+    Utilisateur "1" --> "0..*" Produit : publie
+    Utilisateur "1" --> "0..*" Commande : passe
+    Utilisateur "1" --> "0..*" Exploitation : possede
+    Utilisateur "1" --> "0..*" Notification : recoit
+    Utilisateur "1" --> "0..*" Conseil : redige
+    Utilisateur "0..1" -- "1" Administrateur : est_un
+    
+    Categorie "1" --> "0..*" Produit : contient
+    Produit "many" --> "1" Categorie : appartient
+    
+    Commande "1" --> "0..*" LigneCommande : composee
+    Commande "1" --> "0..1" Paiement : possede
+    
+    LigneCommande "many" --> "1" Produit : concerne
+    LigneCommande "many" --> "1" Commande : appartient
+    
+    Paiement "many" --> "1" Commande : paiement
+    
+    Exploitation "1" --> "0..*" SuiviCulture : suivi
+    Exploitation "1" --> "0..*" Rendement : rendements
+    
+    SuiviCulture "many" --> "1" Exploitation : culture
+    Rendement "many" --> "1" Exploitation : exploit
+    </div>
+
+    <footer style="text-align: center; padding: 15px; background-color: #198754; color: white; margin-top: 20px;">
+        <p>© 2024 KilysAgri - Plateforme Agricole</p>
+    </footer>
+</body>
+</html>

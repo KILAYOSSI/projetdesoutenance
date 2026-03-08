@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon statut KYC - KilysAgri{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-success text-white py-3">
+                    <h4 class="mb-0"><i class="fas fa-id-card me-2"></i>Ma vérification d'identité</h4>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Statut actuel -->
+                    <div class="alert {% if user.isKycValidated %}alert-success{% elseif user.isVendeur %}alert-warning{% else %}alert-secondary{% endif %}">
+                        <div class="d-flex align-items-center">
+                            <i class="fas {% if user.isKycValidated %}fa-check-circle{% elseif user.isVendeur %}fa-clock{% else %}fa-hourglass-half{% endif %} fa-2x me-3"></i>
+                            <div>
+                                <h5 class="mb-1">Statut actuel</h5>
+                                <p class="mb-0">
+                                    {% if user.isKycValidated %}
+                                        <strong>Vérifié</strong> - Vous pouvez vendre des produits sur KilysAgri
+                                    {% elseif user.isVendeur %}
+                                        <strong>En attente</strong> - Votre demande de vérification est en cours de traitement
+                                    {% else %}
+                                        <strong>Non vérifié</strong> - Soumettez vos documents pour devenir vendeur
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    {% if not user.isKycValidated %}
+                        <div class="d-grid gap-2 mb-4">
+                            {% if not user.isVendeur %}
+                                <a href="{{ path('kyc_submit') }}" class="btn btn-success btn-lg">
+                                    <i class="fas fa-user-check me-2"></i>Soumettre ma vérification d'identité
+                                </a>
+                            {% else %}
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Votre demande est en cours de traitement. Vous recevrez une notification dès qu'elle sera traitée.
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="d-grid gap-2 mb-4">
+                            <a href="{{ path('vendeur_dashboard') }}" class="btn btn-success btn-lg">
+                                <i class="fas fa-tachometer-alt me-2"></i>Aller à mon dashboard vendeur
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    <!-- Historique des demandes -->
+                    {% if kycs|length > 0 %}
+                    <h5 class="border-bottom pb-2 mb-3 mt-4">Historique des demandes</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type de pièce</th>
+                                    <th>Numéro</th>
+                                    <th>Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for kyc in kycs %}
+                                <tr>
+                                    <td>{{ kyc.createdAt|date('d/m/Y H:i') }}</td>
+                                    <td>
+                                        {% if kyc.typePiece == 'cni' %}CNI
+                                        {% elseif kyc.typePiece == 'passeport' %}Passeport
+                                        {% else %}Permis{% endif %}
+                                    </td>
+                                    <td>{{ kyc.numeroPiece }}</td>
+                                    <td>
+                                        {% if kyc.status == 'validé' %}
+                                            <span class="badge bg-success">Validé</span>
+                                        {% elseif kyc.status == 'rejeté' %}
+                                            <span class="badge bg-danger">Rejeté</span>
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark">En attente</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

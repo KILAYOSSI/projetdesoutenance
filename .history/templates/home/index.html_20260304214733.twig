@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - KilysAgri{% endblock %}
+
+{% block body %}
+
+<!-- HERO SECTION -->
+<section class="hero">
+    <div class="overlay">
+        <h1>Bienvenue sur <span>KilysAgri</span></h1>
+        <p>Nous Connectons les Producteurs Agricoles et les Achateurs Facilement !</p>
+
+        <div class="buttons">
+            <a href="{{ path('app_register') }}" class="btn-primary">Inscrivez-vous Gratuitement</a>
+            <a href="{{ path('produits_index') }}" class="btn-outline">Découvrir les produits</a>
+        </div>
+    </div>
+</section>
+
+<!-- COMMENT ÇA MARCHE -->
+<section class="about">
+    <div class="about-header">
+        <h2>Comment ça marche ?</h2>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 text-center mb-4">
+                <div class="feature-icon">
+                    <i class="fas fa-user-plus fa-3x text-success"></i>
+                </div>
+                <h4 class="mt-3">1. Créez un compte</h4>
+                <p>Inscrivez-vous gratuitement en quelques clics pour accéder à la plateforme.</p>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+<div class="feature-icon">
+                    <i class="fas fa-shopping-basket fa-3x text-success"></i>
+                </div>
+                <h4 class="mt-3">2. Achetez ou vendez</h4>
+                <p>Parcourez les produits agricoles ou devenez vendeur après vérification KYC.</p>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="feature-icon">
+                    <i class="fas fa-hand-holding-usd fa-3x text-success"></i>
+                </div>
+                <h4 class="mt-3">3. Transactions sécurisées</h4>
+                <p>Effectuez vos paiements en toute sécurité et recevez vos commandes.</p>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{{ path('app_register') }}" class="btn-green">Rejoignez-nous maintenant !</a>
+        </div>
+    </div>
+</section>
+
+<!-- POUR LES PRODUCTEURS -->
+<section class="future">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <img src="{{ asset('images/zzis.jpeg') }}" alt="" class="img-fluid rounded">
+            </div>
+            <div class="col-md-6">
+                <h2>Vous êtes producteur agricole ?</h2>
+                <p>
+                    Rejoignez KilysAgri pour atteindre des milliers d'acheteurs potentiels. 
+                    Après validation de votre identité (KYC), vous pouvez :
+                </p>
+                <ul>
+                    <li>Publier vos produits en quelques clics</li>
+                    <li>Gérer vos commandes depuis votre dashboard</li>
+                    <li>Suivre vos revenus en temps réel</li>
+                    <li>Bénéficier de notre support dédié</li>
+                </ul>
+                {% if app.user %}
+                    {% if app.user.canSell() %}
+                        <a href="{{ path('vendeur_dashboard') }}" class="btn btn-success btn-lg">Accéder à mon espace</a>
+                    {% else %}
+                        <a href="{{ path('kyc_submit') }}" class="btn btn-success btn-lg">Devenir vendeur</a>
+                    {% endif %}
+                {% else %}
+                    <a href="{{ path('app_register') }}" class="btn btn-success btn-lg">Créer mon compte vendeur</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- NOS PRODUITS -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-4">Nos produits agricoles</h2>
+        <div class="text-center mb-4">
+            <a href="{{ path('produits_index') }}" class="btn btn-success btn-lg">Voir tous les produits</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+

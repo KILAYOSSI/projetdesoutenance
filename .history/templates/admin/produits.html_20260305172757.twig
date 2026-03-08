@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Produits - KilysAgri Admin{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <h2 class="mb-4"><i class="fas fa-box me-2"></i>Gestion des produits</h2>
+    
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Prix</th>
+                            <th>Stock</th>
+                            <th>Vendeur</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for produit in produits %}
+                        <tr>
+                            <td>{{ produit.id }}</td>
+                            <td>{{ produit.nom }}</td>
+                            <td>{{ produit.prix|number_format(0, ',', ' ') }} FCA</td>
+                            <td>{{ produit.quantite }}</td>
+                            <td>{{ produit.utilisateur.email }}</td>
+                            <td>
+                                <a href="{{ path('admin_produit_delete', {id: produit.id}) }}" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr ?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">Aucun produit</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <a href="{{ path('admin_dashboard') }}" class="btn btn-secondary mt-3">
+        <i class="fas fa-arrow-left me-2"></i>Retour au dashboard
+    </a>
+</div>
+{% endblock %}
+

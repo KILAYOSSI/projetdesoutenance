@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes commandes - KilysAgri{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h2 class="mb-4"><i class="fas fa-clipboard-list me-2"></i>Mes commandes</h2>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    {% if commandes|length > 0 %}
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-success">
+                        <tr>
+                            <th>Commande</th>
+                            <th>Date</th>
+                            <th>Nombre d'articles</th>
+                            <th>Montant</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for commande in commandes %}
+                        <tr>
+                            <td><strong>#{{ commande.id }}</strong></td>
+                            <td>{{ commande.dateCommande|date('d/m/Y H:i') }}</td>
+                            <td>{{ commande.ligneCommandes|length }}</td>
+                            <td><strong>{{ commande.montantTotal|number_format(0, ',', ' ') }} FCA</strong></td>
+                            <td>
+                                <span class="badge bg-{% if commande.status == 'livré' %}success{% elseif commande.status == 'en_cours' %}primary{% elseif commande.status == 'annulé' %}danger{% else %}warning{% endif %}">
+                                    {% if commande.status == 'en_attente' %}En attente
+                                    {% elseif commande.status == 'en_cours' %}En cours
+                                    {% elseif commande.status == 'livré' %}Livré
+                                    {% else %}Annulé{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{{ path('commande_details', {id: commande.id}) }}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye"></i> Détails
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <i class="fas fa-clipboard-list fa-4x text-muted mb-3"></i>
+            <h4>Vous n'avez pas encore de commandes</h4>
+            <p class="text-muted">Commencez par découvrir nos produits agricoles !</p>
+            <a href="{{ path('produits_index') }}" class="btn btn-success btn-lg">
+                <i class="fas fa-store me-2"></i>Voir les produits
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

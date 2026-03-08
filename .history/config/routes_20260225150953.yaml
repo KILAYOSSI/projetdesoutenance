@@ -1,0 +1,9 @@
+# Import annotations routes
+controllers:
+    resource: ../src/Controller/
+    type: annotation
+
+# Import annotation routes from annotations.yaml
+annotations:
+    resource: '@FrameworkBundle/Resources/config/routing/annotations.xml'
+    prefix: /

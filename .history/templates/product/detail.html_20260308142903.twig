@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ produit.nom }} - KilysAgri{% endblock %}
+
+{% block body %}
+<!-- Breadcrumb -->
+<nav style="background: #198754; padding: 15px 0; margin-top: 70px;">
+    <div class="container">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}" class="text-white text-decoration-none">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('produits_index') }}" class="text-white text-decoration-none">Produits</a></li>
+            {% if produit.categorie %}
+                <li class="breadcrumb-item"><a href="{{ path('produits_categorie', {id: produit.categorie.id}) }}" class="text-white text-decoration-none">{{ produit.categorie.nom }}</a></li>
+            {% endif %}
+            <li class="breadcrumb-item active text-white">{{ produit.nom }}</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Product Detail -->
+<div class="container py-5">
+    <div class="row">
+        <!-- Image -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body d-flex align-items-center justify-content-center" style="min-height: 350px;">
+                    {% if produit.image %}
+                        <img src="{{ asset(produit.image) }}" alt="{{ produit.nom }}" style="max-width: 100%; max-height: 350px; object-fit: contain;">
+                    {% else %}
+                        <div class="text-center text-muted">
+                            <i class="fas fa-image fa-4x"></i>
+                            <p class="mt-2">Pas d'image</p>
+                        </div>
+                    {% endif %}
+                </div>
+        </div>
+        
+        <!-- Details -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    {% if produit.categorie %}
+                        <span class="badge bg-success mb-2">{{ produit.categorie.nom }}</span>
+                    {% endif %}
+                    
+                    <h2 class="mb-3">{{ produit.nom }}</h2>
+                    
+                    {% if produit.quantite > 0 %}
+                        <span class="badge bg-success mb-3">
+                            <i class="fas fa-check-circle"></i> En stock ({{ produit.quantite }})
+                        </span>
+                    {% else %}
+                        <span class="badge bg-danger mb-3">
+                            <i class="fas fa-times-circle"></i> Rupture
+                        </span>
+                    {% endif %}
+                    
+                    <h3 class="text-success mb-4">{{ produit.prix|number_format(0, ',', ' ') }} FCA</h3>
+                    
+                    <h5>Description</h5>
+                    <p class="text-muted">{{ produit.description ?: 'Aucune description disponible.' }}</p>
+                    
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <div class="p-3 bg-light rounded">
+                                <small class="text-muted d-block">Prix</small>
+                                <strong>{{ produit.prix|number_format(0, ',', ' ') }} FCA</strong>
+                            </div>
+                        <div class="col-6">
+                            <div class="p-3 bg-light rounded">
+                                <small class="text-muted d-block">Stock</small>
+                                <strong>{{ produit.quantite }}</strong>
+                            </div>
+                    </div>
+                    
+                    {% if produit.quantite > 0 %}
+                        <form method="post" action="{{ path('panier_ajouter', {id: produit.id}) }}">
+                            <div class="d-flex align-items-center mb-3">
+                                <strong class="me-3">Quantité:</strong>
+                                <button type="button" class="btn btn-outline-success" onclick="var q=document.getElementById('q');q.value=Math.max(1,parseInt(q.value)-1)">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="number" id="q" name="quantite" value="1" min="1" max="{{ produit.quantite }}" class="form-control text-center mx-2" style="width: 60px;">
+                                <button type="button" class="btn btn-outline-success" onclick="var q=document.getElementById('q');q.value=Math.min({{ produit.quantite }},parseInt(q.value)+1)">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100 py-3">
+                                <i class="fas fa-cart-plus me-2"></i>Ajouter au panier
+                            </button>
+                        </form>
+                    {% else %}
+                        <button class="btn btn-secondary w-100 py-3" disabled>
+                            <i class="fas fa-ban me-2"></i>Produit indisponible
+                        </button>
+                    {% endif %}
+                </div>
+        </div>
+    
+    <!-- Similar Products -->
+    {% if similarProducts|default([])|length > 0 %}
+    <div class="mt-5">
+        <h4 class="mb-4">Produits similaires</h4>
+        <div class="row">
+            {% for similar in similarProducts %}
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            {% if similar.image %}
+                                <img src="{{ asset(similar.image) }}" alt="{{ similar.nom }}" style="max-height: 100px; object-fit: contain;">
+                            {% else %}
+                                <i class="fas fa-image fa-2x text-muted"></i>
+                            {% endif %}
+                            <h6 class="mt-2">{{ similar.nom }}</h6>
+                            <p class="text-success fw-bold">{{ similar.prix|number_format(0, ',', ' ') }} FCA</p>
+                            <a href="{{ path('produits_detail', {id: similar.id}) }}" class="btn btn-sm btn-outline-success">Voir</a>
+                        </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

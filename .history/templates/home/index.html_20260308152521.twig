@@ -1,0 +1,704 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - KilysAgri{% endblock %}
+
+{% block body %}
+<!-- Hero Section Romantique -->
+<section class="hero-romantic">
+    <div class="hero-overlay"></div>
+    <div class="hero-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+    <div class="container position-relative">
+        <div class="row min-vh-100 align-items-center">
+            <div class="col-lg-7">
+                <div class="hero-content">
+                    <span class="hero-badge wow fadeInDown" data-wow-delay="0.2s">
+                        <i class="fas fa-seedling me-2"></i> L'Agriculture Durable au Benin
+                    </span>
+                    <h1 class="hero-title wow fadeInUp" data-wow-delay="0.4s">
+                        Cultivons Ensemble <br>
+                        <span class="text-gradient">L'Avenir</span> de Notre Terre
+                    </h1>
+                    <p class="hero-subtitle wow fadeInUp" data-wow-delay="0.6s">
+                        Decouvrez une marketplace authentique ou les producteurs locaux partagent leurs tresors. 
+                        Des produits frais, naturels et plein de vie directement de nos campagnes beninoises.
+                    </p>
+                    <div class="hero-buttons wow fadeInUp" data-wow-delay="0.8s">
+                        <a href="{{ path('produits_index') }}" class="btn btn-romantic btn-lg me-3">
+                            <i class="fas fa-leaf me-2"></i>Explorer les Produits
+                        </a>
+                        <a href="{{ path('app_register') }}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-user-plus me-2"></i>Rejoindre la Communaute
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="hero-visual wow fadeInRight" data-wow-delay="0.6s">
+                    <div class="floating-card card-1">
+                        <div class="card-icon"><i class="fas fa-seedling"></i></div>
+                        <span>Produits 100% Locaux</span>
+                    </div>
+                    <div class="floating-card card-2">
+                        <div class="card-icon"><i class="fas fa-heart"></i></div>
+                        <span>Commerce Ethique</span>
+                    </div>
+                    <div class="floating-card card-3">
+                        <div class="card-icon"><i class="fas fa-truck"></i></div>
+                        <span>Livraison Rapide</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="scroll-indicator">
+        <span>Decouvrez</span>
+        <div class="mouse"><div class="wheel"></div></div>
+    </div>
+</section>
+
+<!-- Section Emotions -->
+<section class="emotions-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="section-title-romantic wow fadeInUp">
+                    <span class="title-decoration">✨</span>
+                    Une Experience Unique
+                    <span class="title-decoration">✨</span>
+                </h2>
+                <p class="section-subtitle wow fadeInUp" data-wow-delay="0.2s">
+                    Chaque produit raconte une histoire. Celle de nos terres, de nos producteurs et de notre passion pour l'agriculture.
+                </p>
+            </div>
+        </div>
+        <div class="row g-4 mt-4">
+            <div class="col-md-4">
+                <div class="emotion-card wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="emotion-icon"><i class="fas fa-sun"></i></div>
+                    <h3>Fraicheur Garantie</h3>
+                    <p>Des produits cueillis avec amour et livre dans les meilleurs delais</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="emotion-card wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="emotion-icon"><i class="fas fa-hands-helping"></i></div>
+                    <h3>Soutien Local</h3>
+                    <p>Chaque achat aide nos producteurs a continuer leur noble mission</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="emotion-card wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="emotion-icon"><i class="fas fa-star"></i></div>
+                    <h3>Qualite Superieure</h3>
+                    <p>Des produits selectionnes avec soin pour votre satisfaction</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section Decouverte -->
+<section class="discovery-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="discovery-content wow fadeInLeft">
+                    <span class="discovery-tag">Plongez dans l'univers</span>
+                    <h2>Des Produits qui <span class="text-success">Font Rever</span></h2>
+                    <p class="discovery-text">
+                        Laissez-vous tenter par notre selection de produits agricoles de qualite. 
+                        Legumes, fruits, cereales... Tout ce que la nature offre de meilleur au Benin.
+                    </p>
+                    <ul class="discovery-list">
+                        <li><i class="fas fa-check-circle text-success me-2"></i> Fruits et legumes de saison</li>
+                        <li><i class="fas fa-check-circle text-success me-2"></i> Cereales et legumes secs</li>
+                        <li><i class="fas fa-check-circle text-success me-2"></i> Produits transformes maison</li>
+                        <li><i class="fas fa-check-circle text-success me-2"></i> Epices et aromates</li>
+                    </ul>
+                    <div class="discovery-buttons mt-4">
+                        <a href="{{ path('produits_index') }}" class="btn btn-success btn-lg">
+                            <i class="fas fa-compass me-2"></i>Parcourir le Catalogue
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="discovery-gallery wow fadeInRight">
+                    <div class="gallery-main">
+                        <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=600" alt="Marche agricole" class="img-fluid rounded-4">
+                    </div>
+                    <div class="gallery-grid">
+                        <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300" alt="Legumes frais" class="rounded-3">
+                        <img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=300" alt="Fruits exotiques" class="rounded-3">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section Communaute -->
+<section class="community-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="section-title-white wow fadeInUp">
+                    <span class="heart-icon">❤️</span>
+                    Rejoignez la Revolution Agricole
+                    <span class="heart-icon">❤️</span>
+                </h2>
+                <p class="section-subtitle-white wow fadeInUp" data-wow-delay="0.2s">
+                   Vous etes producteur? Vous souhaitez acheter local? 
+                    Notre plateforme connecte les deux mondes pour un commerce plus humain.
+                </p>
+            </div>
+        </div>
+        <div class="row g-4 mt-5">
+            <div class="col-md-6">
+                <div class="community-card buyer-card wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="card-icon-wrapper"><i class="fas fa-shopping-basket"></i></div>
+                    <h3>Pour les Acheteurs</h3>
+                    <p>Accedez a des produits frais et de qualite, achetez en toute confiance et soutenez l'economie locale.</p>
+                    <a href="{{ path('app_register') }}" class="btn btn-outline-light mt-3">
+                        Creer un compte <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="community-card seller-card wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="card-icon-wrapper"><i class="fas fa-store"></i></div>
+                    <h3>Pour les Vendeurs</h3>
+                    <p>Augmentez votre visibilite, atteignez plus de clients et developpez votre activite agricole.</p>
+                    <a href="{{ path('app_register') }}" class="btn btn-outline-light mt-3">
+                        Devenir vendeur <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section CTA Final -->
+<section class="cta-final">
+    <div class="container">
+        <div class="cta-content wow fadeInUp">
+            <div class="cta-decoration">
+                <span class="flower">🌸</span>
+                <span class="flower">🌺</span>
+                <span class="flower">🌻</span>
+            </div>
+            <h2>Prets a Decouvrir le Meilleur de l'Agriculture Beninoise?</h2>
+            <p>Rejoignez des milliers de personnes qui font deja confiance a KilysAgri</p>
+            <div class="cta-buttons">
+                <a href="{{ path('produits_index') }}" class="btn btn-success btn-lg me-3">
+                    <i class="fas fa-search me-2"></i>Voir les Produits
+                </a>
+                <a href="{{ path('app_register') }}" class="btn btn-light text-success btn-lg">
+                    <i class="fas fa-user-plus me-2"></i>Creer un Compte
+                </a>
+            </div>
+            <div class="cta-decoration mt-3">
+                <span class="flower">🌼</span>
+                <span class="flower">🌷</span>
+                <span class="flower">🌹</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Hero Section Romantique */
+.hero-romantic {
+    position: relative;
+    min-height: 100vh;
+    background: linear-gradient(135deg, rgba(10, 41, 19, 0.85) 0%, rgba(26, 77, 46, 0.85) 50%, rgba(15, 61, 34, 0.85) 100%),
+                url('/images/ZOS.jpeg') center/cover no-repeat;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(32, 201, 151, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(253, 203, 110, 0.1) 0%, transparent 50%);
+}
+
+.hero-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    animation: float 15s infinite;
+}
+
+.particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+.particle:nth-child(2) { left: 20%; animation-delay: 2s; }
+.particle:nth-child(3) { left: 30%; animation-delay: 4s; }
+.particle:nth-child(4) { left: 40%; animation-delay: 6s; }
+.particle:nth-child(5) { left: 50%; animation-delay: 8s; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    padding: 10px 20px;
+    border-radius: 50px;
+    color: #20c997;
+    font-weight: 500;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: white;
+    line-height: 1.2;
+    margin-bottom: 25px;
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, #20c997 0%, #fdcb6e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.8;
+    margin-bottom: 35px;
+    max-width: 550px;
+}
+
+.btn-romantic {
+    background: linear-gradient(135deg, #20c997 0%, #198754 100%);
+    border: none;
+    color: white;
+    padding: 15px 35px;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(32, 201, 151, 0.3);
+}
+
+.btn-romantic:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(32, 201, 151, 0.4);
+    color: white;
+    background: linear-gradient(135deg, #1ed19a 0%, #1a7f4e 100%);
+}
+
+.hero-visual {
+    position: relative;
+    height: 400px;
+}
+
+.floating-card {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 15px 25px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: floatCard 6s ease-in-out infinite;
+}
+
+.floating-card .card-icon {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(135deg, #20c997 0%, #198754 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.floating-card span {
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.card-1 { top: 20px; left: 0; animation-delay: 0s; }
+.card-2 { top: 120px; right: 0; animation-delay: 2s; }
+.card-3 { top: 220px; left: 20px; animation-delay: 4s; }
+
+@keyframes floatCard {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.scroll-indicator span {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+}
+
+.mouse {
+    width: 26px;
+    height: 40px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.wheel {
+    width: 4px;
+    height: 8px;
+    background: white;
+    border-radius: 2px;
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: scroll 2s infinite;
+}
+
+@keyframes scroll {
+    0% { opacity: 1; top: 8px; }
+    100% { opacity: 0; top: 25px; }
+}
+
+/* Section Emotions */
+.emotions-section {
+    padding: 100px 0;
+    background: linear-gradient(180deg, #f8fff9 0%, #ffffff 100%);
+}
+
+.section-title-romantic {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 15px;
+}
+
+.title-decoration {
+    margin: 0 10px;
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    color: #6c757d;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.emotion-card {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 20px;
+    text-align: center;
+    transition: all 0.4s ease;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.08);
+    border: 2px solid transparent;
+}
+
+.emotion-card:hover {
+    transform: translateY(-10px);
+    border-color: #20c997;
+    box-shadow: 0 15px 50px rgba(32, 201, 151, 0.2);
+}
+
+.emotion-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, rgba(32, 201, 151, 0.15) 0%, rgba(25, 135, 84, 0.1) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 2rem;
+    color: #20c997;
+}
+
+.emotion-card h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 15px;
+}
+
+.emotion-card p {
+    color: #6c757d;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Section Discovery */
+.discovery-section {
+    padding: 100px 0;
+    background: #ffffff;
+}
+
+.discovery-tag {
+    display: inline-block;
+    background: rgba(32, 201, 151, 0.15);
+    color: #198754;
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.discovery-content h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 20px;
+}
+
+.discovery-text {
+    font-size: 1.1rem;
+    color: #6c757d;
+    line-height: 1.8;
+    margin-bottom: 25px;
+}
+
+.discovery-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.discovery-list li {
+    padding: 10px 0;
+    font-size: 1rem;
+    color: #495057;
+}
+
+.discovery-gallery {
+    position: relative;
+}
+
+.gallery-main {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.gallery-main img {
+    width: 100%;
+    transition: transform 0.5s ease;
+}
+
+.gallery-main:hover img {
+    transform: scale(1.05);
+}
+
+.gallery-grid {
+    position: absolute;
+    bottom: -30px;
+    right: 30px;
+    display: flex;
+    gap: 15px;
+}
+
+.gallery-grid img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.gallery-grid img:hover {
+    transform: scale(1.1);
+}
+
+/* Section Community */
+.community-section {
+    padding: 100px 0;
+    background: linear-gradient(135deg, #1a4d2e 0%, #0f3d22 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.community-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+}
+
+.section-title-white {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 15px;
+}
+
+.heart-icon {
+    margin: 0 10px;
+}
+
+.section-subtitle-white {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.8);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.community-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 40px 30px;
+    border-radius: 20px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.4s ease;
+}
+
+.community-card:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-10px);
+}
+
+.card-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #20c997 0%, #198754 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 2rem;
+    color: white;
+}
+
+.community-card h3 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 15px;
+}
+
+.community-card p {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0;
+    line-height: 1.6;
+}
+
+/* Section CTA Final */
+.cta-final {
+    padding: 80px 0;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fff9 100%);
+}
+
+.cta-content {
+    text-align: center;
+    background: linear-gradient(135deg, rgba(32, 201, 151, 0.1) 0%, rgba(25, 135, 84, 0.05) 100%);
+    padding: 60px 40px;
+    border-radius: 30px;
+    border: 2px solid rgba(32, 201, 151, 0.2);
+}
+
+.cta-decoration {
+    margin-bottom: 20px;
+}
+
+.flower {
+    font-size: 2rem;
+    margin: 0 10px;
+    animation: flowerSway 3s ease-in-out infinite;
+}
+
+.flower:nth-child(2) { animation-delay: 0.5s; }
+.flower:nth-child(3) { animation-delay: 1s; }
+
+@keyframes flowerSway {
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+}
+
+.cta-content h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 15px;
+}
+
+.cta-content p {
+    font-size: 1.1rem;
+    color: #6c757d;
+    margin-bottom: 30px;
+}
+
+.cta-buttons .btn-success {
+    padding: 15px 35px;
+    border-radius: 50px;
+    font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .hero-title { font-size: 2.5rem; }
+    .hero-subtitle { font-size: 1rem; }
+    .section-title-romantic { font-size: 2rem; }
+    .discovery-content h2 { font-size: 2rem; }
+    .gallery-grid { display: none; }
+}
+
+@media (max-width: 768px) {
+    .hero-title { font-size: 2rem; }
+    .hero-buttons .btn { width: 100%; margin: 10px 0; }
+    .emotion-card { margin-bottom: 20px; }
+    .community-card { margin-bottom: 20px; }
+}
+</style>
+{% endblock %}
+

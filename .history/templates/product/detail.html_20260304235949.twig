@@ -1,0 +1,171 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ produit.nom }} - KilysAgri{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .product-image { height: 400px; object-fit: contain; }
+    .price-display { font-size: 2.5rem; font-weight: 700; }
+    .breadcrumb-item + .breadcrumb-item::before { content: ">"; }
+    .qty-input { width: 100px; text-align: center; }
+    .feature-box { transition: transform 0.3s ease; }
+    .feature-box:hover { transform: translateY(-5px); }
+</style>
+{% endblock %}
+
+{% block body %}
+<!-- Breadcrumb -->
+<nav class="bg-light py-3 border-bottom">
+    <div class="container">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}" class="text-success text-decoration-none">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('produits_index') }}" class="text-success text-decoration-none">Catalogue</a></li>
+            {% if produit.categorie %}
+                <li class="breadcrumb-item"><a href="{{ path('produits_categorie', {id: produit.categorie.id}) }}" class="text-success text-decoration-none">{{ produit.categorie.nom }}</a></li>
+            {% endif %}
+            <li class="breadcrumb-item active">{{ produit.nom }}</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Product Detail -->
+<main class="py-5">
+    <div class="container">
+        <div class="row g-5">
+            <!-- Image -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        {% if produit.image %}
+                            <img src="{{ asset(produit.image) }}" alt="{{ produit.nom }}" class="img-fluid rounded product-image">
+                        {% else %}
+                            <div class="bg-light d-flex align-items-center justify-content-center rounded" style="height: 400px;">
+                                <i class="fas fa-image text-muted fa-5x"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Info -->
+            <div class="col-lg-6">
+                {% if produit.categorie %}
+                    <span class="badge bg-success mb-2"><i class="fas fa-tag me-1"></i>{{ produit.categorie.nom }}</span>
+                {% endif %}
+                
+                <h1 class="display-5 fw-bold mb-3">{{ produit.nom }}</h1>
+                
+                <div class="mb-3">
+                    {% if produit.quantite > 0 %}
+                        <span class="badge bg-success fs-6"><i class="fas fa-check-circle me-1"></i>En stock ({{ produit.quantite }} unités)</span>
+                    {% else %}
+                        <span class="badge bg-danger fs-6"><i class="fas fa-times-circle me-1"></i>Rupture de stock</span>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-4">
+                    <span class="price-display text-success">{{ produit.prix|number_format(0, ',', ' ') }} €</span>
+                    <span class="text-muted">TTC</span>
+                </div>
+                
+                <div class="mb-4">
+                    <h5 class="fw-bold mb-2">Description</h5>
+                    <p class="text-muted lh-lg">{{ produit.description ?: 'Aucune description disponible.' }}</p>
+                </div>
+                
+                <!-- Details -->
+                <div class="mb-4">
+                    <h5 class="fw-bold mb-3">Détails</h5>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="bg-light rounded p-3">
+                                <small class="text-muted d-block">Prix</small>
+                                <strong>{{ produit.prix|number_format(0, ',', ' ') }} €</strong>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="bg-light rounded p-3">
+                                <small class="text-muted d-block">Quantité</small>
+                                <strong>{{ produit.quantite }} unités</strong>
+                            </div>
+                        </div>
+                        {% if produit.categorie %}
+                        <div class="col-6">
+                            <div class="bg-light rounded p-3">
+                                <small class="text-muted d-block">Catégorie</small>
+                                <strong>{{ produit.categorie.nom }}</strong>
+                            </div>
+                        </div>
+                        {% endif %}
+                        <div class="col-6">
+                            <div class="bg-light rounded p-3">
+                                <small class="text-muted d-block">Date</small>
+                                <strong>{{ produit.createdAt ? produit.createdAt|date('d/m/Y') : 'N/A' }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quantity -->
+                <div class="mb-4">
+                    <h5 class="fw-bold mb-2">Quantité</h5>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="input-group" style="width: 130px;">
+                            <button class="btn btn-outline-success" onclick="updateQty(-1)"><i class="fas fa-minus"></i></button>
+                            <input type="number" class="form-control text-center qty-input" id="quantity" value="1" min="1" max="{{ produit.quantite }}">
+                            <button class="btn btn-outline-success" onclick="updateQty(1)"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <span class="text-muted">Max: {{ produit.quantite }}</span>
+                    </div>
+                </div>
+                
+                <!-- Actions -->
+                <div class="d-grid gap-2">
+                    <button class="btn btn-success btn-lg fw-bold py-3{% if produit.quantite == 0 %} disabled{% endif %}" onclick="addToCart()">
+                        <i class="fas fa-cart-plus me-2"></i>Ajouter au panier
+                    </button>
+                </div>
+                
+                <!-- Shipping -->
+                <div class="mt-4 p-3 bg-light rounded">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="text-success"><i class="fas fa-truck fa-2x"></i></div>
+                        <div>
+                            <strong>Livraison disponible</strong>
+                            <p class="mb-0 text-muted small">3-5 jours ouvrés</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Related Products -->
+        {% if produit.categorie %}
+        <div class="mt-5 pt-4 border-top">
+            <h3 class="fw-bold mb-4">Produits similaires</h3>
+            <div class="text-center py-4">
+                <p class="text-muted">Voir tous les produits dans {{ produit.categorie.nom }}</p>
+                <a href="{{ path('produits_categorie', {id: produit.categorie.id}) }}" class="btn btn-outline-success">Voir tout</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    function updateQty(delta) {
+        const input = document.getElementById('quantity');
+        const newVal = parseInt(input.value) + delta;
+        const max = parseInt(input.max);
+        if (newVal >= 1 && newVal <= max) input.value = newVal;
+    }
+    
+    function addToCart() {
+        const qty = document.getElementById('quantity').value;
+        alert('Produit ajouté au panier ! Quantité: ' + qty);
+    }
+</script>
+{% endblock %}
+

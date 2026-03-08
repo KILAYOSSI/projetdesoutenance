@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vérification d'identité - KilysAgri{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-success text-white py-3">
+                    <h4 class="mb-0"><i class="fas fa-id-card me-2"></i>Vérification d'identité (KYC)</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="alert alert-info">
+                        <h5><i class="fas fa-info-circle me-2"></i>Pourquoi cette vérification ?</h5>
+                        <p class="mb-0">Pour devenir vendeur sur KilysAgri et publier vos produits agricoles, vous devez d'abord vérifier votre identité.</p>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <h5><i class="fas fa-exclamation-triangle me-2"></i>Document requis</h5>
+                        <ul class="mb-0">
+                            <li>Une pièce d'identité valide (CNI, passeport ou permis de conduire)</li>
+                            <li>Photo claire de la pièce d'identité</li>
+                        </ul>
+                    </div>
+
+                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                    
+                    <div class="mb-4">
+                        <h5 class="border-bottom pb-2 mb-3">Informations de la pièce</h5>
+                        <div class="mb-3">
+                            {{ form_label(form.typePiece) }}
+                            {{ form_widget(form.typePiece, {'attr': {'class': 'form-select'}}) }}
+                            {{ form_errors(form.typePiece) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.numeroPiece) }}
+                            {{ form_widget(form.numeroPiece, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.numeroPiece) }}
+                        </div>
+
+                    <div class="mb-4">
+                        <h5 class="border-bottom pb-2 mb-3">Photo de la pièce</h5>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Photo de la pièce d'identité *</label>
+                            <div class="upload-box" onclick="document.getElementById('kyc_photoPieceRecto').click()">
+                                <i class="fas fa-cloud-upload-alt fa-2x text-muted"></i>
+                                <p class="mb-0 text-muted">Cliquez pour uploader</p>
+                            </div>
+                            <input type="file" id="kyc_photoPieceRecto" style="display: none;" 
+                                   onchange="previewFile(this, 'preview_piece')">
+                            <div id="preview_piece" class="mt-2"></div>
+                            {% if form.photoPieceRecto.vars.errors|length > 0 %}
+                                <div class="text-danger small">{{ form.photoPieceRecto.vars.errors[0].message }}</div>
+                            {% endif %}
+                        </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ path('app_home') }}" class="btn btn-secondary me-md-2">Annuler</a>
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i>Soumettre ma demande
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+        </div>
+</div>
+
+<style>
+.upload-box {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.upload-box:hover {
+    border-color: #198754;
+    background-color: #f8f9fa;
+}
+.preview-img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 4px;
+}
+</style>
+
+<script>
+function previewFile(input, previewId) {
+    const preview = document.getElementById(previewId);
+    const file = input.files[0];
+    
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.innerHTML = '<img src="' + e.target.result + '" class="preview-img">';
+        };
+        reader.readAsDataURL(file);
+    }
+}
+</script>
+{% endblock %}

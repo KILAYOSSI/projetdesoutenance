@@ -1,0 +1,3 @@
+framework:
+    mailer:
+        dsn: 'smtp://constantkilayossi@gmail.com:gwxxcdlnfhaoxcqf@smtp.gmail.com:587'

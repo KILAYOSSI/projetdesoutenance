@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ produit.nom }} - KilysAgri</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .product-image { height: 400px; object-fit: contain; }
+        .price-display { font-size: 2.5rem; font-weight: 700; }
+        .breadcrumb-item + .breadcrumb-item::before { content: ">"; }
+        .qty-input { width: 100px; text-align: center; }
+        .btn-success { background-color: #198754; border-color: #198754; }
+        .btn-success:hover { background-color: #157347; }
+        .feature-box { transition: transform 0.3s ease; }
+        .feature-box:hover { transform: translateY(-5px); }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-success text-white py-4 shadow">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="h2 mb-1"><i class="fas fa-leaf me-2"></i><strong>KilysAgri</strong></h1>
+                    <p class="mb-0 opacity-75">Votre marketplace agricole de confiance</p>
+                </div>
+                <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                    <a href="/" class="text-white text-decoration-none me-3"><i class="fas fa-home me-1"></i>Accueil</a>
+                    <a href="{{ path('produits_index') }}" class="text-white text-decoration-none me-3"><i class="fas fa-store me-1"></i>Catalogue</a>
+                    <a href="#" class="text-white text-decoration-none"><i class="fas fa-shopping-cart me-1"></i>Panier</a>
+                </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <nav class="bg-light py-3 border-bottom">
+        <div class="container">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="/" class="text-success text-decoration-none">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('produits_index') }}" class="text-success text-decoration-none">Catalogue</a></li>
+                {% if produit.categorie %}
+                    <li class="breadcrumb-item"><a href="{{ path('produits_categorie', {id: produit.categorie.id}) }}" class="text-success text-decoration-none">{{ produit.categorie.nom }}</a></li>
+                {% endif %}
+                <li class="breadcrumb-item active">{{ produit.nom }}</li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Product Detail -->
+    <main class="py-5">
+        <div class="container">
+            <div class="row g-5">
+                <!-- Image -->
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            {% if produit.image %}
+                                <img src="{{ asset(produit.image) }}" alt="{{ produit.nom }}" class="img-fluid rounded product-image">
+                            {% else %}
+                                <div class="bg-light d-flex align-items-center justify-content-center rounded" style="height: 400px;">
+                                    <i class="fas fa-image text-muted fa-5x"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                </div>
+                
+                <!-- Info -->
+                <div class="col-lg-6">
+                    {% if produit.categorie %}
+                        <span class="badge bg-success mb-2"><i class="fas fa-tag me-1"></i>{{ produit.categorie.nom }}</span>
+                    {% endif %}
+                    
+                    <h1 class="display-5 fw-bold mb-3">{{ produit.nom }}</h1>
+                    
+                    <div class="mb-3">
+                        {% if produit.quantite > 0 %}
+                            <span class="badge bg-success fs-6"><i class="fas fa-check-circle me-1"></i>En stock ({{ produit.quantite }} unités)</span>
+                        {% else %}
+                            <span class="badge bg-danger fs-6"><i class="fas fa-times-circle me-1"></i>Rupture de stock</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-4">
+                        <span class="price-display text-success">{{ produit.prix|number_format(0, ',', ' ') }} €</span>
+                        <span class="text-muted">TTC</span>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-2">Description</h5>
+                        <p class="text-muted lh-lg">{{ produit.description ?: 'Aucune description disponible.' }}</p>
+                    </div>
+                    
+                    <!-- Details -->
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-3">Détails</h5>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="bg-light rounded p-3">
+                                    <small class="text-muted d-block">Prix</small>
+                                    <strong>{{ produit.prix|number_format(0, ',', ' ') }} €</strong>
+                                </div>
+                            <div class="col-6">
+                                <div class="bg-light rounded p-3">
+                                    <small class="text-muted d-block">Quantité</small>
+                                    <strong>{{ produit.quantite }} unités</strong>
+                                </div>
+                            {% if produit.categorie %}
+                            <div class="col-6">
+                                <div class="bg-light rounded p-3">
+                                    <small class="text-muted d-block">Catégorie</small>
+                                    <strong>{{ produit.categorie.nom }}</strong>
+                                </div>
+                            {% endif %}
+                            <div class="col-6">
+                                <div class="bg-light rounded p-3">
+                                    <small class="text-muted d-block">Date</small>
+                                    <strong>{{ produit.createdAt ? produit.createdAt|date('d/m/Y') : 'N/A' }}</strong>
+                                </div>
+                        </div>
+                    
+                    <!-- Quantity -->
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-2">Quantité</h5>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="input-group" style="width: 130px;">
+                                <button class="btn btn-outline-success" onclick="updateQty(-1)"><i class="fas fa-minus"></i></button>
+                                <input type="number" class="form-control text-center qty-input" id="quantity" value="1" min="1" max="{{ produit.quantite }}">
+                                <button class="btn btn-outline-success" onclick="updateQty(1)"><i class="fas fa-plus"></i></button>
+                            </div>
+                            <span class="text-muted">Max: {{ produit.quantite }}</span>
+                        </div>
+                    
+                    <!-- Actions -->
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-success btn-lg fw-bold py-3{% if produit.quantite == 0 %} disabled{% endif %}" onclick="addToCart()">
+                            <i class="fas fa-cart-plus me-2"></i>Ajouter au panier
+                        </button>
+                        <button class="btn btn-outline-success btn-lg fw-bold py-3">
+                            <i class="fas fa-heart me-2"></i>Ajouter aux favoris
+                        </button>
+                    </div>
+                    
+                    <!-- Shipping -->
+                    <div class="mt-4 p-3 bg-light rounded">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="text-success"><i class="fas fa-truck fa-2x"></i></div>
+                            <div>
+                                <strong>Livraison disponible</strong>
+                                <p class="mb-0 text-muted small">3-5 jours ouvrés</p>
+                            </div>
+                    </div>
+            </div>
+            
+            <!-- Related Products -->
+            {% if produit.categorie %}
+            <div class="mt-5 pt-4 border-top">
+                <h3 class="fw-bold mb-4">Produits similaires</h3>
+                <div class="text-center py-4">
+                    <p class="text-muted">Voir tous les produits dans {{ produit.categorie.nom }}</p>
+                    <a href="{{ path('produits_categorie', {id: produit.categorie.id}) }}" class="btn btn-outline-success">Voir tout</a>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <h5><strong>KilysAgri</strong></h5>
+                    <p class="text-muted small">Votre plateforme agricole de confiance.</p>
+                </div>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <h5>Liens rapides</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-muted text-decoration-none">À propos</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Contact</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">CGV</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact</h5>
+                    <ul class="list-unstyled text-muted small">
+                        <li><i class="fas fa-envelope me-2"></i>contact@kilysagri.com</li>
+                        <li><i class="fas fa-phone me-2"></i>+225 00 00 00 00</li>
+                        <li><i class="fas fa-map-marker me-2"></i>Côte d'Ivoire</li>
+                    </ul>
+                </div>
+            <hr class="bg-secondary">
+            <div class="text-center text-muted small">&copy; {{ "now"|date("Y") }} KilysAgri. Tous droits réservés.</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function updateQty(delta) {
+            const input = document.getElementById('quantity');
+            const newVal = parseInt(input.value) + delta;
+            const max = parseInt(input.max);
+            if (newVal >= 1 && newVal <= max) input.value = newVal;
+        }
+        
+        function addToCart() {
+            const qty = document.getElementById('quantity').value;
+            alert('Produit ajouté au panier ! Quantité: ' + qty);
+        }
+    </script>
+</body>
+</html>
+</parameter>
+</create_file>

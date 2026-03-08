@@ -1,0 +1,270 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Panier - KilysAgri{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .kb-page-header {
+        padding: 2rem 0;
+        background: var(--kb-bg);
+    }
+    
+    .kb-page-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .kb-cart-empty {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+    
+    .kb-cart-empty-icon {
+        width: 120px;
+        height: 120px;
+        background: var(--kb-bg);
+        border-radius: var(--kb-radius-full);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        font-size: 3rem;
+        color: var(--kb-text-muted);
+    }
+    
+    .kb-cart-item {
+        background: var(--kb-bg-card);
+        border: 1px solid var(--kb-border);
+        border-radius: var(--kb-radius-lg);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: var(--kb-transition);
+    }
+    
+    .kb-cart-item:hover {
+        box-shadow: var(--kb-shadow);
+    }
+    
+    .kb-cart-item-image {
+        width: 100px;
+        height: 100px;
+        border-radius: var(--kb-radius);
+        overflow: hidden;
+        background: var(--kb-bg);
+    }
+    
+    .kb-cart-item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .kb-cart-item-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .kb-cart-item-price {
+        font-weight: 700;
+        color: var(--kb-primary);
+        font-size: 1.25rem;
+    }
+    
+    .kb-cart-item-remove {
+        color: var(--kb-text-muted);
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        transition: var(--kb-transition);
+    }
+    
+    .kb-cart-item-remove:hover {
+        color: #ef4444;
+    }
+    
+    .kb-cart-summary {
+        background: var(--kb-bg-card);
+        border: 1px solid var(--kb-border);
+        border-radius: var(--kb-radius-lg);
+        padding: 1.5rem;
+        position: sticky;
+        top: 100px;
+    }
+    
+    .kb-cart-summary-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--kb-border);
+    }
+    
+    .kb-cart-summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        color: var(--kb-text-secondary);
+    }
+    
+    .kb-cart-summary-row.total {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--kb-text);
+        padding-top: 1rem;
+        border-top: 1px solid var(--kb-border);
+        margin-top: 1rem;
+    }
+    
+    .kb-cart-summary-row.total .value {
+        color: var(--kb-primary);
+        font-size: 1.5rem;
+    }
+    
+    .kb-continue-shopping {
+        display: block;
+        text-align: center;
+        margin-top: 1rem;
+        color: var(--kb-text-secondary);
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .kb-continue-shopping:hover {
+        color: var(--kb-primary);
+    }
+    
+    @media (max-width: 768px) {
+        .kb-cart-item {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .kb-cart-item-image {
+            margin: 0 auto 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<!-- Page Header -->
+<header class="kb-page-header">
+    <div class="container">
+        <h1 class="kb-page-title">
+            <i class="fas fa-shopping-cart me-2"></i>
+            Mon panier
+        </h1>
+        <p class="text-muted">{{ items|length }} produit(s) dans votre panier</p>
+    </div>
+</header>
+
+<!-- Cart Content -->
+<div class="container py-4">
+    {% if items|length > 0 %}
+        <div class="row g-4">
+            <!-- Cart Items -->
+            <div class="col-lg-8">
+                {% for item in items %}
+                    <div class="kb-cart-item d-flex gap-3 align-items-center">
+                        <div class="kb-cart-item-image">
+                            {% if item.produit.image %}
+                                <img src="{{ asset(item.produit.image) }}" alt="{{ item.produit.nom }}">
+                            {% else %}
+                                <div class="d-flex align-items-center justify-content-center h-100">
+                                    <i class="fas fa-image text-muted"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="flex-grow-1">
+                            <h3 class="kb-cart-item-title">
+                                <a href="{{ path('produits_detail', {id: item.produit.id}) }}" style="text-decoration: none; color: inherit;">
+                                    {{ item.produit.nom }}
+                                </a>
+                            </h3>
+                            <p class="kb-cart-item-price mb-0">
+                                {{ item.produit.prix|number_format(0, ',', ' ') }} FCA
+                            </p>
+                        </div>
+                        
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="kb-quantity-controls" style="background: var(--kb-bg); padding: 0.25rem; border-radius: 8px;">
+                                <a href="{{ path('panier_modifier', {id: item.produit.id, quantite: item.quantite - 1}) }}" 
+                                   class="kb-quantity-btn" style="width: 32px; height: 32px; background: var(--kb-bg-card);">
+                                    <i class="fas fa-minus"></i>
+                                </a>
+                                <span style="min-width: 30px; text-align: center; font-weight: 600;">{{ item.quantite }}</span>
+                                <a href="{{ path('panier_modifier', {id: item.produit.id, quantite: item.quantite + 1}) }}" 
+                                   class="kb-quantity-btn" style="width: 32px; height: 32px; background: var(--kb-bg-card);">
+                                    <i class="fas fa-plus"></i>
+                                </a>
+                            </div>
+                            
+                            <div class="text-end">
+                                <div style="font-weight: 700; color: var(--kb-primary);">
+                                    {{ (item.produit.prix * item.quantite)|number_format(0, ',', ' ') }} FCA
+                                </div>
+                            
+                            <a href="{{ path('panier_supprimer', {id: item.produit.id}) }}" 
+                               class="kb-cart-item-remove" title="Supprimer">
+                                <i class="fas fa-trash fa-lg"></i>
+                            </a>
+                        </div>
+                {% endfor %}
+                
+                <a href="{{ path('produits_index') }}" class="kb-continue-shopping">
+                    <i class="fas fa-arrow-left me-2"></i>
+                   Continuer vos achats
+                </a>
+            </div>
+            
+            <!-- Cart Summary -->
+            <div class="col-lg-4">
+                <div class="kb-cart-summary">
+                    <h3 class="kb-cart-summary-title">Récapitulatif</h3>
+                    
+                    <div class="kb-cart-summary-row">
+                        <span>Sous-total</span>
+                        <span>{{ total|number_format(0, ',', ' ') }} FCA</span>
+                    </div>
+                    
+                    <div class="kb-cart-summary-row">
+                        <span>Livraison</span>
+                        <span>Offerte</span>
+                    </div>
+                    
+                    <div class="kb-cart-summary-row total">
+                        <span>Total</span>
+                        <span class="value">{{ total|number_format(0, ',', ' ') }} FCA</span>
+                    </div>
+                    
+                    <a href="{{ path('commande_passer') }}" class="kb-btn kb-btn-primary w-100 mt-3">
+                        <i class="fas fa-credit-card"></i>
+                        Passer la commande
+                    </a>
+                    
+                    <a href="{{ path('vendeur_dashboard') }}" class="kb-btn kb-btn-secondary w-100 mt-2">
+                        <i class="fas fa-store"></i>
+                        Devenir vendeur
+                    </a>
+                </div>
+        </div>
+    {% else %}
+        <div class="kb-cart-empty">
+            <div class="kb-cart-empty-icon">
+                <i class="fas fa-shopping-basket"></i>
+            </div>
+            <h2>Votre panier est vide</h2>
+            <p class="text-muted mb-4">Découvrez nos produits agricoles freshs et de qualité</p>
+            <a href="{{ path('produits_index') }}" class="kb-btn kb-btn-primary">
+                <i class="fas fa-compass"></i>
+                Découvrir les produits
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

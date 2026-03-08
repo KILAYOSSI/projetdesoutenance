@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes commandes - KilysAgri{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-clipboard-list me-2"></i>Commandes reçues</h2>
+        <a href="{{ path('vendeur_dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Retour au dashboard
+        </a>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    {% if commandes|length > 0 %}
+        {% for item in commandes %}
+        <div class="card mb-3">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>Commande #{{ item.commande.id }}</strong>
+                    <span class="text-muted ms-2">{{ item.commande.dateCommande|date('d/m/Y H:i') }}</span>
+                </div>
+                <div>
+                    <span class="badge bg-{% if item.commande.status == 'livré' %}success{% elseif item.commande.status == 'en_cours' %}primary{% elseif item.commande.status == 'annulé' %}danger{% else %}warning{% endif %}">
+                        {% if item.commande.status == 'en_attente' %}En attente
+                        {% elseif item.commande.status == 'en_cours' %}En cours
+                        {% elseif item.commande.status == 'livré' %}Livré
+                        {% else %}Annulé{% endif %}
+                    </span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Produit</th>
+                                <th>Prix unitaire</th>
+                                <th>Quantité</th>
+                                <th>Sous-total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ligne in item.lignes %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        {% if ligne.produit.image %}
+                                            <img src="{{ asset(ligne.produit.image) }}" class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                        {% else %}
+                                            <div class="bg-light rounded me-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                <i class="fas fa-image text-muted small"></i>
+                                            </div>
+                                        {% endif %}
+                                        <span>{{ ligne.produit.nom }}</span>
+                                    </div>
+                                </td>
+                                <td>{{ ligne.prixUnitaire|number_format(0, ',', ' ') }} FCA</td>
+                                <td>{{ ligne.quantite }}</td>
+                                <td>{{ (ligne.quantite * ligne.prixUnitaire)|number_format(0, ',', ' ') }} FCA</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                <td><strong>{{ item.total|number_format(0, ',', ' ') }} FCA</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                
+                <div class="mt-3">
+                    <strong>Client:</strong> {{ item.commande.utilisateur.email }}
+                </div>
+
+                <!-- Actions pour changer le statut -->
+                <div class="mt-3">
+                    <strong>Changer le statut:</strong>
+                    <form method="post" action="{{ path('vendeur_commande_status', {id: item.commande.id}) }}" class="d-inline-block ms-2">
+                        <select name="status" class="form-select form-select-sm d-inline-block" style="width: auto;" onchange="this.form.submit()">
+                            <option value="en_attente" {% if item.commande.status == 'en_attente' %}selected{% endif %}>En attente</option>
+                            <option value="en_cours" {% if item.commande.status == 'en_cours' %}selected{% endif %}>En cours</option>
+                            <option value="livré" {% if item.commande.status == 'livré' %}selected{% endif %}>Livré</option>
+                            <option value="annulé" {% if item.commande.status == 'annulé' %}selected{% endif %}>Annulé</option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <i class="fas fa-clipboard-list fa-4x text-muted mb-3"></i>
+            <h4>Aucune commande</h4>
+            <p class="text-muted">Vous n'avez pas encore reçu de commandes.</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,4 @@
+# Import annotation routes using YAML
+annotations:
+    resource: ../src/Controller/
+    type: annotation

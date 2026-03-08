@@ -1,0 +1,493 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ produit.nom }} - KilysAgri{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .breadcrumb-section {
+        background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+        padding: 1rem 0;
+        margin-top: 70px;
+    }
+    
+    .breadcrumb {
+        margin-bottom: 0;
+        background: transparent;
+    }
+    
+    .breadcrumb-item a {
+        color: rgba(255,255,255,0.8) !important;
+        text-decoration: none;
+    }
+    
+    .breadcrumb-item a:hover {
+        color: white !important;
+    }
+    
+    .breadcrumb-item.active {
+        color: white !important;
+    }
+    
+    .breadcrumb-item + .breadcrumb-item::before {
+        color: rgba(255,255,255,0.6);
+    }
+    
+    .product-detail-section {
+        padding: 3rem 0;
+        background: #f8f9fa;
+        min-height: 60vh;
+    }
+    
+    .product-main-card {
+        background: white;
+        border-radius: 1.5rem;
+        overflow: hidden;
+        box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.08);
+    }
+    
+    .product-image-container {
+        background: #f8f9fa;
+        padding: 2rem;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .product-image-container img {
+        max-height: 450px;
+        width: 100%;
+        object-fit: contain;
+        border-radius: 1rem;
+    }
+    
+    .product-image-placeholder {
+        width: 100%;
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+        border-radius: 1rem;
+    }
+    
+    .product-image-placeholder i {
+        font-size: 8rem;
+        color: #dee2e6;
+    }
+    
+    .product-info {
+        padding: 2rem;
+    }
+    
+    .product-category-badge {
+        display: inline-block;
+        background: rgba(25, 135, 84, 0.1);
+        color: #198754;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .product-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #1a1a2e;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+    
+    .product-status {
+        margin-bottom: 1.5rem;
+    }
+    
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+    
+    .status-in-stock {
+        background: rgba(25, 135, 84, 0.1);
+        color: #198754;
+    }
+    
+    .status-out-stock {
+        background: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+    }
+    
+    .product-price-display {
+        margin-bottom: 1.5rem;
+    }
+    
+    .product-price {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #198754;
+    }
+    
+    .product-price span {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #6c757d;
+    }
+    
+    .product-description-section {
+        margin-bottom: 2rem;
+    }
+    
+    .product-description-section h5 {
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 1rem;
+    }
+    
+    .product-description-section p {
+        color: #6c757d;
+        line-height: 1.8;
+    }
+    
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .detail-card {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 0.75rem;
+    }
+    
+    .detail-card small {
+        color: #6c757d;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .detail-card strong {
+        display: block;
+        color: #1a1a2e;
+        font-size: 1.125rem;
+        margin-top: 0.25rem;
+    }
+    
+    .quantity-section {
+        margin-bottom: 2rem;
+    }
+    
+    .quantity-section h5 {
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 1rem;
+    }
+    
+    .quantity-selector {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .qty-btn {
+        width: 48px;
+        height: 48px;
+        border: 2px solid #198754;
+        background: transparent;
+        color: #198754;
+        border-radius: 0.75rem;
+        font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .qty-btn:hover {
+        background: #198754;
+        color: white;
+    }
+    
+    .qty-input {
+        width: 80px;
+        height: 48px;
+        text-align: center;
+        border: 2px solid #e9ecef;
+        border-radius: 0.75rem;
+        font-size: 1.125rem;
+        font-weight: 600;
+    }
+    
+    .qty-input:focus {
+        outline: none;
+        border-color: #198754;
+    }
+    
+    .qty-max {
+        color: #6c757d;
+        font-size: 0.875rem;
+    }
+    
+    .product-actions {
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .btn-add-to-cart {
+        flex: 1;
+        background: #198754;
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        font-size: 1.0625rem;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    
+    .btn-add-to-cart:hover {
+        background: #146c43;
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1.5rem rgba(25, 135, 84, 0.4);
+        color: white;
+    }
+    
+    .btn-add-to-cart:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .shipping-info {
+        background: #f8f9fa;
+        padding: 1.25rem;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+    
+    .shipping-icon {
+        width: 48px;
+        height: 48px;
+        background: rgba(25, 135, 84, 0.1);
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #198754;
+        font-size: 1.25rem;
+    }
+    
+    .shipping-text strong {
+        color: #1a1a2e;
+        display: block;
+    }
+    
+    .shipping-text p {
+        color: #6c757d;
+        margin-bottom: 0;
+        font-size: 0.875rem;
+    }
+    
+    .related-section {
+        margin-top: 3rem;
+    }
+    
+    .related-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 1.5rem;
+    }
+    
+    @media (max-width: 992px) {
+        .product-title {
+            font-size: 1.5rem;
+        }
+        
+        .product-price {
+            font-size: 2rem;
+        }
+        
+        .product-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+
+<nav class="breadcrumb-section">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('produits_index') }}">Produits</a></li>
+                {% if produit.categorie %}
+                    <li class="breadcrumb-item"><a href="{{ path('produits_categorie', {id: produit.categorie.id}) }}">{{ produit.categorie.nom }}</a></li>
+                {% endif %}
+                <li class="breadcrumb-item active" aria-current="page">{{ produit.nom }}</li>
+            </ol>
+        </nav>
+    </div>
+</nav>
+
+<main class="product-detail-section">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="product-main-card h-100">
+                    <div class="product-image-container">
+                        {% if produit.image %}
+                            <img src="{{ asset(produit.image) }}" alt="{{ produit.nom }}">
+                        {% else %}
+                            <div class="product-image-placeholder">
+                                <i class="fas fa-image"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="product-main-card">
+                    <div class="product-info">
+                        {% if produit.categorie %}
+                            <span class="product-category-badge">
+                                <i class="fas fa-tag me-1"></i>{{ produit.categorie.nom }}
+                            </span>
+                        {% endif %}
+                        
+                        <h1 class="product-title">{{ produit.nom }}</h1>
+                        
+                        <div class="product-status">
+                            {% if produit.quantite > 0 %}
+                                <span class="status-badge status-in-stock">
+                                    <i class="fas fa-check-circle"></i> En stock ({{ produit.quantite }} unités)
+                                </span>
+                            {% else %}
+                                <span class="status-badge status-out-stock">
+                                    <i class="fas fa-times-circle"></i> Rupture de stock
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="product-price-display">
+                            <span class="product-price">{{ produit.prix|number_format(0, ',', ' ') }} <span>FCA</span>
+                        </div>
+                        
+                        <div class="product-description-section">
+                            <h5><i class="fas fa-align-left me-2"></i>Description</h5>
+                            <p>{{ produit.description ?: 'Aucune description disponible pour ce produit.' }}</p>
+                        </div>
+                        
+                        <div class="details-grid">
+                            <div class="detail-card">
+                                <small>Prix unitaire</small>
+                                <strong>{{ produit.prix|number_format(0, ',', ' ') }} FCA</strong>
+                            </div>
+                            <div class="detail-card">
+                                <small>Disponibilité</small>
+                                <strong>{{ produit.quantite }} unités</strong>
+                            </div>
+                            {% if produit.categorie %}
+                            <div class="detail-card">
+                                <small>Catégorie</small>
+                                <strong>{{ produit.categorie.nom }}</strong>
+                            </div>
+                            {% endif %}
+                            <div class="detail-card">
+                                <small>Date d'ajout</small>
+                                <strong>{{ produit.createdAt ? produit.createdAt|date('d/m/Y') : 'N/A' }}</strong>
+                            </div>
+                        
+                        {% if produit.quantite > 0 %}
+                        <form method="post" action="{{ path('panier_ajouter', {id: produit.id}) }}">
+                            <div class="quantity-section">
+                                <h5><i class="fas fa-cubes me-2"></i>Quantité</h5>
+                                <div class="quantity-selector">
+                                    <button type="button" class="qty-btn" onclick="updateQty(-1)">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="number" class="qty-input" id="quantity" name="quantite" value="1" min="1" max="{{ produit.quantite }}">
+                                    <button type="button" class="qty-btn" onclick="updateQty(1)">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                    <span class="qty-max">Max: {{ produit.quantite }}</span>
+                                </div>
+                            
+                            <div class="product-actions">
+                                <button type="submit" class="btn-add-to-cart">
+                                    <i class="fas fa-cart-plus"></i>
+                                    Ajouter au panier
+                                </button>
+                            </div>
+                        </form>
+                        {% else %}
+                        <button class="btn-add-to-cart" disabled>
+                            <i class="fas fa-ban"></i>
+                            Produit indisponible
+                        </button>
+                        {% endif %}
+                        
+                        <div class="shipping-info">
+                            <div class="shipping-icon">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <div class="shipping-text">
+                                <strong>Livraison disponible</strong>
+                                <p>3-5 jours ouvrés</p>
+                            </div>
+                    </div>
+            </div>
+        
+        {% if produit.categorie %}
+        <div class="related-section">
+            <h3 class="related-title">
+                <i class="fas fa-th-large me-2 text-success"></i>Produits similaires
+            </h3>
+            <div class="text-center py-4 bg-white rounded-3">
+                <i class="fas fa-folder-open text-muted fa-3x mb-3"></i>
+                <p class="text-muted mb-0">Découvrez tous les produits dans {{ produit.categorie.nom }}</p>
+                <a href="{{ path('produits_categorie', {id: produit.categorie.id}) }}" class="btn btn-primary mt-3">
+                    <i class="fas fa-eye me-2"></i>Voir tout
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</main>
+
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    function updateQty(delta) {
+        const input = document.getElementById('quantity');
+        const newVal = parseInt(input.value) + delta;
+        const max = parseInt(input.max);
+        const min = parseInt(input.min);
+        
+        if (newVal >= min && newVal <= max) {
+            input.value = newVal;
+        }
+    }
+</script>
+{% endblock %}

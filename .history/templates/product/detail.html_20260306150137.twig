@@ -1,0 +1,147 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ produit.nom }} - KilysAgri{% endblock %}
+
+{% block body %}
+
+<!-- Breadcrumb -->
+<nav class="breadcrumb-nav" style="background: linear-gradient(135deg, #198754 0%, #146c43 100%); padding: 12px 0; margin-top: 70px;">
+    <div class="container">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}" class="text-white text-decoration-none">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('produits_index') }}" class="text-white text-decoration-none">Produits</a></li>
+            {% if produit.categorie %}
+                <li class="breadcrumb-item"><a href="{{ path('produits_categorie', {id: produit.categorie.id}) }}" class="text-white text-decoration-none">{{ produit.categorie.nom }}</a></li>
+            {% endif %}
+            <li class="breadcrumb-item active text-white">{{ produit.nom }}</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Product Detail -->
+<div style="background: #f8f9fa; padding: 40px 0; min-height: 70vh;">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Left Column - Image -->
+            <div class="col-lg-6">
+                <div class="card h-100 border-0 shadow-sm" style="border-radius: 16px; overflow: hidden;">
+                    <div class="card-body p-4 d-flex align-items-center justify-content-center" style="background: #f8f9fa; min-height: 350px;">
+                        {% if produit.image %}
+                            <img src="{{ asset(produit.image) }}" alt="{{ produit.nom }}" style="max-width: 100%; max-height: 350px; object-fit: contain; border-radius: 12px;">
+                        {% else %}
+                            <div class="text-center text-muted">
+                                <i class="fas fa-image fa-5x"></i>
+                                <p class="mt-2">Pas d'image</p>
+                            </div>
+                        {% endif %}
+                    </div>
+            </div>
+            
+            <!-- Right Column - Details -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm" style="border-radius: 16px;">
+                    <div class="card-body p-4">
+                        {% if produit.categorie %}
+                            <span class="badge bg-success mb-2">{{ produit.categorie.nom }}</span>
+                        {% endif %}
+                        
+                        <h1 class="mb-3" style="font-size: 1.75rem; font-weight: 800; color: #1a1a2e;">{{ produit.nom }}</h1>
+                        
+                        <div class="mb-3">
+                            {% if produit.quantite > 0 %}
+                                <span class="badge" style="background: rgba(25,135,84,0.15); color: #198754; padding: 8px 14px; border-radius: 50px;">
+                                    <i class="fas fa-check-circle me-1"></i>En stock ({{ produit.quantite }})
+                                </span>
+                            {% else %}
+                                <span class="badge" style="background: rgba(220,53,69,0.15); color: #dc3545; padding: 8px 14px; border-radius: 50px;">
+                                    <i class="fas fa-times-circle me-1"></i>Rupture
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <span style="font-size: 2rem; font-weight: 800; color: #198754;">{{ produit.prix|number_format(0, ',', ' ') }}</span>
+                            <span class="text-muted">FCA</span>
+                        </div>
+                        
+                        <h5 class="mb-2" style="font-weight: 700; color: #1a1a2e;">Description</h5>
+                        <p class="text-muted mb-4" style="line-height: 1.7;">{{ produit.description ?: 'Aucune description disponible.' }}</p>
+                        
+                        <!-- Info Grid -->
+                        <div class="row g-2 mb-4">
+                            <div class="col-6">
+                                <div class="p-3 rounded" style="background: #f8f9fa;">
+                                    <small class="text-muted text-uppercase">Prix</small>
+                                    <div style="font-weight: 600; color: #1a1a2e;">{{ produit.prix|number_format(0, ',', ' ') }} FCA</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 rounded" style="background: #f8f9fa;">
+                                    <small class="text-muted text-uppercase">Stock</small>
+                                    <div style="font-weight: 600; color: #1a1a2e;">{{ produit.quantite }} unites</div>
+                            </div>
+                            {% if produit.categorie %}
+                            <div class="col-6">
+                                <div class="p-3 rounded" style="background: #f8f9fa;">
+                                    <small class="text-muted text-uppercase">Categorie</small>
+                                    <div style="font-weight: 600; color: #1a1a2e;">{{ produit.categorie.nom }}</div>
+                            </div>
+                            {% endif %}
+                            <div class="col-6">
+                                <div class="p-3 rounded" style="background: #f8f9fa;">
+                                    <small class="text-muted text-uppercase">Ajoute le</small>
+                                    <div style="font-weight: 600; color: #1a1a2e;">{{ produit.createdAt ? produit.createdAt|date('d/m/Y') : '-' }}</div>
+                            </div>
+                        
+                        <!-- Add to Cart -->
+                        {% if produit.quantite > 0 %}
+                            <form method="post" action="{{ path('panier_ajouter', {id: produit.id}) }}" class="mb-3">
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    <span class="fw-bold">Quantite:</span>
+                                    <button type="button" class="btn btn-outline-success btn-sm" style="width: 36px; height: 36px; padding: 0;" onclick="var q=document.getElementById('qty');q.value=Math.max(1,parseInt(q.value)-1)">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="number" id="qty" name="quantite" value="1" min="1" max="{{ produit.quantite }}" class="form-control text-center" style="width: 70px;">
+                                    <button type="button" class="btn btn-outline-success btn-sm" style="width: 36px; height: 36px; padding: 0;" onclick="var q=document.getElementById('qty');q.value=Math.min({{ produit.quantite }},parseInt(q.value)+1)">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                    <span class="text-muted small">Max: {{ produit.quantite }}</span>
+                                </div>
+                                <button type="submit" class="btn btn-success w-100 py-3 fw-bold" style="border-radius: 10px;">
+                                    <i class="fas fa-cart-plus me-2"></i>Ajouter au panier
+                                </button>
+                            </form>
+                        {% else %}
+                            <button class="btn btn-secondary w-100 py-3 fw-bold" disabled style="border-radius: 10px;">
+                                <i class="fas fa-ban me-2"></i>Produit indisponible
+                            </button>
+                        {% endif %}
+                        
+                        <!-- Shipping -->
+                        <div class="d-flex align-items-center gap-3 p-3 rounded mt-3" style="background: #f8f9fa;">
+                            <div style="width: 44px; height: 44px; background: rgba(25,135,84,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #198754;">
+                                <i class="fas fa-truck fa-lg"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold" style="color: #1a1a2e;">Livraison disponible</div>
+                                <small class="text-muted">3-5 jours ouvres</small>
+                            </div>
+                    </div>
+            </div>
+        
+        <!-- Related Products -->
+        {% if produit.categorie %}
+        <div class="mt-5">
+            <h4 class="mb-3" style="font-weight: 700; color: #1a1a2e;">
+                <i class="fas fa-th-large text-success me-2"></i>Produits similaires
+            </h4>
+            <div class="card border-0 shadow-sm text-center py-4">
+                <i class="fas fa-folder-open text-muted fa-2x mb-3"></i>
+                <p class="text-muted mb-3">Decouvrez tous les produits dans {{ produit.categorie.nom }}</p>
+                <a href="{{ path('produits_categorie', {id: produit.categorie.id}) }}" class="btn btn-success" style="max-width: 200px; margin: 0 auto;">
+                    <i class="fas fa-eye me-2"></i>Voir tout
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}

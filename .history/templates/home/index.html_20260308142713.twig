@@ -1,0 +1,129 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - KilysAgri{% endblock %}
+
+{% block body %}
+<!-- Hero Section -->
+<section class="bg-success text-white py-5" style="margin-top: 70px;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Votre Marketplace Agricole</h1>
+                <p class="lead mb-4">Achetez et vendez vos produits agricoles en toute simplicité. Des produits frais et de qualité directement des producteurs.</p>
+                <a href="{{ path('produits_index') }}" class="btn btn-light btn-lg text-success">
+                    <i class="fas fa-compass me-2"></i>Découvrir les produits
+                </a>
+            </div>
+            <div class="col-lg-6 text-center">
+                <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=500" 
+                     alt="Produits agricoles" class="img-fluid rounded" style="max-height: 300px;">
+            </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title">Catégories</h2>
+        <div class="row">
+            {% for categorie in categories|slice(0, 6) %}
+                <div class="col-md-4 col-sm-6 mb-3">
+                    <a href="{{ path('produits_categorie', {id: categorie.id}) }}" class="text-decoration-none">
+                        <div class="card h-100 text-center p-4">
+                            <i class="fas fa-seedling fa-3x text-success mb-3"></i>
+                            <h5>{{ categorie.nom }}</h5>
+                            <p class="text-muted mb-0">{{ categorie.produits|length }} produits</p>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+</section>
+
+<!-- Featured Products -->
+{% if featuredProducts|length > 0 %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title">Produits en vedette</h2>
+        <div class="row">
+            {% for produit in featuredProducts|slice(0, 8) %}
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="card h-100">
+                        {% if produit.image %}
+                            <img src="{{ asset(produit.image) }}" alt="{{ produit.nom }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="d-flex align-items-center justify-content-center bg-secondary" style="height: 200px;">
+                                <i class="fas fa-image fa-3x text-white"></i>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            {% if produit.categorie %}
+                                <small class="text-success">{{ produit.categorie.nom }}</small>
+                            {% endif %}
+                            <h5 class="card-title">{{ produit.nom }}</h5>
+                            <p class="card-text text-success fw-bold">{{ produit.prix|number_format(0, ',', ' ') }} FCA</p>
+                            {% if produit.quantite > 0 %}
+                                <span class="badge bg-success">En stock</span>
+                            {% else %}
+                                <span class="badge bg-danger">Rupture</span>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer bg-white">
+                            <a href="{{ path('produits_detail', {id: produit.id}) }}" class="btn btn-success w-100">
+                                <i class="fas fa-eye me-1"></i>Voir
+                            </a>
+                        </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-3">
+            <a href="{{ path('produits_index') }}" class="btn btn-outline-success">
+                Voir tous les produits <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+</section>
+{% endif %}
+
+<!-- How it works -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title text-center">Comment ça marche</h2>
+        <div class="row text-center">
+            <div class="col-md-4">
+                <div class="p-4">
+                    <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="fas fa-user-plus fa-2x"></i>
+                    </div>
+                    <h4 class="mt-3">1. Créez un compte</h4>
+                    <p class="text-muted">Inscrivez-vous gratuitement en quelques secondes</p>
+                </div>
+            <div class="col-md-4">
+                <div class="p-4">
+                    <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="fas fa-shopping-basket fa-2x"></i>
+                    </div>
+                    <h4 class="mt-3">2. Commandez</h4>
+                    <p class="text-muted">Parcourez et achetez vos produits préférés</p>
+                </div>
+            <div class="col-md-4">
+                <div class="p-4">
+                    <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="fas fa-truck fa-2x"></i>
+                    </div>
+                    <h4 class="mt-3">3. Recevez</h4>
+                    <p class="text-muted">Récupérez votre commande ou faites-vous livrer</p>
+                </div>
+        </div>
+</section>
+
+<!-- CTA -->
+<section class="py-5 bg-success text-white text-center">
+    <div class="container">
+        <h2 class="mb-3">Prêt à commencer?</h2>
+        <p class="mb-4">Rejoignez des milliers de producteurs et acheteurs sur KilysAgri</p>
+        <a href="{{ path('app_register') }}" class="btn btn-light btn-lg text-success">
+            <i class="fas fa-user-plus me-2"></i>Créer un compte
+        </a>
+    </div>
+</section>
+{% endblock %}

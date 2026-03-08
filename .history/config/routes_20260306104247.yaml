@@ -1,0 +1,123 @@
+# Routes pour le contrôleur Vendeur
+vendeur_dashboard:
+    path: /vendeur/dashboard
+    controller: App\Controller\VendeurController::dashboard
+    methods: [GET]
+
+vendeur_produits:
+    path: /vendeur/produits
+    controller: App\Controller\VendeurController::produits
+    methods: [GET]
+
+vendeur_produit_new:
+    path: /vendeur/produits/new
+    controller: App\Controller\VendeurController::newProduit
+    methods: [GET, POST]
+
+vendeur_produit_edit:
+    path: /vendeur/produits/{id}/edit
+    controller: App\Controller\VendeurController::editProduit
+    methods: [GET, POST]
+
+vendeur_produit_delete:
+    path: /vendeur/produits/{id}/delete
+    controller: App\Controller\VendeurController::deleteProduit
+    methods: [GET]
+
+vendeur_commandes:
+    path: /vendeur/commandes
+    controller: App\Controller\VendeurController::commandes
+    methods: [GET]
+
+vendeur_commande_status:
+    path: /vendeur/commandes/{id}/status
+    controller: App\Controller\VendeurController::updateCommandeStatus
+    methods: [POST]
+
+# Routes pour le contrôleur Admin
+admin_dashboard:
+    path: /admin/dashboard
+    controller: App\Controller\AdminController::dashboard
+    methods: [GET]
+
+admin_users:
+    path: /admin/utilisateurs
+    controller: App\Controller\AdminController::users
+    methods: [GET]
+
+admin_user_toggle_role:
+    path: /admin/utilisateur/{id}/toggle-role
+    controller: App\Controller\AdminController::toggleUserRole
+    methods: [GET, POST]
+
+admin_produits:
+    path: /admin/produits
+    controller: App\Controller\AdminController::produits
+    methods: [GET]
+
+admin_produit_delete:
+    path: /admin/produit/{id}/delete
+    controller: App\Controller\AdminController::deleteProduit
+    methods: [GET]
+
+admin_categories:
+    path: /admin/categories
+    controller: App\Controller\AdminController::categories
+    methods: [GET]
+
+admin_categorie_new:
+    path: /admin/categorie/new
+    controller: App\Controller\AdminController::newCategorie
+    methods: [GET, POST]
+
+admin_categorie_delete:
+    path: /admin/categorie/{id}/delete
+    controller: App\Controller\AdminController::deleteCategorie
+    methods: [GET]
+
+admin_commandes:
+    path: /admin/commandes
+    controller: App\Controller\AdminController::commandes
+    methods: [GET]
+
+admin_commande_detail:
+    path: /admin/commande/{id}
+    controller: App\Controller\AdminController::commandeDetail
+    methods: [GET]
+
+admin_paiements:
+    path: /admin/paiements
+    controller: App\Controller\AdminController::paiements
+    methods: [GET]
+
+# Routes KYC
+kyc_submit:
+    path: /kyc/submit
+    controller: App\Controller\KycController::submit
+    methods: [GET, POST]
+
+kyc_status:
+    path: /kyc/status
+    controller: App\Controller\KycController::status
+    methods: [GET]
+
+kyc_admin_list:
+    path: /kyc/admin/list
+    controller: App\Controller\KycController::adminList
+    methods: [GET]
+
+kyc_admin_validate:
+    path: /kyc/admin/validate/{id}
+    controller: App\Controller\KycController::adminValidate
+    methods: [GET, POST]
+
+kyc_admin_detail:
+    path: /kyc/admin/detail/{id}
+    controller: App\Controller\KycController::adminDetail
+    methods: [GET]
+
+# Route create-admin
+create_admin:
+    path: /create-admin
+    controller: App\Controller\CreateAdminController::index
+    methods: [GET]

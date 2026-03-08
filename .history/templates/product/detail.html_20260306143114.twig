@@ -1,0 +1,509 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ produit.nom }} - KilysAgri{% endblock %}
+
+{% block stylesheets %}
+<style>
+    /* Detail Page Styles - Matching MovieBox Pro Theme */
+    .kb-page-wrapper {
+        background: var(--kb-dark, #0d1117);
+        min-height: 100vh;
+        padding-top: 80px;
+    }
+    
+    :root {
+        --kb-primary: #198754;
+        --kb-primary-dark: #146c43;
+        --kb-accent: #ffd700;
+        --kb-dark: #0d1117;
+        --kb-dark-secondary: #161b22;
+        --kb-card-bg: #21262d;
+        --kb-text: #f0f6fc;
+        --kb-text-secondary: #8b949e;
+        --kb-border: #30363d;
+    }
+
+    .kb-breadcrumb {
+        background: linear-gradient(135deg, var(--kb-primary) 0%, var(--kb-primary-dark) 100%);
+        padding: 1rem 0;
+        margin-bottom: 0;
+    }
+    
+    .kb-breadcrumb a {
+        color: rgba(255,255,255,0.8) !important;
+        text-decoration: none;
+    }
+    
+    .kb-breadcrumb a:hover {
+        color: white !important;
+    }
+    
+    .kb-breadcrumb-item.active {
+        color: white !important;
+    }
+    
+    .kb-breadcrumb-item + .kb-breadcrumb-item::before {
+        color: rgba(255,255,255,0.6);
+    }
+    
+    /* Product Detail Section */
+    .kb-product-detail-section {
+        padding: 40px 0 60px;
+        background: var(--kb-dark);
+    }
+    
+    .kb-product-card {
+        background: var(--kb-dark-secondary);
+        border: 1px solid var(--kb-border);
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+    
+    .kb-product-image-container {
+        background: var(--kb-card-bg);
+        padding: 2rem;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 400px;
+    }
+    
+    .kb-product-image-container img {
+        max-height: 450px;
+        width: 100%;
+        object-fit: contain;
+        border-radius: 16px;
+    }
+    
+    .kb-product-image-placeholder {
+        width: 100%;
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--kb-card-bg);
+        border-radius: 16px;
+    }
+    
+    .kb-product-image-placeholder i {
+        font-size: 8rem;
+        color: var(--kb-text-secondary);
+        opacity: 0.3;
+    }
+    
+    .kb-product-info {
+        padding: 2rem;
+    }
+    
+    .kb-category-badge {
+        display: inline-block;
+        background: var(--kb-primary);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .kb-product-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+    
+    .kb-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .kb-status-in-stock {
+        background: rgba(25, 135, 84, 0.2);
+        color: #20c997;
+    }
+    
+    .kb-status-out-stock {
+        background: rgba(220, 53, 69, 0.2);
+        color: #dc3545;
+    }
+    
+    .kb-product-price {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--kb-accent);
+        margin-bottom: 1.5rem;
+    }
+    
+    .kb-product-price span {
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--kb-text-secondary);
+    }
+    
+    .kb-section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .kb-product-description {
+        color: var(--kb-text-secondary);
+        line-height: 1.8;
+        margin-bottom: 2rem;
+    }
+    
+    .kb-details-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-bottom: 2rem;
+    }
+    
+    .kb-detail-card {
+        background: var(--kb-card-bg);
+        padding: 1rem;
+        border-radius: 12px;
+        border: 1px solid var(--kb-border);
+    }
+    
+    .kb-detail-card small {
+        color: var(--kb-text-secondary);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .kb-detail-card strong {
+        display: block;
+        color: white;
+        font-size: 1rem;
+        margin-top: 4px;
+    }
+    
+    /* Quantity Selector */
+    .kb-quantity-section {
+        margin-bottom: 2rem;
+    }
+    
+    .kb-quantity-section h5 {
+        font-weight: 700;
+        color: white;
+        margin-bottom: 1rem;
+    }
+    
+    .kb-quantity-selector {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .kb-qty-btn {
+        width: 44px;
+        height: 44px;
+        border: 2px solid var(--kb-primary);
+        background: transparent;
+        color: var(--kb-primary);
+        border-radius: 12px;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .kb-qty-btn:hover {
+        background: var(--kb-primary);
+        color: white;
+    }
+    
+    .kb-qty-input {
+        width: 70px;
+        height: 44px;
+        text-align: center;
+        border: 2px solid var(--kb-border);
+        border-radius: 12px;
+        background: var(--kb-card-bg);
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+    
+    .kb-qty-input:focus {
+        outline: none;
+        border-color: var(--kb-primary);
+    }
+    
+    .kb-qty-max {
+        color: var(--kb-text-secondary);
+        font-size: 0.875rem;
+    }
+    
+    /* Add to Cart Button */
+    .kb-add-to-cart-btn {
+        width: 100%;
+        background: linear-gradient(135deg, var(--kb-primary) 0%, #20c997 100%);
+        color: white;
+        border: none;
+        padding: 16px 32px;
+        border-radius: 14px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        cursor: pointer;
+    }
+    
+    .kb-add-to-cart-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(25, 135, 84, 0.4);
+    }
+    
+    .kb-add-to-cart-btn:disabled {
+        background: var(--kb-border);
+        color: var(--kb-text-secondary);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+    
+    /* Shipping Info */
+    .kb-shipping-info {
+        background: var(--kb-card-bg);
+        padding: 1.25rem;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        border: 1px solid var(--kb-border);
+    }
+    
+    .kb-shipping-icon {
+        width: 48px;
+        height: 48px;
+        background: rgba(25, 135, 84, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--kb-primary);
+        font-size: 1.25rem;
+    }
+    
+    .kb-shipping-text strong {
+        color: white;
+        display: block;
+    }
+    
+    .kb-shipping-text p {
+        color: var(--kb-text-secondary);
+        margin-bottom: 0;
+        font-size: 0.875rem;
+    }
+    
+    /* Related Section */
+    .kb-related-section {
+        margin-top: 3rem;
+    }
+    
+    .kb-related-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 1.5rem;
+    }
+    
+    @media (max-width: 992px) {
+        .kb-product-title {
+            font-size: 1.5rem;
+        }
+        
+        .kb-product-price {
+            font-size: 2rem;
+        }
+        
+        .kb-details-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="kb-page-wrapper">
+    <!-- Breadcrumb -->
+    <nav class="kb-breadcrumb">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('produits_index') }}">Produits</a></li>
+                    {% if produit.categorie %}
+                        <li class="breadcrumb-item"><a href="{{ path('produits_categorie', {id: produit.categorie.id}) }}">{{ produit.categorie.nom }}</a></li>
+                    {% endif %}
+                    <li class="breadcrumb-item active">{{ produit.nom }}</li>
+                </ol>
+            </nav>
+        </div>
+    </nav>
+
+    <main class="kb-product-detail-section">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Product Image -->
+                <div class="col-lg-6">
+                    <div class="kb-product-card h-100">
+                        <div class="kb-product-image-container">
+                            {% if produit.image %}
+                                <img src="{{ asset(produit.image) }}" alt="{{ produit.nom }}">
+                            {% else %}
+                                <div class="kb-product-image-placeholder">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                </div>
+                
+                <!-- Product Info -->
+                <div class="col-lg-6">
+                    <div class="kb-product-card">
+                        <div class="kb-product-info">
+                            {% if produit.categorie %}
+                                <span class="kb-category-badge">
+                                    <i class="fas fa-tag me-1"></i>{{ produit.categorie.nom }}
+                                </span>
+                            {% endif %}
+                            
+                            <h1 class="kb-product-title">{{ produit.nom }}</h1>
+                            
+                            <div class="kb-status-badge {% if produit.quantite > 0 %}kb-status-in-stock{% else %}kb-status-out-stock{% endif %}">
+                                <i class="fas {% if produit.quantite > 0 %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
+                                {% if produit.quantite > 0 %}En stock ({{ produit.quantite }} unites){% else %}Rupture de stock{% endif %}
+                            </div>
+                            
+                            <div class="kb-product-price">
+                                {{ produit.prix|number_format(0, ',', ' ') }} <span>FCA</span>
+                            </div>
+                            
+                            <div class="kb-section-title">
+                                <i class="fas fa-align-left"></i>Description
+                            </div>
+                            <p class="kb-product-description">{{ produit.description ?: 'Aucune description disponible pour ce produit.' }}</p>
+                            
+                            <div class="kb-details-grid">
+                                <div class="kb-detail-card">
+                                    <small>Prix unitaire</small>
+                                    <strong>{{ produit.prix|number_format(0, ',', ' ') }} FCA</strong>
+                                </div>
+                                <div class="kb-detail-card">
+                                    <small>Disponibilite</small>
+                                    <strong>{{ produit.quantite }} unites</strong>
+                                </div>
+                                {% if produit.categorie %}
+                                <div class="kb-detail-card">
+                                    <small>Categorie</small>
+                                    <strong>{{ produit.categorie.nom }}</strong>
+                                </div>
+                                {% endif %}
+                                <div class="kb-detail-card">
+                                    <small>Date ajout</small>
+                                    <strong>{{ produit.createdAt ? produit.createdAt|date('d/m/Y') : 'N/A' }}</strong>
+                                </div>
+                            
+                            {% if produit.quantite > 0 %}
+                            <form method="post" action="{{ path('panier_ajouter', {id: produit.id}) }}" id="addToCartForm">
+                                <div class="kb-quantity-section">
+                                    <h5><i class="fas fa-cubes me-2"></i>Quantite</h5>
+                                    <div class="kb-quantity-selector">
+                                        <button type="button" class="kb-qty-btn" onclick="updateQty(-1)">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <input type="number" class="kb-qty-input" id="quantity" name="quantite" value="1" min="1" max="{{ produit.quantite }}">
+                                        <button type="button" class="kb-qty-btn" onclick="updateQty(1)">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                        <span class="kb-qty-max">Max: {{ produit.quantite }}</span>
+                                    </div>
+                                
+                                <button type="submit" class="kb-add-to-cart-btn" id="addToCartBtn">
+                                    <i class="fas fa-cart-plus"></i>
+                                    Ajouter au panier
+                                </button>
+                            </form>
+                            {% else %}
+                            <button class="kb-add-to-cart-btn" disabled>
+                                <i class="fas fa-ban"></i>
+                                Produit indisponible
+                            </button>
+                            {% endif %}
+                            
+                            <div class="kb-shipping-info">
+                                <div class="kb-shipping-icon">
+                                    <i class="fas fa-truck"></i>
+                                </div>
+                                <div class="kb-shipping-text">
+                                    <strong>Livraison disponible</strong>
+                                    <p>3-5 jours ouvres</p>
+                                </div>
+                        </div>
+                </div>
+            
+            {% if produit.categorie %}
+            <div class="kb-related-section">
+                <h3 class="kb-related-title">
+                    <i class="fas fa-th-large me-2 text-success"></i>Produits similaires
+                </h3>
+                <div class="text-center py-4" style="background: var(--kb-dark-secondary); border-radius: 16px; border: 1px solid var(--kb-border);">
+                    <i class="fas fa-folder-open text-muted fa-3x mb-3"></i>
+                    <p class="text-muted mb-0">Decouvrez tous les produits dans {{ produit.categorie.nom }}</p>
+                    <a href="{{ path('produits_categorie', {ategorie.id}) }}" class="btn btn-success mt-3">
+id: produit.c                        <i class="fas fa-eye me-2"></i>Voir tout
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    function updateQty(delta) {
+        const input = document.getElementById('quantity');
+        const newVal = parseInt(input.value) + delta;
+        const max = parseInt(input.max);
+        const min = parseInt(input.min);
+        
+        if (newVal >= min && newVal <= max) {
+            input.value = newVal;
+        }
+    }
+    
+    // Refresh cart badge after form submission
+    document.getElementById('addToCartForm')?.addEventListener('submit', function() {
+        setTimeout(function() {
+            if (window.refreshCartBadge) {
+                window.refreshCartBadge();
+            }
+        }, 500);
+    });
+</script>
+{% endblock %}

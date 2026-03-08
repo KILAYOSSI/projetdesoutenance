@@ -1,0 +1,4 @@
+# Import routes using annotations (works with PHP 8 attributes)
+controllers:
+    resource: ../src/Controller/
+    type: annotation

@@ -1,0 +1,236 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement commande #{{ commande.id }} - KilysAgri{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .payment-page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f8f9fa 100%);
+        padding: 2rem;
+    }
+    
+    .payment-container {
+        background: white;
+        border-radius: 1.5rem;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.1);
+        padding: 2.5rem;
+        width: 100%;
+        max-width: 500px;
+    }
+    
+    .payment-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .payment-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        box-shadow: 0 0.5rem 1rem rgba(25, 135, 84, 0.3);
+    }
+    
+    .payment-icon i {
+        font-size: 2.5rem;
+        color: white;
+    }
+    
+    .order-summary {
+        background: #f8f9fa;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .order-summary h5 {
+        color: #1a1a2e;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .order-total {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #198754;
+        text-align: center;
+        padding-top: 1rem;
+        border-top: 2px solid #dee2e6;
+        margin-top: 1rem;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid #e9ecef;
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #198754;
+        box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.1);
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #495057;
+    }
+    
+    .help-text {
+        color: #6c757d;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+    
+    .btn-pay {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+        color: white;
+        border: none;
+        border-radius: 0.75rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-pay:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1rem rgba(25, 135, 84, 0.3);
+    }
+    
+    .btn-cancel {
+        width: 100%;
+        padding: 0.75rem;
+        background: transparent;
+        color: #6c757d;
+        border: 2px solid #dee2e6;
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-top: 0.75rem;
+    }
+    
+    .btn-cancel:hover {
+        border-color: #dc3545;
+        color: #dc3545;
+    }
+    
+    .fedapay-badge {
+        text-align: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #dee2e6;
+    }
+    
+    .fedapay-badge img {
+        height: 30px;
+    }
+    
+    .secure-badge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        color: #198754;
+        font-size: 0.875rem;
+        margin-top: 1rem;
+    }
+    
+    .alert-danger {
+        background: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+        border: none;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="payment-page">
+    <div class="payment-container">
+        <div class="payment-header">
+            <div class="payment-icon">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h2>Paiement Mobile Money</h2>
+            <p class="text-muted">Commande #{{ commande.id }}</p>
+        </div>
+
+        {% for flash_error in app.flashes('error') %}
+            <div class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>{{ flash_error }}
+            </div>
+        {% endfor %}
+
+        <!-- Order Summary -->
+        <div class="order-summary">
+            <h5><i class="fas fa-receipt me-2"></i>Récapitulatif</h5>
+            
+            <div class="d-flex justify-content-between mb-2">
+                <span>Nombre d'articles:</span>
+                <span>{{ commande.ligneCommandes|length }}</span>
+            </div>
+            
+            <div class="order-total">
+                {{ commande.montantTotal|number_format(0, ',', ' ') }} FCA
+            </div>
+        </div>
+
+        <!-- Payment Form -->
+        <form method="post" action="{{ path('paiement_traiter', {commandeId: commande.id}) }}">
+            <div class="mb-3">
+                <label for="telephone" class="form-label">
+                    <i class="fas fa-phone me-2"></i>Numéro Mobile Money
+                </label>
+                <input type="tel" 
+                       id="telephone" 
+                       name="telephone" 
+                       class="form-control" 
+                       placeholder="Ex: 01 00 00 00 00"
+                       required
+                       pattern="[0-9\s\-\+\(\)]*">
+                <div class="help-text">
+                    Entrez votre numéro MTN Moov ou autres opérateurs
+                </div>
+            </div>
+
+            <button type="submit" class="btn-pay">
+                <i class="fas fa-lock me-2"></i>Payer {{ commande.montantTotal|number_format(0, ',', ' ') }} FCA
+            </button>
+            
+            <div class="secure-badge">
+                <i class="fas fa-shield-alt"></i>
+                <span>Paiement sécurisé par Fedapay</span>
+            </div>
+            
+            <a href="{{ path('panier_index') }}" class="btn-cancel">
+                Annuler
+            </a>
+        </form>
+
+        <div class="fedapay-badge">
+            <p class="text-muted small mb-2">Propulsé par</p>
+            <strong style="color: #198754; font-size: 1.2rem;">Fedapay</strong>
+        </div>
+    </div>
+</div>
+{% endblock %}

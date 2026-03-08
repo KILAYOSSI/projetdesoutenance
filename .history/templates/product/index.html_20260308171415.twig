@@ -1,0 +1,1038 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Produits - KilysAgri{% endblock %}
+
+{% block body %}
+<!-- Toggle Dark/Light Mode -->
+<button class="theme-toggle" id="themeToggle" title="Changer le theme">
+    <i class="fas fa-moon"></i>
+</button>
+
+<!-- Header with Featured Products Carousel -->
+<header class="hero-header">
+    <div class="hero-slider" id="heroSlider">
+        {% if featuredProducts|length > 0 %}
+            {% for produit in featuredProducts %}
+            <div class="hero-slide" style="background-image: url('{{ produit.image ? asset(produit.image) : 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=1920' }}');">
+                <div class="hero-overlay"></div>
+                <div class="hero-content container">
+                    <div class="hero-info">
+                        <span class="hero-badge">
+                            <i class="fas fa-star"></i> Produit en vedette
+                        </span>
+                        <h1 class="hero-title">{{ produit.nom }}</h1>
+                        <p class="hero-description">{{ produit.description|length > 100 ? produit.description|slice(0, 100) ~ '...' : produit.description }}</p>
+                        <div class="hero-details">
+                            <div class="hero-price">
+                                <i class="fas fa-tag"></i>
+                                <span class="price-value">{{ produit.prix|number_format(0, ',', ' ') }} FCA</span>
+                            </div>
+                            {% if produit.categorie %}
+                            <div class="hero-category">
+                                <i class="fas fa-folder"></i>
+                                <span>{{ produit.categorie.nom }}</span>
+                            </div>
+                            {% endif %}
+                            <div class="hero-quantity">
+                                <i class="fas fa-box"></i>
+                                <span>Stock: {{ produit.quantite }}</span>
+                            </div>
+                        </div>
+                        <div class="hero-actions">
+                            <a href="{{ path('produits_detail', {id: produit.id}) }}" class="btn-hero-primary">
+                                <i class="fas fa-eye"></i> Voir details
+                            </a>
+                            <a href="{{ path('produits_detail', {id: produit.id}) }}" class="btn-hero-secondary">
+                                <i class="fas fa-shopping-cart"></i> Commander
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <!-- Default slide when no products -->
+            <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=1920');">
+                <div class="hero-overlay"></div>
+                <div class="hero-content container">
+                    <div class="hero-info">
+                        <span class="hero-badge">
+                            <i class="fas fa-leaf"></i> Bienvenue
+                        </span>
+                        <h1 class="hero-title">Decouvrez Nos Produits</h1>
+                        <p class="hero-description">Des produits frais et de qualite directement de nos producteurs locaux</p>
+                        <div class="hero-actions">
+                            <a href="#products" class="btn-hero-primary">
+                                <i class="fas fa-search"></i> Explorer
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Slider Navigation -->
+    {% if featuredProducts|length > 1 %}
+    <div class="hero-nav">
+        <button class="hero-nav-btn prev" onclick="changeSlide(-1)">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="hero-dots" id="heroDots"></div>
+        <button class="hero-nav-btn next" onclick="changeSlide(1)">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+    {% endif %}
+    
+    <!-- Gradient Bottom -->
+    <div class="hero-gradient-bottom"></div>
+</header>
+
+<!-- Search and Filter Section -->
+<section class="search-section" id="products">
+    <div class="container">
+        <div class="search-wrapper">
+            <form action="{{ path('produits_search') }}" method="get" class="search-form">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" name="q" placeholder="Rechercher un produit..." class="search-input" value="{{ search|default('') }}">
+                    <button type="submit" class="btn-search">Rechercher</button>
+                </div>
+            </form>
+            <div class="filter-box">
+                <select name="categorie" class="filter-select" onchange="window.location.href=this.value">
+                    <option value="{{ path('produits_index') }}">Toutes categories</option>
+                    {% for categorie in categories %}
+                    <option value="{{ path('produits_categorie', {id: categorie.id}) }}" {% if categorie_active is defined and categorie_active and categorie_active.id == categorie.id %}selected{% endif %}>
+                        {{ categorie.nom }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Products by Category -->
+<main class="products-main">
+    <div class="container">
+        {% if search is defined and search %}
+        <div class="search-results">
+            <h2 class="section-title">Resultats de recherche pour "{{ search }}"</h2>
+            <p class="results-count">{{ produits|length }} produit(s) trouve(s)</p>
+        </div>
+        {% endif %}
+
+        {% if categoriesWithProducts|length > 0 %}
+            {% for catData in categoriesWithProducts %}
+            <section class="category-section">
+                <div class="category-header">
+                    <div class="category-info">
+                        <h2 class="category-title">{{ catData.categorie.nom }}</h2>
+                        <span class="product-count">{{ catData.total }} produits</span>
+                    </div>
+                    <div class="category-actions">
+                        <a href="{{ path('produits_categorie', {id: catData.categorie.id}) }}" class="btn btn-outline-category">
+                            Voir tous <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="products-grid">
+                    {% for produit in catData.produits|slice(0, 8) %}
+                    <article class="product-card">
+                        <div class="product-image-wrapper">
+                            {% if produit.image %}
+                                <img src="{{ asset(produit.image) }}" alt="{{ produit.nom }}" class="product-image">
+                            {% else %}
+                                <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=400" alt="{{ produit.nom }}" class="product-image">
+                            {% endif %}
+                            <div class="product-overlay">
+                                <a href="{{ path('produits_detail', {id: produit.id}) }}" class="btn-quick-view">
+                                    <i class="fas fa-eye"></i> Voir details
+                                </a>
+                            </div>
+                            {% if produit.quantite <= 0 %}
+                            <div class="product-badge badge-out">Rupture</div>
+                            {% elseif produit.quantite < 5 %}
+                            <div class="product-badge badge-low">Plus que {{ produit.quantite }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="product-content">
+                            <span class="product-category">{{ catData.categorie.nom }}</span>
+                            <h3 class="product-title">{{ produit.nom }}</h3>
+                            <p class="product-description">{{ produit.description|length > 80 ? produit.description|slice(0, 80) ~ '...' : produit.description }}</p>
+                            <div class="product-footer">
+                                <span class="product-price">{{ produit.prix|number_format(0, ',', ' ') }} FCA</span>
+                                <span class="product-quantity">
+                                    <i class="fas fa-box"></i> {{ produit.quantite }}
+                                </span>
+                            </div>
+                            <a href="{{ path('produits_detail', {id: produit.id}) }}" class="btn btn-product">
+                                <i class="fas fa-shopping-cart"></i> Commander
+                            </a>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+                
+                {% if catData.total > 8 %}
+                <div class="category-footer">
+                    <button class="btn btn-more-products" onclick="loadMoreProducts(this, {{ catData.categorie.id }})">
+                        <i class="fas fa-plus"></i> Voir plus de produits
+                    </button>
+                </div>
+                {% endif %}
+            </section>
+            {% endfor %}
+        {% elseif produits|length > 0 %}
+        <section class="all-products-section">
+            <div class="section-header">
+                <h2 class="section-title">Tous nos produits</h2>
+                <span class="products-total">{{ produits|length }} produits disponibles</span>
+            </div>
+            <div class="products-grid">
+                {% for produit in produits %}
+                <article class="product-card">
+                    <div class="product-image-wrapper">
+                        {% if produit.image %}
+                            <img src="{{ asset(produit.image) }}" alt="{{ produit.nom }}" class="product-image">
+                        {% else %}
+                            <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=400" alt="{{ produit.nom }}" class="product-image">
+                        {% endif %}
+                        <div class="product-overlay">
+                            <a href="{{ path('produits_detail', {id: produit.id}) }}" class="btn-quick-view">
+                                <i class="fas fa-eye"></i> Voir details
+                            </a>
+                        </div>
+                        {% if produit.quantite <= 0 %}
+                        <div class="product-badge badge-out">Rupture</div>
+                        {% elseif produit.quantite < 5 %}
+                        <div class="product-badge badge-low">Plus que {{ produit.quantite }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="product-content">
+                        {% if produit.categorie %}
+                        <span class="product-category">{{ produit.categorie.nom }}</span>
+                        {% endif %}
+                        <h3 class="product-title">{{ produit.nom }}</h3>
+                        <p class="product-description">{{ produit.description|length > 80 ? produit.description|slice(0, 80) ~ '...' : produit.description }}</p>
+                        <div class="product-footer">
+                            <span class="product-price">{{ produit.prix|number_format(0, ',', ' ') }} FCA</span>
+                            <span class="product-quantity">
+                                <i class="fas fa-box"></i> {{ produit.quantite }}
+                            </span>
+                        </div>
+                        <a href="{{ path('produits_detail', {id: produit.id}) }}" class="btn btn-product">
+                            <i class="fas fa-shopping-cart"></i> Commander
+                        </a>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-seedling"></i>
+            <h3>Aucun produit disponible</h3>
+            <p>Nous n'avons pas encore de produits dans cette categorie.</p>
+            <a href="{{ path('produits_index') }}" class="btn btn-empty">
+                Voir tous les produits
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</main>
+
+<style>
+/* Theme Toggle */
+.theme-toggle {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 1000;
+    background: linear-gradient(135deg, #198754, #20c997);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+/* HERO HEADER - Clean and Professional */
+.hero-header {
+    position: relative;
+    height: 70vh;
+    min-height: 500px;
+    max-height: 650px;
+    overflow: hidden;
+    background: #000;
+}
+
+.hero-slider {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.hero-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+.hero-slide.active {
+    opacity: 1;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.2) 100%),
+                linear-gradient(0deg, rgba(0,0,0,0.7) 0%, transparent 60%);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 10;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 60px 0;
+}
+
+.hero-info {
+    max-width: 550px;
+    color: white;
+}
+
+/* Badge */
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #198754, #20c997);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* Title */
+.hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 15px;
+    line-height: 1.2;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Description */
+.hero-description {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+/* Details Row */
+.hero-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.hero-price, .hero-category, .hero-quantity {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.15);
+    padding: 10px 16px;
+    border-radius: 8px;
+    backdrop-filter: blur(4px);
+}
+
+.hero-price i, .hero-category i, .hero-quantity i {
+    color: #20c997;
+}
+
+.hero-price .price-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #20c997;
+}
+
+.hero-category, .hero-quantity {
+    color: rgba(255,255,255,0.9);
+    font-size: 0.95rem;
+}
+
+/* Actions */
+.hero-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-hero-primary, .btn-hero-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-hero-primary {
+    background: #198754;
+    color: white;
+}
+
+.btn-hero-primary:hover {
+    background: #146c43;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-hero-secondary {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    backdrop-filter: blur(4px);
+}
+
+.btn-hero-secondary:hover {
+    background: rgba(255,255,255,0.3);
+    color: white;
+}
+
+/* Navigation */
+.hero-nav {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    z-index: 20;
+}
+
+.hero-nav-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-nav-btn:hover {
+    background: rgba(255,255,255,0.4);
+    transform: scale(1.1);
+}
+
+.hero-dots {
+    display: flex;
+    gap: 10px;
+}
+
+.hero-dots .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.hero-dots .dot.active {
+    background: #20c997;
+    transform: scale(1.3);
+}
+
+/* Gradient Bottom */
+.hero-gradient-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: linear-gradient(to top, #ffffff 0%, transparent 100%);
+    pointer-events: none;
+}
+
+/* Search Section */
+.search-section {
+    background: white;
+    padding: 30px 0;
+    position: relative;
+    z-index: 5;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.search-wrapper {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.search-form {
+    flex: 1;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 50px;
+    padding: 5px;
+    transition: all 0.3s ease;
+}
+
+.search-box:focus-within {
+    border-color: #198754;
+    box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.1);
+}
+
+.search-box i {
+    padding-left: 20px;
+    color: #198754;
+}
+
+.search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 12px 15px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.btn-search {
+    background: #198754;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-search:hover {
+    background: #146c43;
+}
+
+.filter-box {
+    flex-shrink: 0;
+}
+
+.filter-select {
+    padding: 14px 20px;
+    border: 2px solid #e9ecef;
+    border-radius: 50px;
+    font-size: 0.95rem;
+    background: white;
+    cursor: pointer;
+    min-width: 180px;
+    transition: all 0.3s ease;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: #198754;
+}
+
+/* Products Main */
+.products-main {
+    padding: 50px 0;
+    min-height: 60vh;
+    background: #f8f9fa;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 10px;
+}
+
+/* Category Section */
+.category-section {
+    margin-bottom: 50px;
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 20px 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.category-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.category-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #198754;
+    margin: 0;
+}
+
+.product-count {
+    background: #e8f5e9;
+    color: #198754;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.btn-outline-category {
+    color: #198754;
+    border: 2px solid #198754;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.btn-outline-category:hover {
+    background: #198754;
+    color: white;
+}
+
+/* Products Grid */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 25px;
+}
+
+.product-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.product-image-wrapper {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.1);
+}
+
+.product-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.product-card:hover .product-overlay {
+    opacity: 1;
+}
+
+.btn-quick-view {
+    background: white;
+    color: #198754;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    text-decoration: none;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.product-card:hover .btn-quick-view {
+    transform: translateY(0);
+}
+
+.product-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-out {
+    background: #dc3545;
+    color: white;
+}
+
+.badge-low {
+    background: #ffc107;
+    color: #1a1a2e;
+}
+
+.product-content {
+    padding: 20px;
+}
+
+.product-category {
+    color: #198754;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.product-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 8px 0;
+}
+
+.product-description {
+    color: #6c757d;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.product-price {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #198754;
+}
+
+.product-quantity {
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+.btn-product {
+    width: 100%;
+    background: #198754;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.btn-product:hover {
+    background: #146c43;
+    color: white;
+}
+
+/* All Products Section */
+.all-products-section {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.products-total {
+    color: #6c757d;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    background: white;
+    border-radius: 16px;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    color: #e9ecef;
+    margin-bottom: 20px;
+}
+
+.empty-state h3 {
+    font-size: 1.5rem;
+    color: #1a1a2e;
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    color: #6c757d;
+    margin-bottom: 25px;
+}
+
+.btn-empty {
+    background: #198754;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.btn-empty:hover {
+    background: #146c43;
+    color: white;
+}
+
+/* Search Results */
+.search-results {
+    margin-bottom: 30px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.results-count {
+    color: #6c757d;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .hero-header { height: 60vh; min-height: 450px; }
+    .hero-title { font-size: 2.2rem; }
+    .hero-description { font-size: 1rem; }
+    .hero-details { flex-direction: column; gap: 10px; }
+    .search-wrapper { flex-direction: column; }
+    .search-box { width: 100%; }
+    .filter-select { width: 100%; }
+}
+
+@media (max-width: 768px) {
+    .hero-header { height: 55vh; min-height: 400px; }
+    .hero-title { font-size: 1.8rem; }
+    .hero-description { display: none; }
+    .hero-actions { flex-direction: column; }
+    .hero-actions a { width: 100%; justify-content: center; }
+    .category-header { flex-direction: column; gap: 15px; text-align: center; }
+    .products-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+}
+
+/* Dark Mode */
+body.dark-mode {
+    background: #1a1a1a;
+}
+
+body.dark-mode .search-section {
+    background: #2a2a2a;
+}
+
+body.dark-mode .search-box {
+    background: #333;
+    border-color: #444;
+}
+
+body.dark-mode .search-input {
+    color: #fff;
+}
+
+body.dark-mode .filter-select {
+    background: #333;
+    border-color: #444;
+    color: #fff;
+}
+
+body.dark-mode .products-main {
+    background: #1a1a1a;
+}
+
+body.dark-mode .category-header {
+    background: #2a2a2a;
+}
+
+body.dark-mode .category-title {
+    color: #20c997;
+}
+
+body.dark-mode .product-card {
+    background: #2a2a2a;
+}
+
+body.dark-mode .product-title {
+    color: #fff;
+}
+
+body.dark-mode .product-description {
+    color: #aaa;
+}
+
+body.dark-mode .all-products-section {
+    background: #2a2a2a;
+}
+
+body.dark-mode .empty-state {
+    background: #2a2a2a;
+}
+
+body.dark-mode .search-results {
+    background: #2a2a2a;
+}
+</style>
+
+<script>
+// Theme Toggle
+const themeToggle = document.getElementById('themeToggle');
+const body = document.body;
+
+themeToggle.addEventListener('click', () => {
+    body.classList.toggle('dark-mode');
+    const icon = themeToggle.querySelector('i');
+    if (body.classList.contains('dark-mode')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+    } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+    }
+});
+
+// Hero Slider
+const heroSlider = document.getElementById('heroSlider');
+const heroDots = document.getElementById('heroDots');
+
+if (heroSlider) {
+    const slides = heroSlider.querySelectorAll('.hero-slide');
+    const totalSlides = slides.length;
+    
+    if (totalSlides > 0) {
+        // Show first slide
+        slides[0].classList.add('active');
+        
+        // Create dots
+        if (heroDots && totalSlides > 1) {
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot' + (i === 0 ? ' active' : '');
+                dot.onclick = () => goToSlide(i);
+                heroDots.appendChild(dot);
+            }
+        }
+        
+        let currentSlide = 0;
+        
+        function goToSlide(index) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = index;
+            slides[currentSlide].classList.add('active');
+            
+            if (heroDots) {
+                const dots = heroDots.querySelectorAll('.dot');
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === currentSlide);
+                });
+            }
+        }
+        
+        function changeSlide(direction) {
+            let newIndex = currentSlide + direction;
+            if (newIndex < 0) newIndex = totalSlides - 1;
+            if (newIndex >= totalSlides) newIndex = 0;
+            goToSlide(newIndex);
+        }
+        
+        // Auto-advance every 6 seconds
+        if (totalSlides > 1) {
+            setInterval(() => {
+                changeSlide(1);
+            }, 6000);
+        }
+        
+        // Expose functions globally
+        window.changeSlide = changeSlide;
+    }
+}
+</script>
+{% endblock %}
+

@@ -1,0 +1,517 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ produit.nom }} - KilysAgri{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .kb-breadcrumb {
+        background: var(--kb-bg);
+        padding: 1rem 0;
+        margin-top: 80px;
+    }
+    
+    .kb-breadcrumb-list {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .kb-breadcrumb-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .kb-breadcrumb-item a {
+        color: var(--kb-text-secondary);
+        text-decoration: none;
+        font-weight: 500;
+        transition: var(--kb-transition);
+    }
+    
+    .kb-breadcrumb-item a:hover {
+        color: var(--kb-primary);
+    }
+    
+    .kb-breadcrumb-item.active {
+        color: var(--kb-text);
+        font-weight: 500;
+    }
+    
+    .kb-breadcrumb-separator {
+        color: var(--kb-text-muted);
+    }
+    
+    .kb-product-detail {
+        padding: 2rem 0;
+    }
+    
+    .kb-product-gallery {
+        position: sticky;
+        top: 100px;
+    }
+    
+    .kb-product-image {
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: cover;
+        border-radius: var(--kb-radius-xl);
+        background: var(--kb-bg);
+    }
+    
+    .kb-product-thumbnails {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+    
+    .kb-thumbnail {
+        width: 80px;
+        height: 80px;
+        border-radius: var(--kb-radius);
+        overflow: hidden;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: var(--kb-transition);
+        opacity: 0.6;
+    }
+    
+    .kb-thumbnail.active,
+    .kb-thumbnail:hover {
+        border-color: var(--kb-primary);
+        opacity: 1;
+    }
+    
+    .kb-thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .kb-product-info h1 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    
+    .kb-product-meta {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .kb-product-price {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--kb-primary);
+        margin-bottom: 1.5rem;
+    }
+    
+    .kb-product-price span {
+        font-size: 1rem;
+        color: var(--kb-text-muted);
+        font-weight: 400;
+    }
+    
+    .kb-product-description {
+        color: var(--kb-text-secondary);
+        line-height: 1.8;
+        margin-bottom: 2rem;
+    }
+    
+    .kb-product-features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .kb-feature {
+        background: var(--kb-bg);
+        border-radius: var(--kb-radius);
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .kb-feature-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--kb-primary-subtle);
+        border-radius: var(--kb-radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--kb-primary);
+    }
+    
+    .kb-feature-label {
+        font-size: 0.8rem;
+        color: var(--kb-text-muted);
+    }
+    
+    .kb-feature-value {
+        font-weight: 600;
+        color: var(--kb-text);
+    }
+    
+    .kb-quantity-selector {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .kb-quantity-label {
+        font-weight: 600;
+    }
+    
+    .kb-quantity-controls {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--kb-bg);
+        border-radius: var(--kb-radius);
+        padding: 0.25rem;
+    }
+    
+    .kb-quantity-btn {
+        width: 40px;
+        height: 40px;
+        background: var(--kb-bg-card);
+        border: none;
+        border-radius: var(--kb-radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--kb-text);
+        transition: var(--kb-transition);
+    }
+    
+    .kb-quantity-btn:hover {
+        background: var(--kb-primary);
+        color: white;
+    }
+    
+    .kb-quantity-input {
+        width: 60px;
+        text-align: center;
+        border: none;
+        background: transparent;
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--kb-text);
+    }
+    
+    .kb-product-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .kb-product-actions .kb-btn {
+        flex: 1;
+        min-width: 200px;
+    }
+    
+    .kb-seller-card {
+        background: var(--kb-bg);
+        border-radius: var(--kb-radius-lg);
+        padding: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .kb-seller-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .kb-seller-avatar {
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(135deg, var(--kb-primary) 0%, var(--kb-primary-light) 100%);
+        border-radius: var(--kb-radius-full);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+    }
+    
+    .kb-seller-name {
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+    
+    .kb-seller-label {
+        font-size: 0.875rem;
+        color: var(--kb-text-muted);
+    }
+    
+    .kb-delivery-info {
+        background: var(--kb-bg);
+        border-radius: var(--kb-radius-lg);
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .kb-delivery-icon {
+        width: 48px;
+        height: 48px;
+        background: var(--kb-primary-subtle);
+        border-radius: var(--kb-radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--kb-primary);
+        font-size: 1.25rem;
+    }
+    
+    /* Similar Products */
+    .kb-similar-section {
+        padding: 4rem 0;
+        background: var(--kb-bg);
+    }
+    
+    .kb-similar-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .kb-product-info h1 {
+            font-size: 1.5rem;
+        }
+        
+        .kb-product-price {
+            font-size: 2rem;
+        }
+        
+        .kb-product-actions .kb-btn {
+            min-width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<!-- Breadcrumb -->
+<nav class="kb-breadcrumb">
+    <div class="container">
+        <ol class="kb-breadcrumb-list">
+            <li class="kb-breadcrumb-item">
+                <a href="{{ path('app_home') }}">Accueil</a>
+                <span class="kb-breadcrumb-separator">/</span>
+            </li>
+            <li class="kb-breadcrumb-item">
+                <a href="{{ path('produits_index') }}">Produits</a>
+                {% if produit.categorie %}
+                    <span class="kb-breadcrumb-separator">/</span>
+                </li>
+                <li class="kb-breadcrumb-item">
+                    <a href="{{ path('produits_categorie', {id: produit.categorie.id}) }}">{{ produit.categorie.nom }}</a>
+                    <span class="kb-breadcrumb-separator">/</span>
+                </li>
+                {% endif %}
+            <li class="kb-breadcrumb-item active">{{ produit.nom }}</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Product Detail -->
+<section class="kb-product-detail">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Product Image -->
+            <div class="col-lg-6">
+                <div class="kb-product-gallery">
+                    {% if produit.image %}
+                        <img src="{{ asset(produit.image) }}" alt="{{ produit.nom }}" class="kb-product-image">
+                    {% else %}
+                        <div class="kb-product-image d-flex align-items-center justify-content-center">
+                            <i class="fas fa-image fa-5x text-muted"></i>
+                        </div>
+                    {% endif %}
+                </div>
+            
+            <!-- Product Info -->
+            <div class="col-lg-6">
+                <div class="kb-product-info">
+                    {% if produit.categorie %}
+                        <span class="kb-badge kb-badge-success mb-2">
+                            <i class="fas fa-folder"></i>
+                            {{ produit.categorie.nom }}
+                        </span>
+                    {% endif %}
+                    
+                    <h1>{{ produit.nom }}</h1>
+                    
+                    <div class="kb-product-meta">
+                        <span class="kb-badge kb-badge-{% if produit.quantite > 0 %}success{% else %}danger{% endif %}">
+                            <i class="fas fa-{% if produit.quantite > 0 %}check-circle{% else %}times-circle{% endif %}"></i>
+                            {% if produit.quantite > 0 %}En stock ({{ produit.quantite }}){% else %}Rupture de stock{% endif %}
+                        </span>
+                        <span style="color: var(--kb-text-muted);">
+                            <i class="fas fa-calendar me-1"></i>
+                            Ajouté le {{ produit.createdAt ? produit.createdAt|date('d/m/Y') : '-' }}
+                        </span>
+                    </div>
+                    
+                    <div class="kb-product-price">
+                        {{ produit.prix|number_format(0, ',', ' ') }} <span>FCA</span>
+                    </div>
+                    
+                    <p class="kb-product-description">
+                        {{ produit.description ?: 'Aucune description disponible pour ce produit.' }}
+                    </p>
+                    
+                    <div class="kb-product-features">
+                        <div class="kb-feature">
+                            <div class="kb-feature-icon">
+                                <i class="fas fa-tag"></i>
+                            </div>
+                            <div>
+                                <div class="kb-feature-label">Prix</div>
+                                <div class="kb-feature-value">{{ produit.prix|number_format(0, ',', ' ') }} FCA</div>
+                        </div>
+                        <div class="kb-feature">
+                            <div class="kb-feature-icon">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div>
+                                <div class="kb-feature-label">Stock</div>
+                                <div class="kb-feature-value">{{ produit.quantite }} unités</div>
+                        </div>
+                        {% if produit.categorie %}
+                        <div class="kb-feature">
+                            <div class="kb-feature-icon">
+                                <i class="fas fa-folder"></i>
+                            </div>
+                            <div>
+                                <div class="kb-feature-label">Catégorie</div>
+                                <div class="kb-feature-value">{{ produit.categorie.nom }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    {% if produit.quantite > 0 %}
+                        <form method="post" action="{{ path('panier_ajouter', {id: produit.id}) }}">
+                            <div class="kb-quantity-selector">
+                                <span class="kb-quantity-label">Quantité:</span>
+                                <div class="kb-quantity-controls">
+                                    <button type="button" class="kb-quantity-btn" onclick="updateQuantity(-1)">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="number" id="quantity" name="quantite" value="1" min="1" max="{{ produit.quantite }}" class="kb-quantity-input" readonly>
+                                    <button type="button" class="kb-quantity-btn" onclick="updateQuantity(1)">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            
+                            <div class="kb-product-actions">
+                                <button type="submit" class="kb-btn kb-btn-primary" onclick="window.refreshCartBadge();">
+                                    <i class="fas fa-cart-plus"></i>
+                                    Ajouter au panier
+                                </button>
+                                <button type="button" class="kb-btn kb-btn-secondary">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                            </div>
+                        </form>
+                    {% else %}
+                        <button class="kb-btn kb-btn-secondary w-100" disabled>
+                            <i class="fas fa-ban"></i>
+                            Produit indisponible
+                        </button>
+                    {% endif %}
+                    
+                    <!-- Seller Info -->
+                    {% if produit.utilisateur %}
+                    <div class="kb-seller-card">
+                        <div class="kb-seller-info">
+                            <div class="kb-seller-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div>
+                                <div class="kb-seller-name">{{ produit.utilisateur.nomComplet|default('Vendeur') }}</div>
+                                <div class="kb-seller-label">Producteur/Vendeur</div>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Delivery Info -->
+                    <div class="kb-delivery-info">
+                        <div class="kb-delivery-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <div>
+                            <strong>Livraison disponible</strong>
+                            <p class="mb-0 text-muted small">3-5 jours ouvrés</p>
+                        </div>
+                </div>
+        </div>
+</section>
+
+<!-- Similar Products -->
+{% if similarProducts|default([])|length > 0 %}
+<section class="kb-similar-section">
+    <div class="container">
+        <h2 class="kb-section-title mb-4">
+            <i class="fas fa-random me-2 text-primary"></i>
+            Produits similaires
+        </h2>
+        <div class="kb-similar-grid">
+            {% for similar in similarProducts %}
+                <div class="kb-product-card">
+                    <div class="kb-product-image">
+                        {% if similar.image %}
+                            <img src="{{ asset(similar.image) }}" alt="{{ similar.nom }}">
+                        {% else %}
+                            <div class="d-flex align-items-center justify-content-center h-100">
+                                <i class="fas fa-image fa-2x text-muted"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="kb-product-body">
+                        <h3 class="kb-product-title">
+                            <a href="{{ path('produits_detail', {id: similar.id}) }}" style="text-decoration: none; color: inherit;">
+                                {{ similar.nom }}
+                            </a>
+                        </h3>
+                        <div class="kb-product-footer">
+                            <div class="kb-product-price">
+                                {{ similar.prix|number_format(0, ',', ' ') }} <span>FCA</span>
+                            </div>
+                        <a href="{{ path('produits_detail', {id: similar.id}) }}" class="kb-btn kb-btn-secondary w-100 mt-2">
+                            Voir
+                        </a>
+                    </div>
+            {% endfor %}
+        </div>
+</section>
+{% endif %}
+
+<script>
+function updateQuantity(change) {
+    const input = document.getElementById('quantity');
+    const max = parseInt(input.max);
+    let value = parseInt(input.value) + change;
+    value = Math.max(1, Math.min(max, value));
+    input.value = value;
+}
+</script>
+{% endblock %}

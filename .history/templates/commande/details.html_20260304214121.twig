@@ -1,0 +1,150 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande #{{ commande.id }} - KilysAgri{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-clipboard-list me-2"></i>Commande #{{ commande.id }}</h2>
+        <a href="{{ path('commande_mes_commandes') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Retour à mes commandes
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Produits commandés</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Vendeur</th>
+                                    <th>Prix unitaire</th>
+                                    <th>Quantité</th>
+                                    <th>Sous-total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ligne in commande.ligneCommandes %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            {% if ligne.produit.image %}
+                                                <img src="{{ asset(ligne.produit.image) }}" class="rounded me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                                            {% else %}
+                                                <div class="bg-light rounded me-2 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                    <i class="fas fa-image text-muted"></i>
+                                                </div>
+                                            {% endif %}
+                                            <span>{{ ligne.produit.nom }}</span>
+                                        </div>
+                                    </td>
+                                    <td>{{ ligne.produit.utilisateur.email }}</td>
+                                    <td>{{ ligne.prixUnitaire|number_format(0, ',', ' ') }} FCA</td>
+                                    <td>{{ ligne.quantite }}</td>
+                                    <td><strong>{{ (ligne.quantite * ligne.prixUnitaire)|number_format(0, ',', ' ') }} FCA</strong></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Détails de la commande</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Date:</strong> {{ commande.dateCommande|date('d/m/Y H:i') }}</p>
+                    <p><strong>Statut:</strong> 
+                        <span class="badge bg-{% if commande.status == 'livré' %}success{% elseif commande.status == 'en_cours' %}primary{% elseif commande.status == 'annulé' %}danger{% else %}warning{% endif %}">
+                            {% if commande.status == 'en_attente' %}En attente
+                            {% elseif commande.status == 'en_cours' %}En cours
+                            {% elseif commande.status == 'livré' %}Livré
+                            {% else %}Annulé{% endif %}
+                        </span>
+                    </p>
+                    <hr>
+                    <p class="h5">Total: <span class="text-success">{{ commande.montantTotal|number_format(0, ',', ' ') }} FCA</span></p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Suivi</h5>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        <div class="timeline-item {% if commande.status != 'annulé' %}completed{% endif %}">
+                            <div class="timeline-icon"><i class="fas fa-check"></i></div>
+                            <div class="timeline-content">
+                                <h6>Commande passée</h6>
+                                <p class="text-muted small">{{ commande.dateCommande|date('d/m/Y H:i') }}</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item {% if commande.status in ['en_cours', 'livré'] %}completed{% endif %}">
+                            <div class="timeline-icon"><i class="fas fa-cog"></i></div>
+                            <div class="timeline-content">
+                                <h6>En cours de traitement</h6>
+                                {% if commande.status in ['en_cours', 'livré'] %}
+                                    <p class="text-muted small">Votre commande est en cours de préparation</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="timeline-item {% if commande.status == 'livré' %}completed{% endif %}">
+                            <div class="timeline-icon"><i class="fas fa-truck"></i></div>
+                            <div class="timeline-content">
+                                <h6>Livrée</h6>
+                                {% if commande.status == 'livré' %}
+                                    <p class="text-muted small">Votre commande a été livrée</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.timeline {
+    position: relative;
+    padding-left: 30px;
+}
+.timeline-item {
+    position: relative;
+    padding-bottom: 20px;
+    border-left: 2px solid #dee2e6;
+    padding-left: 20px;
+}
+.timeline-item:last-child {
+    border-left: none;
+}
+.timeline-icon {
+    position: absolute;
+    left: -15px;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+.timeline-item.completed .timeline-icon {
+    background: #198754;
+}
+</style>
+{% endblock %}
+

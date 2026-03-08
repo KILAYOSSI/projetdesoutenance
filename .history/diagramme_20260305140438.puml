@@ -1,0 +1,191 @@
+@startuml DiagrammeClassesKilysAgri
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+' ============ UTILISATEURS ============
+package "UTILISATEURS" {
+  class Utilisateur {
+    -id: Integer
+    -email: String
+    -motDePasse: String
+    -nomComplet: String
+    -telephone: String
+    -roles: JSON
+    -estVendeur: Boolean
+    -estKycValide: Boolean
+    -estVerifie: Boolean
+  }
+  
+  class Administrateur {
+    -id: Integer
+  }
+}
+
+' ============ IDENTIFICATION ============
+package "IDENTIFICATION" {
+  class Kyc {
+    -id: Integer
+    -typePiece: String
+    -numeroPiece: String
+    -photoRecto: String
+    -photoVerso: String
+    -photoSelfie: String
+    -adresseComplete: String
+    -region: String
+    -superficieExploitee: Float
+    -typeAgriculture: String
+    -experience: Integer
+    -statut: String
+  }
+}
+
+' ============ E-COMMERCE ============
+package "E-COMMERCE" {
+  class Categorie {
+    -id: Integer
+    -nom: String
+    -description: String
+  }
+  
+  class Produit {
+    -id: Integer
+    -nom: String
+    -description: Text
+    -prix: Decimal
+    -quantite: Integer
+    -image: String
+  }
+  
+  class Commande {
+    -id: Integer
+    -montantTotal: Decimal
+    -statut: String
+    -dateCommande: DateTime
+  }
+  
+  class LigneCommande {
+    -id: Integer
+    -quantite: Integer
+    -prixUnitaire: Decimal
+  }
+  
+  class Paiement {
+    -id: Integer
+    -montant: Decimal
+    -reference: String
+    -methode: String
+    -statut: String
+    -datePaiement: DateTime
+  }
+}
+
+' ============ EXPLOITATION ============
+package "EXPLOITATION" {
+  class Exploitation {
+    -id: Integer
+    -nom: String
+    -superficie: Decimal
+    -localisation: String
+    -typeSol: String
+    -sourceEau: String
+    -statut: String
+  }
+  
+  class SuiviCulture {
+    -id: Integer
+    -typeCulture: String
+    -datePlantation: DateTime
+    -dateRecolte: DateTime
+    -superficie: Float
+    -observations: Text
+  }
+  
+  class Rendement {
+    -id: Integer
+    -typeCulture: String
+    -quantite: Decimal
+    -rendement: Decimal
+    -dateRecolte: DateTime
+  }
+}
+
+' ============ COMMUNICATION ============
+package "COMMUNICATION" {
+  class Notification {
+    -id: Integer
+    -titre: String
+    -message: String
+    -estLu: Boolean
+  }
+  
+  class Conseil {
+    -id: Integer
+    -titre: String
+    -contenu: Text
+  }
+}
+
+' ============ RELATIONS ============
+
+' Utilisateur -> Kyc
+Utilisateur "1" -- "0..*" Kyc : soumet
+
+' Utilisateur -> Produit
+Utilisateur "1" -- "0..*" Produit : publie
+
+' Utilisateur -> Commande
+Utilisateur "1" -- "0..*" Commande : passe
+
+' Utilisateur -> Exploitation
+Utilisateur "1" -- "0..*" Exploitation : possede
+
+' Utilisateur -> Notification
+Utilisateur "1" -- "0..*" Notification : recoit
+
+' Utilisateur -> Conseil
+Utilisateur "1" -- "0..*" Conseil : redige
+
+' Utilisateur -> Administrateur
+Utilisateur "0..1" -- "1" Administrateur : est_un
+
+' Categorie -> Produit
+Categorie "1" -- "0..*" Produit : contient
+Produit "many" -- "1" Categorie : appartient_a
+
+' Commande -> LigneCommande
+Commande "1" -- "0..*" LigneCommande : composee_de
+Commande "1" -- "0..1" Paiement : possede
+
+' LigneCommande -> Produit
+LigneCommande "many" -- "1" Produit : concerne
+LigneCommande "many" -- "1" Commande : appartient_a
+
+' Paiement -> Commande
+Paiement "many" -- "1" Commande : paiement_de
+
+' Exploitation -> SuiviCulture
+Exploitation "1" -- "0..*" SuiviCulture : suivi
+Exploitation "1" -- "0..*" Rendement : rendements
+
+' SuiviCulture -> Exploitation
+SuiviCulture "many" -- "1" Exploitation : culture_de
+Rendement "many" -- "1" Exploitation : exploit
+
+' ============ NOTES ============
+note top of Kyc
+  <b>statut:</b> en_attente | valide | rejete
+end note
+
+note top of Commande
+  <b>statut:</b> en_attente | payee | en_cours | livree | annulee
+end note
+
+note top of Paiement
+  <b>statut:</b> en_attente | valide | echoue
+end note
+
+note top of Exploitation
+  <b>statut:</b> active | inactive
+end note
+
+@enduml

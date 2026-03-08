@@ -1,0 +1,331 @@
+
+
+{% block title %}Catalogue Produits - KilysAgri{% endblock %}
+
+{% block body %}
+<!-- Header Section -->
+<header class="bg-success text-white py-4 shadow-sm">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="h3 mb-0">
+                    <i class="fas fa-leaf me-2"></i>KilysAgri
+                </h1>
+                <p class="mb-0 opacity-75">Votre marketplace agricole de confiance</p>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex justify-content-md-end gap-3 mt-3 mt-md-0">
+                    <a href="{{ path('app_home') }}" class="text-white text-decoration-none">
+                        <i class="fas fa-home me-1"></i>Accueil
+                    </a>
+                    <a href="#" class="text-white text-decoration-none">
+                        <i class="fas fa-shopping-cart me-1"></i>Panier
+                    </a>
+                    <a href="#" class="text-white text-decoration-none">
+                        <i class="fas fa-user me-1"></i>Mon Compte
+                    </a>
+                </div>
+        </div>
+</header>
+
+<!-- Search and Filter Section -->
+<section class="bg-light py-4 border-bottom">
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="fas fa-search text-muted"></i>
+                    </span>
+                    <input type="text" class="form-control border-start-0" placeholder="Rechercher un produit..." id="searchInput">
+                </div>
+            <div class="col-md-4">
+                <select class="form-select" id="categoryFilter">
+                    <option value="">Toutes les catégories</option>
+                    {% for categorie in categories %}
+                        <option value="{{ categorie.id }}">{{ categorie.nom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-success w-100">
+                    <i class="fas fa-filter me-1"></i>Filtrer
+                </button>
+            </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<main class="py-5">
+    <div class="container">
+        <!-- Category Navigation -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <nav class="category-nav">
+                    <ul class="nav nav-pills justify-content-center flex-wrap gap-2">
+                        <li class="nav-item">
+                            <a class="nav-link {% if not categorie_active %}active bg-success{% else %}text-success{% endif %}" 
+                               href="{{ path('produits_index') }}">
+                                Tous les produits
+                            </a>
+                        </li>
+                        {% for categorie in categories %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if categorie_active and categorie_active.id == categorie.id %}active bg-success{% else %}text-success{% endif %}" 
+                                   href="{{ path('produits_categorie', {id: categorie.id}) }}">
+                                    {{ categorie.nom }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            </div>
+
+        <!-- Products Grid -->
+        <div class="row g-4" id="productsGrid">
+            {% for produit in produits %}
+                <div class="col-sm-6 col-lg-4 col-xl-3 product-item" 
+                     data-category="{{ produit.categorie ? produit.categorie.id : '' }}"
+                     data-name="{{ produit.nom|lower }}">
+                    <div class="card h-100 shadow-sm product-card border-0">
+                        <!-- Product Image -->
+                        <div class="position-relative">
+                            {% if produit.image %}
+                                <img src="{{ asset(produit.image) }}" 
+                                     class="card-img-top p-3" 
+                                     alt="{{ produit.nom }}"
+                                     style="height: 200px; object-fit: contain;">
+                            {% else %}
+                                <div class="bg-light d-flex align-items-center justify-content-center" 
+                                     style="height: 200px;">
+                                    <i class="fas fa-image text-muted fa-3x"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <!-- Badges -->
+                            <div class="position-absolute top-0 start-0 p-2">
+                                {% if produit.quantite > 0 %}
+                                    <span class="badge bg-success">En stock</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Rupture</span>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Quick View Button -->
+                            <button class="btn btn-light position-absolute bottom-0 start-50 translate-middle-x mb-2 rounded-pill quick-view-btn"
+                                    onclick="window.location.href='{{ path('produits_detail', {id: produit.id}) }}'">
+                                <i class="fas fa-eye me-1"></i>Voir détails
+                            </button>
+                        </div>
+                        
+                        <!-- Product Info -->
+                        <div class="card-body pt-0">
+                            {% if produit.categorie %}
+                                <small class="text-success fw-bold">{{ produit.categorie.nom }}</small>
+                            {% endif %}
+                            
+                            <h5 class="card-title mt-2 mb-1 fw-bold">{{ produit.nom }}</h5>
+                            
+                            <p class="card-text text-muted small mb-2">
+                                {{ produit.description|length > 80 ? produit.description|slice(0, 80) ~ '...' : produit.description }}
+                            </p>
+                            
+                            <!-- Price -->
+                            <div class="d-flex align-items-center justify-content-between mt-3">
+                                <div>
+                                    <span class="h4 text-success fw-bold mb-0">{{ produit.prix|number_format(0, ',', ' ') }} €</span>
+                                    <small class="text-muted d-block">TTC</small>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="badge bg-light text-dark">
+                                        <i class="fas fa-box me-1"></i>{{ produit.quantite }}
+                                    </span>
+                                </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="card-footer bg-white border-top-0 pt-0">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-success btn-lg fw-bold" 
+                                        {% if produit.quantite == 0 %}disabled{% endif %}
+                                        onclick="addToCart({{ produit.id }})">
+                                    <i class="fas fa-cart-plus me-2"></i>Ajouter au panier
+                                </button>
+                            </div>
+                    </div>
+            {% else %}
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-box-open text-muted fa-4x mb-3"></i>
+                    <h4 class="text-muted">Aucun produit disponible</h4>
+                    <p class="text-muted">Découvrez bientôt notre catalogue de produits agricoles</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if produits|length > 12 %}
+        <nav class="mt-5" aria-label="Pagination produits">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Précédent</a>
+                </li>
+                <li class="page-item active"><a class="page-link bg-success border-success" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Suivant</a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</main>
+
+<!-- Features Section -->
+<section class="bg-light py-5 border-top">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="feature-icon bg-success text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                    <i class="fas fa-truck fa-lg"></i>
+                </div>
+                <h5>Livraison rapide</h5>
+                <p class="text-muted mb-0">Livraison dans toute la région</p>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-icon bg-success text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                    <i class="fas fa-shield-alt fa-lg"></i>
+                </div>
+                <h5>Paiement sécurisé</h5>
+                <p class="text-muted mb-0">Transactions 100% sécurisées</p>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-icon bg-success text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                    <i class="fas fa-headset fa-lg"></i>
+                </div>
+                <h5>Support 24/7</h5>
+                <p class="text-muted mb-0">Assistance juridique gratuite</p>
+            </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-dark text-white py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-3 mb-md-0">
+                <h5>KilysAgri</h5>
+                <p class="text-muted small">Votre plateforme agricole de confiance pour tous vos besoins en produits agricoles de qualité.</p>
+            </div>
+            <div class="col-md-4 mb-3 mb-md-0">
+                <h5>Liens rapides</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-muted text-decoration-none">À propos</a></li>
+                    <li><a href="#" class="text-muted text-decoration-none">Contact</a></li>
+                    <li><a href="#" class="text-muted text-decoration-none">Conditions générales</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Contact</h5>
+                <ul class="list-unstyled text-muted small">
+                    <li><i class="fas fa-envelope me-2"></i>contact@kilysagri.com</li>
+                    <li><i class="fas fa-phone me-2"></i>+225 00 00 00 00</li>
+                    <li><i class="fas fa-map-marker me-2"></i>Côte d'Ivoire</li>
+                </ul>
+            </div>
+        <hr class="bg-secondary">
+        <div class="text-center text-muted small">
+            &copy; {{ "now"|date("Y") }} KilysAgri. Tous droits réservés.
+        </div>
+</footer>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .product-card {
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+    }
+    
+    .product-card:hover .quick-view-btn {
+        opacity: 1;
+        transform: translate(-50%, 0) !important;
+    }
+    
+    .quick-view-btn {
+        opacity: 0;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .category-nav .nav-link {
+        padding: 0.5rem 1.25rem;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+    
+    .category-nav .nav-link:hover {
+        background-color: rgba(25, 135, 84, 0.1);
+    }
+    
+    .feature-icon {
+        transition: transform 0.3s ease;
+    }
+    
+    .feature-icon:hover {
+        transform: scale(1.1);
+    }
+    
+    #searchInput:focus, .form-select:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+    }
+</style>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('keyup', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const products = document.querySelectorAll('.product-item');
+        
+        products.forEach(product => {
+            const name = product.dataset.name;
+            if (name.includes(searchTerm)) {
+                product.style.display = '';
+            } else {
+                product.style.display = 'none';
+            }
+        });
+    });
+    
+    // Category filter
+    document.getElementById('categoryFilter').addEventListener('change', function(e) {
+        const categoryId = e.target.value;
+        const products = document.querySelectorAll('.product-item');
+        
+        products.forEach(product => {
+            const productCategory = product.dataset.category;
+            if (!categoryId || productCategory === categoryId) {
+                product.style.display = '';
+            } else {
+                product.style.display = 'none';
+            }
+        });
+    });
+    
+    // Add to cart function
+    function addToCart(productId) {
+        // Show success message (you can implement actual cart logic)
+        alert('Produit ajouté au panier !');
+    }
+</script>
+{% endblock %}
+</parameter>
+</create_file>

@@ -1,0 +1,343 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard Vendeur - KilysAgri{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .kb-dashboard-header {
+        background: linear-gradient(135deg, var(--kb-primary) 0%, var(--kb-primary-dark) 100%);
+        border-radius: var(--kb-radius-xl);
+        padding: 2.5rem;
+        color: white;
+        margin-bottom: 2rem;
+    }
+    
+    .kb-dashboard-welcome {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .kb-dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .kb-stat-card {
+        background: var(--kb-bg-card);
+        border: 1px solid var(--kb-border);
+        border-radius: var(--kb-radius-lg);
+        padding: 1.5rem;
+        transition: var(--kb-transition);
+    }
+    
+    .kb-stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--kb-shadow-lg);
+    }
+    
+    .kb-stat-icon {
+        width: 48px;
+        height: 48px;
+        background: var(--kb-primary-subtle);
+        border-radius: var(--kb-radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--kb-primary);
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+    }
+    
+    .kb-stat-value {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--kb-text);
+    }
+    
+    .kb-stat-label {
+        color: var(--kb-text-muted);
+        font-size: 0.875rem;
+    }
+    
+    .kb-section-card {
+        background: var(--kb-bg-card);
+        border: 1px solid var(--kb-border);
+        border-radius: var(--kb-radius-lg);
+        overflow: hidden;
+    }
+    
+    .kb-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--kb-border);
+    }
+    
+    .kb-section-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .kb-table {
+        width: 100%;
+    }
+    
+    .kb-table th,
+    .kb-table td {
+        padding: 1rem 1.5rem;
+        text-align: left;
+        border-bottom: 1px solid var(--kb-border);
+    }
+    
+    .kb-table th {
+        font-weight: 600;
+        color: var(--kb-text-muted);
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .kb-table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .kb-table tr:hover {
+        background: var(--kb-bg);
+    }
+    
+    .kb-order-id {
+        font-weight: 600;
+        color: var(--kb-primary);
+    }
+    
+    .kb-order-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: var(--kb-radius-full);
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    
+    .kb-status-pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+    
+    .kb-status-confirmed {
+        background: var(--kb-primary-subtle);
+        color: var(--kb-primary-dark);
+    }
+    
+    .kb-status-shipped {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+    
+    .kb-status-delivered {
+        background: #d1fae5;
+        color: #065f46;
+    }
+    
+    .kb-quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+    
+    .kb-quick-action {
+        background: var(--kb-bg-card);
+        border: 1px solid var(--kb-border);
+        border-radius: var(--kb-radius-lg);
+        padding: 1.5rem;
+        text-align: center;
+        text-decoration: none;
+        color: var(--kb-text);
+        transition: var(--kb-transition);
+    }
+    
+    .kb-quick-action:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--kb-shadow-lg);
+        border-color: var(--kb-primary);
+        color: var(--kb-primary);
+    }
+    
+    .kb-quick-action-icon {
+        width: 56px;
+        height: 56px;
+        background: var(--kb-primary-subtle);
+        border-radius: var(--kb-radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 1.5rem;
+        color: var(--kb-primary);
+    }
+    
+    .kb-quick-action-label {
+        font-weight: 600;
+    }
+    
+    @media (max-width: 768px) {
+        .kb-dashboard-welcome {
+            font-size: 1.5rem;
+        }
+        
+        .kb-table {
+            display: block;
+            overflow-x: auto;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<!-- Dashboard Header -->
+<div class="container py-4">
+    <div class="kb-dashboard-header animate-fade-in">
+        <h1 class="kb-dashboard-welcome">
+            <i class="fas fa-store me-2"></i>
+            Bonjour, {{ app.user.nomComplet|default('Vendeur') }}!
+        </h1>
+        <p>Bienvenue sur votre espace vendor. Gérez vos produits et commandes.</p>
+    </div>
+    
+    <!-- Stats -->
+    <div class="kb-dashboard-stats stagger-children">
+        <div class="kb-stat-card">
+            <div class="kb-stat-icon">
+                <i class="fas fa-box"></i>
+            </div>
+            <div class="kb-stat-value">{{ produits|length }}</div>
+            <div class="kb-stat-label">Produits</div>
+        
+        <div class="kb-stat-card">
+            <div class="kb-stat-icon">
+                <i class="fas fa-shopping-bag"></i>
+            </div>
+            <div class="kb-stat-value">{{ commandes|length }}</div>
+            <div class="kb-stat-label">Commandes</div>
+        
+        <div class="kb-stat-card">
+            <div class="kb-stat-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="kb-stat-value">{{ commandesConfirmed|default(0) }}</div>
+            <div class="kb-stat-label">Validées</div>
+        
+        <div class="kb-stat-card">
+            <div class="kb-stat-icon">
+                <i class="fas fa-eye"></i>
+            </div>
+            <div class="kb-stat-value">
+                {% if app.user.isKycValidated %}
+                    <span class="text-success">Validé</span>
+                {% else %}
+                    <span class="text-warning">En attente</span>
+                {% endif %}
+            </div>
+            <div class="kb-stat-label">Statut KYC</div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="kb-section-card mb-4">
+        <div class="kb-section-header">
+            <h2 class="kb-section-title">
+                <i class="fas fa-bolt text-warning"></i>
+                Actions rapides
+            </h2>
+        </div>
+        <div class="p-3">
+            <div class="kb-quick-actions">
+                <a href="{{ path('vendeur_produit_new') }}" class="kb-quick-action">
+                    <div class="kb-quick-action-icon">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="kb-quick-action-label">Ajouter produit</div>
+                </a>
+                
+                <a href="{{ path('vendeur_produits') }}" class="kb-quick-action">
+                    <div class="kb-quick-action-icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <div class="kb-quick-action-label">Mes produits</div>
+                </a>
+                
+                <a href="{{ path('vendeur_commandes') }}" class="kb-quick-action">
+                    <div class="kb-quick-action-icon">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <div class="kb-quick-action-label">Commandes</div>
+                </a>
+                
+                <a href="{{ path('kyc_status') }}" class="kb-quick-action">
+                    <div class="kb-quick-action-icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <div class="kb-quick-action-label">Mon KYC</div>
+                </a>
+            </div>
+    </div>
+    
+    <!-- Recent Orders -->
+    <div class="kb-section-card">
+        <div class="kb-section-header">
+            <h2 class="kb-section-title">
+                <i class="fas fa-clock"></i>
+                Commandes récentes
+            </h2>
+            <a href="{{ path('vendeur_commandes') }}" class="kb-btn kb-btn-ghost">
+                Voir tout <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        
+        {% if commandes|length > 0 %}
+            <table class="kb-table">
+                <thead>
+                    <tr>
+                        <th>Commande</th>
+                        <th>Client</th>
+                        <th>Montant</th>
+                        <th>Statut</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for commande in commandes|slice(0, 5) %}
+                        <tr>
+                            <td>
+                                <span class="kb-order-id">#{{ commande.id }}</span>
+                            </td>
+                            <td>{{ commande.utilisateur.nomComplet|default(commande.utilisateur.email) }}</td>
+                            <td><strong>{{ commande.montantTotal|number_format(0, ',', ' ') }} FCA</strong></td>
+                            <td>
+                                <span class="kb-order-status {% if commande.status == 'confirmed' %}kb-status-confirmed{% elseif commande.status == 'pending' %}kb-status-pending{% else %}kb-status-delivered{% endif %}">
+                                    <i class="fas fa-{% if commande.status == 'confirmed' %}check{% elseif commande.status == 'pending' %}clock{% else %}check-double{% endif %}"></i>
+                                    {{ commande.status|upper }}
+                                </span>
+                            </td>
+                            <td>{{ commande.createdAt ? commande.createdAt|date('d/m/Y') : '-' }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-shopping-bag fa-3x text-muted mb-3 d-block"></i>
+                <p class="text-muted">Aucune commande pour le moment</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

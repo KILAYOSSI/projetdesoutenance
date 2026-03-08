@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagramme de Classes - KilysAgri</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: false,
+                htmlLabels: true,
+                curve: 'straight',
+                rankDir: 'LR'
+            }
+        });
+    </script>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        h1 { color: #198754; text-align: center; }
+        h2 { color: #198754; margin-top: 30px; }
+        table { border-collapse: collapse; width: 100%; margin: 15px 0; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #198754; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .mermaid { margin: 30px 0; text-align: center; }
+        .container { max-width: 1600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <h1>Diagramme de Classes - KilysAgri</h1>
+    
+    <div class="mermaid">
+    %%{init: {'theme': 'default', 'themeVariables': { 'edgeLabelBackground': '#ffffff'}}}%%
+    graph LR
+        subgraph UTILISATEURS
+            U[Utilisateur<br/>- id<br/>- email<br/>- motDePasse<br/>- nomComplet<br/>- telephone<br/>- roles<br/>- estVendeur<br/>- estKycValide<br/>- estVerifie]:::userClass
+            A[Administrateur<br/>- id]:::adminClass
+        end
+        
+        subgraph IDENTIFICATION
+            K[Kyc<br/>- id<br/>- typePiece<br/>- numeroPiece<br/>- photoRecto<br/>- photoVerso<br/>- photoSelfie<br/>- adresseComplete<br/>- region<br/>- superficieExploitee<br/>- typeAgriculture<br/>- experience<br/>- statut]:::kycClass
+        end
+        
+        subgraph E_COMMERCE
+            C[Categorie<br/>- id<br/>- nom<br/>- description]:::catClass
+            P[Produit<br/>- id<br/>- nom<br/>- description<br/>- prix<br/>- quantite<br/>- image]:::prodClass
+            CM[Commande<br/>- id<br/>- montantTotal<br/>- statut<br/>- dateCommande]:::cmdClass
+            LC[LigneCommande<br/>- id<br/>- quantite<br/>- prixUnitaire]:::lcClass
+            PA[Paiement<br/>- id<br/>- montant<br/>- reference<br/>- methode<br/>- statut]:::paiementClass
+        end
+        
+        subgraph EXPLOITATION
+            E[Exploitation<br/>- id<br/>- nom<br/>- superficie<br/>- localisation<br/>- typeSol<br/>- sourceEau<br/>- statut]:::explClass
+            SC[SuiviCulture<br/>- id<br/>- typeCulture<br/>- datePlantation<br/>- dateRecolte<br/>- superficie<br/>- observations]:::suiviClass
+            R[Rendement<br/>- id<br/>- typeCulture<br/>- quantite<br/>- rendement]:::rendClass
+        end
+        
+        subgraph COMMUNICATION
+            N[Notification<br/>- id<br/>- titre<br/>- message<br/>- estLu]:::notifClass
+            CO[Conseil<br/>- id<br/>- titre<br/>- contenu]:::conseilClass
+        end
+        
+        %% Relations droites - Utilisateur
+        U --> K
+        U --> P
+        U --> CM
+        U --> E
+        U --> N
+        U --> CO
+        U -.-> A
+        
+        %% Relations e-commerce
+        C --> P
+        P --> CM
+        CM --> LC
+        CM --> PA
+        LC --> P
+        
+        %% Relations exploitation
+        E --> SC
+        E --> R
+        
+        %% Styles
+        classDef userClass fill:#e3f2fd,stroke:#1976d2,stroke-width:2px;
+        classDef adminClass fill:#ffcdd2,stroke:#d32f2f,stroke-width:2px;
+        classDef kycClass fill:#fff3e0,stroke:#f57c00,stroke-width:2px;
+        classDef catClass fill:#e8f5e9,stroke:#388e3c,stroke-width:2px;
+        classDef prodClass fill:#e8f5e9,stroke:#388e3c,stroke-width:2px;
+        classDef cmdClass fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+        classDef lcClass fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+        classDef paiementClass fill:#fce4ec,stroke:#c2185b,stroke-width:2px;
+        classDef explClass fill:#fff8e1,stroke:#f9a825,stroke-width:2px;
+        classDef suiviClass fill:#fff8e1,stroke:#f9a825,stroke-width:2px;
+        classDef rendClass fill:#fff8e1,stroke:#f9a825,stroke-width:2px;
+        classDef notifClass fill:#e0f7fa,stroke:#0097a7,stroke-width:2px;
+        classDef conseilClass fill:#e0f7fa,stroke:#0097a7,stroke-width:2px;
+    </div>
+    
+    <hr>
+    
+    <h2>Légende des Statuts</h2>
+    
+    <table>
+        <tr>
+            <th>Entité</th>
+            <th>Champ</th>
+            <th>Valeurs possibles</th>
+        </tr>
+        <tr>
+            <td><strong>Kyc</strong></td>
+            <td>statut</td>
+            <td>en_attente, valide, rejete</td>
+        </tr>
+        <tr>
+            <td><strong>Commande</strong></td>
+            <td>statut</td>
+            <td>en_attente, payee, en_cours, livree, annulee</td>
+        </tr>
+        <tr>
+            <td><strong>Paiement</strong></td>
+            <td>statut</td>
+            <td>en_attente, valide, echoue</td>
+        </tr>
+        <tr>
+            <td><strong>Exploitation</strong></td>
+            <td>statut</td>
+            <td>active, inactive</td>
+        </tr>
+    </table>
+    
+    <hr>
+    
+    <h2>Explication des Tables</h2>
+    
+    <table>
+        <tr>
+            <th>Table</th>
+            <th>Description</th>
+            <th>Champs importants</th>
+        </tr>
+        <tr>
+            <td><strong>Utilisateur</strong></td>
+            <td>Utilisateur de la plateforme</td>
+            <td>roles = ["ROLE_USER", "ROLE_VENDEUR", "ROLE_ADMIN"]<br/>estVendeur = true/false<br/>estKycValide = true/false</td>
+        </tr>
+        <tr>
+            <td><strong>Administrateur</strong></td>
+            <td>Table liée à Utilisateur pour identifier les admins</td>
+            <td>Lie un User avec ROLE_ADMIN</td>
+        </tr>
+        <tr>
+            <td><strong>Kyc</strong></td>
+            <td>Documents d'identité du producteur</td>
+            <td>CNI, passeport ou permis + selfie</td>
+        </tr>
+        <tr>
+            <td><strong>Produit</strong></td>
+            <td>Produit agricole en vente</td>
+            <td>nom, description, prix, quantite</td>
+        </tr>
+        <tr>
+            <td><strong>Categorie</strong></td>
+            <td>Catégorie de produits</td>
+            <td>légumes, fruits, cereales...</td>
+        </tr>
+    </table>
+
+    <footer style="text-align: center; margin-top: 40px; padding: 20px; background-color: #198754; color: white;">
+        <p>© 2024 KilysAgri - Plateforme Agricole</p>
+    </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,109 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Produits - KilysAgri{% endblock %}
+
+{% block stylesheets %}
+<style>
+    :root { --kb-primary: #198754; --kb-accent: #ffd700; --kb-dark: #0d1117; --kb-dark-secondary: #161b22; --kb-card-bg: #21262d; --kb-text: #f0f6fc; --kb-text-secondary: #8b949e; --kb-border: #30363d; --kb-gradient: linear-gradient(135deg, #198754 0%, #20c997 50%, #ffd700 100%); }
+    .kb-page { background: var(--kb-dark); min-height: 100vh; padding-top: 80px; }
+    .kb-hero { position: relative; height: 350px; background-size: cover; border-radius: 20px; margin-bottom: 30px; display: flex; align-items: flex-end; }
+    .kb-hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); border-radius: 20px; }
+    .kb-hero-content { position: relative; padding: 30px; color: white; }
+    .kb-hero-badge { background: var(--kb-gradient); color: var(--kb-dark); padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; }
+    .kb-hero-title { font-size: 2rem; font-weight: 800; margin: 15px 0; }
+    .kb-hero-price { font-size: 1.8rem; font-weight: 800; color: var(--kb-accent); }
+    .kb-search { background: var(--kb-dark-secondary); border: 1px solid var(--kb-border); border-radius: 15px; padding: 20px; display: flex; gap: 15px; flex-wrap: wrap; }
+    .kb-search input, .kb-search select { background: var(--kb-dark); border: 1px solid var(--kb-border); border-radius: 10px; padding: 12px 15px; color: var(--kb-text); }
+    .kb-search button { background: var(--kb-gradient); border: none; border-radius: 10px; padding: 12px 25px; color: var(--kb-dark); font-weight: 700; }
+    .kb-cats { display: flex; gap: 10px; overflow-x: auto; padding: 15px 0; }
+    .kb-cat { background: var(--kb-dark-secondary); border: 1px solid var(--kb-border); border-radius: 25px; padding: 10px 20px; color: var(--kb-text-secondary); white-space: nowrap; text-decoration: none; }
+    .kb-cat:hover, .kb-cat.active { background: var(--kb-primary); color: white; }
+    .kb-card { background: var(--kb-dark-secondary); border: 1px solid var(--kb-border); border-radius: 15px; overflow: hidden; transition: 0.3s; }
+    .kb-card:hover { transform: translateY(-5px); border-color: var(--kb-primary); }
+    .kb-card-img { height: 160px; object-fit: cover; width: 100%; }
+    .kb-card-body { padding: 15px; }
+    .kb-card-cat { font-size: 0.7rem; color: var(--kb-primary); font-weight: 600; text-transform: uppercase; }
+    .kb-card-title { color: white; font-weight: 700; margin: 8px 0; }
+    .kb-card-price { color: var(--kb-accent); font-size: 1.2rem; font-weight: 800; }
+    .kb-card-btn { width: 100%; background: var(--kb-primary); border: none; border-radius: 10px; padding: 10px; color: white; font-weight: 600; margin-top: 10px; text-decoration: none; display: block; text-align: center; }
+    .kb-card-btn:hover { background: #146c43; }
+    .kb-section { margin: 40px 0; }
+    .kb-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .kb-section-title { color: white; font-size: 1.5rem; font-weight: 700; }
+    .kb-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; }
+    .kb-scroll .kb-card { flex: 0 0 220px; }
+    .kb-badge { position: absolute; top: 10px; left: 10px; padding: 5px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; }
+    .kb-badge-stock { background: rgba(25, 135, 84, 0.9); color: white; }
+    .kb-badge-out { background: rgba(220, 53, 69, 0.9); color: white; }
+    .kb-empty { text-align: center; padding: 60px; color: var(--kb-text-secondary); }
+    .kb-img-wrap { position: relative; height: 160px; }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="kb-page">
+    <div class="container">
+        {# Hero #}
+        <div class="kb-hero" style="background-image: url('{{ featuredProducts[0].image|default('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800') }}');">
+            <div class="kb-hero-content">
+                <span class="kb-hero-badge"><i class="fas fa-fire"></i> Produit Star</span>
+                <h1 class="kb-hero-title">{{ featuredProducts[0].nom|default('Produits Agricoles') }}</h1>
+                <p class="kb-hero-price">{{ featuredProducts[0].prix|default(0)|number_format(0, ',', ' ') }} FCA</p>
+                <a href="{{ featuredProducts[0] is defined ? path('produits_detail', {id: featuredProducts[0].id}) : '#' }}" class="btn btn-lg mt-2" style="background: var(--kb-gradient); border: none; color: var(--kb-dark); font-weight: 700;">
+                    <i class="fas fa-eye"></i> Voir
+                </a>
+            </div>
+
+        {# Search #}
+        <div class="kb-search">
+            <input type="text" placeholder="Rechercher..." id="searchInput" style="flex: 1;">
+            <select id="categoryFilter">
+                <option value="">Toutes catégories</option>
+                {% for c in categories %}<option value="{{ c.id }}">{{ c.nom }}</option>{% endfor %}
+            </select>
+            <button onclick="filterProducts()"><i class="fas fa-search"></i> Filtrer</button>
+        </div>
+
+        {# Categories #}
+        <div class="kb-cats">
+            <a href="{{ path('produits_index') }}" class="kb-cat active">Tous</a>
+            {% for c in categories %}<a href="{{ path('produits_categorie', {id: c.id}) }}" class="kb-cat">{{ c.nom }}</a>{% endfor %}
+        </div>
+
+        {# Products by Category #}
+        {% if categoriesWithProducts|length > 0 %}
+            {% for catData in categoriesWithProducts %}
+                <div class="kb-section">
+                    <div class="kb-section-header">
+                        <h2 class="kb-section-title">{{ catData.categorie.nom }}</h2>
+                        <a href="{{ path('produits_categorie', {id: catData.categorie.id}) }}" class="kb-cat">Voir tout</a>
+                    </div>
+                    <div class="kb-scroll">
+                        {% for produit in catData.produits|slice(0, 10) %}
+                            <div class="kb-card">
+                                <div class="kb-img-wrap">
+                                    {% if produit.image %}<img src="{{ asset(produit.image) }}" class="kb-card-img" alt="{{ produit.nom }}">{% else %}<div class="kb-card-img d-flex align-items-center justify-content-center bg-secondary"><i class="fas fa-image fa-2x text-white"></i></div>{% endif %}
+                                    <span class="kb-badge {% if produit.quantite > 0 %}kb-badge-stock{% else %}kb-badge-out{% endif %}">{{ produit.quantite > 0 ? 'Stock' : 'Rupture' }}</span>
+                                </div>
+                                <div class="kb-card-body">
+                                    <div class="kb-card-cat">{{ produit.categorie.nom }}</div>
+                                    <h3 class="kb-card-title">{{ produit.nom }}</h3>
+                                    <div class="kb-card-price">{{ produit.prix|number_format(0, ',', ' ') }} FCA</div>
+                                    <a href="{{ path('produits_detail', {id: produit.id}) }}" class="kb-card-btn">
+                                        <i class="fas fa-shopping-cart"></i> Ajouter
+                                    </a>
+                                </div>
+                        {% endfor %}
+                    </div>
+            {% endfor %}
+        {% else %}
+            <div class="kb-empty">
+                <i class="fas fa-seedling fa-4x mb-3"></i>
+                <h3>Aucun produit</h3>
+            </div>
+        {% endif %}
+    </div>
+<script>
+function filterProducts(){var s=document.getElementById('searchInput').value,c=document.getElementById('categoryFilter').value,u='{{ path("produits_search") }}?';if(s)u+='q='+encodeURIComponent(s);if(c){if(s)u+='&';u+='categorie='+c;}window.location.href=u;}
+</script>
+{% endblock %}

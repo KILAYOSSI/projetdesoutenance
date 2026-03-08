@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagramme de Classes - KilysAgri</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'linear',
+                rankDirection: 'LR'
+            },
+            classDiagram: {
+                layoutDirection: 'TB'
+            }
+        });
+    </script>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        h1 { color: #198754; text-align: center; }
+        h2 { color: #198754; margin-top: 30px; }
+        table { border-collapse: collapse; width: 100%; margin: 15px 0; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #198754; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .mermaid { margin: 30px 0; text-align: center; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <h1>Diagramme de Classes - KilysAgri</h1>
+    
+    <div class="mermaid">
+    classDiagram
+    direction TB
+    
+        class Utilisateur {
+            +Integer id
+            +String email
+            +String motDePasse
+            +String nomComplet
+            +String telephone
+            +Boolean estVendeur
+            +Boolean estKycValide
+            +Boolean estVerifie
+            +JSON roles
+        }
+        
+        class Administrateur {
+            +Integer id
+        }
+        
+        class Kyc {
+            +Integer id
+            +String typePiece
+            +String numeroPiece
+            +String photoRecto
+            +String photoVerso
+            +String photoSelfie
+            +String adresseComplete
+            +String region
+            +Float superficieExploitee
+            +String typeAgriculture
+            +Integer experience
+            +String statut
+        }
+        
+        class Produit {
+            +Integer id
+            +String nom
+            +Text description
+            +Decimal prix
+            +Integer quantite
+            +String image
+        }
+        
+        class Categorie {
+            +Integer id
+            +String nom
+            +String description
+        }
+        
+        class Commande {
+            +Integer id
+            +Decimal montantTotal
+            +String statut
+            +DateTime dateCommande
+        }
+        
+        class LigneCommande {
+            +Integer id
+            +Integer quantite
+            +Decimal prixUnitaire
+        }
+        
+        class Paiement {
+            +Integer id
+            +Decimal montant
+            +String reference
+            +String methode
+            +String statut
+        }
+        
+        class Exploitation {
+            +Integer id
+            +String nom
+            +Decimal superficie
+            +String localisation
+            +String typeSol
+            +String sourceEau
+            +String statut
+        }
+        
+        class SuiviCulture {
+            +Integer id
+            +String typeCulture
+            +DateTime datePlantation
+            +DateTime dateRecolte
+            +Float superficie
+            +Text observations
+        }
+        
+        class Rendement {
+            +Integer id
+            +String typeCulture
+            +Decimal quantite
+            +Decimal rendement
+        }
+        
+        class Notification {
+            +Integer id
+            +String titre
+            +String message
+            +Boolean estLu
+        }
+        
+        class Conseil {
+            +Integer id
+            +String titre
+            +String contenu
+        }
+        
+        %% Relations - Organisées pour éviter les croisements
+        Utilisateur --> Kyc : soumet
+        Utilisateur --> Produit : publie
+        Utilisateur --> Commande : passe
+        Utilisateur --> Exploitation : possede
+        Utilisateur --> Notification : recoit
+        Utilisateur --> Conseil : redige
+        Utilisateur --> Administrateur : est_un
+        
+        Categorie --> Produit : contient
+        Produit --> Categorie : appartient_a
+        
+        Commande --> LigneCommande : composee_de
+        Commande --> Paiement : possede
+        
+        LigneCommande --> Produit : concerne
+        LigneCommande --> Commande : appartient_a
+        
+        Paiement --> Commande : paiement_de
+        
+        Exploitation --> SuiviCulture : suivi
+        Exploitation --> Rendement : rendements
+        
+        SuiviCulture --> Exploitation : culture_de
+        Rendement --> Exploitation : exploit
+    </div>
+    
+    <hr>
+    
+    <h2>Légende des Statuts</h2>
+    
+    <table>
+        <tr>
+            <th>Entité</th>
+            <th>Champ</th>
+            <th>Valeurs possibles</th>
+        </tr>
+        <tr>
+            <td><strong>Kyc</strong></td>
+            <td>statut</td>
+            <td>en_attente, valide, rejete</td>
+        </tr>
+        <tr>
+            <td><strong>Commande</strong></td>
+            <td>statut</td>
+            <td>en_attente, payee, en_cours, livree, annulee</td>
+        </tr>
+        <tr>
+            <td><strong>Paiement</strong></td>
+            <td>statut</td>
+            <td>en_attente, valide, echoue</td>
+        </tr>
+        <tr>
+            <td><strong>Exploitation</strong></td>
+            <td>statut</td>
+            <td>active, inactive</td>
+        </tr>
+    </table>
+    
+    <hr>
+    
+    <h2>Rôles des Utilisateurs</h2>
+    
+    <table>
+        <tr>
+            <th>Rôle</th>
+            <th>Description</th>
+            <th>Permissions</th>
+        </tr>
+        <tr>
+            <td><strong>VISITEUR</strong></td>
+            <td>Utilisateur non connecté</td>
+            <td>Parcourir produits, recherches</td>
+        </tr>
+        <tr>
+            <td><strong>ACHETEUR</strong></td>
+            <td>Utilisateur connecté et vérifié</td>
+            <td>Acheter, passer commandes, voir panier</td>
+        </tr>
+        <tr>
+            <td><strong>PRODUCTEUR</strong></td>
+            <td>Acheteur + KYC validé</td>
+            <td>+ Publier produits, gérer exploitations</td>
+        </tr>
+        <tr>
+            <td><strong>ADMIN</strong></td>
+            <td>Administrateur</td>
+            <td>+ Valider KYC, gérer plateforme</td>
+        </tr>
+    
+    <hr    </table>
+    
+    <h2>Cardinalités</h2>
+    
+    <table>
+        <tr>
+            <th>Relation</th>
+            <th>Cardinalité</th>
+            <th>Explication</th>
+        </tr>
+        <tr>
+            <td>Utilisateur → Kyc</td>
+            <td>1 : 0..*</td>
+            <td>Un utilisateur peut soumettre 0 ou plusieurs demandes KYC</td>
+        </tr>
+        <tr>
+            <td>Utilisateur → Produit</td>
+            <td>1 : 0..*</td>
+            <td>Un producteur peut publier 0 ou plusieurs produits</td>
+        </tr>
+        <tr>
+            <td>Utilisateur → Commande</td>
+            <td>1 : 0..*</td>
+            <td>Un client peut passer 0 ou plusieurs commandes</td>
+        </tr>
+        <tr>
+            <td>Utilisateur → Exploitation</td>
+            <td>1 : 0..*</td>
+            <td>Un agriculteur peut avoir 0 ou plusieurs exploitations</td>
+        </tr>
+        <tr>
+            <td>Commande → LigneCommande</td>
+            <td>1 : 0..*</td>
+            <td>Une commande contient 0 ou plusieurs lignes</td>
+        </tr>
+        <tr>
+            <td>Commande → Paiement</td>
+            <td>1 : 0..1</td>
+            <td>Une commande peut avoir 0 ou 1 paiement</td>
+        </tr>
+        <tr>
+            <td>Exploitation → SuiviCulture</td>
+            <td>1 : 0..*</td>
+            <td>Une exploitation peut avoir 0 ou plusieurs cultures</td>
+        </tr>
+        <tr>
+            <td>Categorie → Produit</td>
+            <td>1 : 0..*</td>
+            <td>Une catégorie peut contenir 0 ou plusieurs produits</td>
+        </tr>
+    </table>
+
+    <hr>
+    
+    <h2>Description des Classes</h2>
+    
+    <table>
+        <tr>
+            <th>Classe</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td><strong>Utilisateur</strong></td>
+            <td>Utilisateur de la plateforme (acheteur, producteur, admin)</td>
+        </tr>
+        <tr>
+            <td><strong>Administrateur</strong></td>
+            <td>Utilisateur avec droits d'administration</td>
+        </tr>
+        <tr>
+            <td><strong>Kyc</strong></td>
+            <td>Documents d'identité pour validation des producteurs</td>
+        </tr>
+        <tr>
+            <td><strong>Produit</strong></td>
+            <td>Produit agricole mis en vente par un producteur</td>
+        </tr>
+        <tr>
+            <td><strong>Categorie</strong></td>
+            <td>Catégorie de produits (légumes, fruits, cereales...)</td>
+        </tr>
+        <tr>
+            <td><strong>Commande</strong></td>
+            <td>Commande passée par un acheteur</td>
+        </tr>
+        <tr>
+            <td><strong>LigneCommande</strong></td>
+            <td>Ligne d'une commande (produit + quantité)</td>
+        </tr>
+        <tr>
+            <td><strong>Paiement</strong></td>
+            <td>Paiement associé à une commande</td>
+        </tr>
+        <tr>
+            <td><strong>Exploitation</strong></td>
+            <td>Ferme/champ de l'agriculteur</td>
+        </tr>
+        <tr>
+            <td><strong>SuiviCulture</strong></td>
+            <td>Suivi d'une culture (plantation, récolte)</td>
+        </tr>
+        <tr>
+            <td><strong>Rendement</strong></td>
+            <td>Quantité récoltée pour une culture</td>
+        </tr>
+        <tr>
+            <td><strong>Notification</strong></td>
+            <td>Notification envoyée à un utilisateur</td>
+        </tr>
+        <tr>
+            <td><strong>Conseil</strong></td>
+            <td>Conseil agricole du chatbot IA</td>
+        </tr>
+    </table>
+
+    <footer style="text-align: center; margin-top: 40px; padding: 20px; background-color: #198754; color: white;">
+        <p>© 2024 KilysAgri - Plateforme Agricole</p>
+    </footer>
+    </div>
+</body>
+</html>

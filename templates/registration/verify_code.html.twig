@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confirmation du compte - KilysAgri{% endblock %}
+
+{% block body %}
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="auth-logo">K</div>
+            <h1>Confirmation de votre compte</h1>
+            <p>Un code à 6 chiffres a été envoyé à votre adresse email</p>
+        </div>
+
+        {% for flash_error in app.flashes('error') %}
+            <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+        {% endfor %}
+
+        {% for flash_success in app.flashes('success') %}
+            <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+        {% endfor %}
+
+        <div class="auth-form">
+            <p class="text-center mb-4">
+                Nous avons envoyé un code de confirmation à <strong>{{ user.email }}</strong>
+            </p>
+            
+            <form method="post" action="{{ path('app_verify_code', {'id': user.id}) }}">
+                <div class="form-group">
+                    <label for="code">Code de confirmation</label>
+                    <input type="text" id="code" name="code" class="form-control" 
+                           placeholder="Entrez le code à 6 chiffres" 
+                           maxlength="6" 
+                           pattern="\d{6}"
+                           required 
+                           autofocus
+                           autocomplete="off">
+                </div>
+
+                <button type="submit" class="btn btn-block">Confirmer mon compte</button>
+            </form>
+
+            <div class="text-center mt-4">
+                <p class="text-muted">Vous n'avez pas reçu de code?</p>
+                <a href="{{ path('app_resend_code', {'id': user.id}) }}" class="btn btn-link">Renvoyer le code</a>
+            </div>
+        </div>
+
+        <div class="auth-footer">
+            <p><a href="{{ path('app_register') }}">Retour à l'inscription</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

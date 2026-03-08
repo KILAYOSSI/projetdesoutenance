@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}KilysAgri - Marketplace Agricole{% endblock %}</title>
+    <meta name="description" content="Plateforme agricole de confiance pour connecter producteurs et acheteurs">
+    
+    <link rel="icon" type="image/x-icon" href="{{ asset('images/zooll.jpeg') }}">
+    
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    
+    {% block stylesheets %}{% endblock %}
+    
+    <style>
+        /* ========================================
+           KILYSAGRI DESIGN SYSTEM
+           ======================================== */
+        
+        :root {
+            /* Couleurs principales - Vert Nature */
+            --kb-primary: #059669;
+            --kb-primary-dark: #047857;
+            --kb-primary-light: #10b981;
+            --kb-primary-subtle: #d1fae5;
+            
+            /* Couleurs secondaires */
+            --kb-accent: #f59e0b;
+            --kb-accent-light: #fbbf24;
+            
+            /* Mode clair */
+            --kb-bg: #f8fafc;
+            --kb-bg-card: #ffffff;
+            --kb-bg-elevated: #ffffff;
+            --kb-text: #0f172a;
+            --kb-text-secondary: #64748b;
+            --kb-text-muted: #94a3b8;
+            --kb-border: #e2e8f0;
+            --kb-border-light: #f1f5f9;
+            
+            /* Ombres */
+            --kb-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --kb-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --kb-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --kb-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            
+            /* Rayons */
+            --kb-radius-sm: 0.5rem;
+            --kb-radius: 0.75rem;
+            --kb-radius-lg: 1rem;
+            --kb-radius-xl: 1.5rem;
+            --kb-radius-full: 9999px;
+            
+            /* Transitions */
+            --kb-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Mode sombre */
+        [data-theme="dark"] {
+            --kb-bg: #0f172a;
+            --kb-bg-card: #1e293b;
+            --kb-bg-elevated: #334155;
+            --kb-text: #f8fafc;
+            --kb-text-secondary: #94a3b8;
+            --kb-text-muted: #64748b;
+            --kb-border: #334155;
+            --kb-border-light: #1e293b;
+            --kb-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+            --kb-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+            --kb-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4);
+            --kb-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--kb-bg);
+            color: var(--kb-text);
+            transition: var(--kb-transition);
+            min-height: 100vh;
+        }
+        
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            color: var(--kb-text);
+        }
+        
+        /* ========================================
+           NAVBAR MODERNE
+           ======================================== */
+        .kb-navbar {
+            background: var(--kb-bg-card);
+            border-bottom: 1px solid var(--kb-border);
+            padding: 0.75rem 0;
+            transition: var(--kb-transition);
+            backdrop-filter: blur(10px);
+        }
+        
+        .kb-navbar.scrolled {
+            box-shadow: var(--kb-shadow-lg);
+        }
+        
+        .kb-navbar .navbar-brand {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--kb-primary) !important;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        
+        .kb-navbar .navbar-brand:hover {
+            color: var(--kb-primary-dark) !important;
+        }
+        
+        .kb-navbar .navbar-brand i {
+            font-size: 1.75rem;
+        }
+        
+        .kb-nav-link {
+            color: var(--kb-text-secondary) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            border-radius: var(--kb-radius);
+            transition: var(--kb-transition);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .kb-nav-link:hover, .kb-nav-link.active {
+            color: var(--kb-primary) !important;
+            background: var(--kb-primary-subtle);
+        }
+        
+        [data-theme="dark"] .kb-nav-link:hover, 
+        [data-theme="dark"] .kb-nav-link.active {
+            background: rgba(5, 150, 105, 0.15);
+        }
+        
+        /* Search Bar */
+        .kb-search {
+            background: var(--kb-bg);
+            border: 2px solid var(--kb-border);
+            border-radius: var(--kb-radius-full);
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--kb-transition);
+            max-width: 400px;
+            flex: 1;
+        }
+        
+        .kb-search:focus-within {
+            border-color: var(--kb-primary);
+            box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1);
+        }
+        
+        .kb-search input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--kb-text);
+            flex: 1;
+            font-size: 0.9rem;
+        }
+        
+        .kb-search input::placeholder {
+            color: var(--kb-text-muted);
+        }
+        
+        .kb-search i {
+            color: var(--kb-text-muted);
+        }
+        
+        /* ========================================
+           BOUTONS
+           ======================================== */
+        .kb-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: var(--kb-radius);
+            transition: var(--kb-transition);
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+        }
+        
+        .kb-btn-primary {
+            background: linear-gradient(135deg, var(--kb-primary) 0%, var(--kb-primary-dark) 100%);
+            color: white;
+            box-shadow: 0 2px 4px rgba(5, 150, 105, 0.3);
+        }
+        
+        .kb-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4);
+            color: white;
+        }
+        
+        .kb-btn-secondary {
+            background: var(--kb-bg-elevated);
+            color: var(--kb-text);
+            border: 2px solid var(--kb-border);
+        }
+        
+        .kb-btn-secondary:hover {
+            border-color: var(--kb-primary);
+            color: var(--kb-primary);
+        }
+        
+        .kb-btn-ghost {
+            background: transparent;
+            color: var(--kb-text-secondary);
+        }
+        
+        .kb-btn-ghost:hover {
+            background: var(--kb-bg);
+            color: var(--kb-text);
+        }
+        
+        /* ========================================
+           CARTES
+           ======================================== */
+        .kb-card {
+            background: var(--kb-bg-card);
+            border: 1px solid var(--kb-border);
+            border-radius: var(--kb-radius-lg);
+            transition: var(--kb-transition);
+            overflow: hidden;
+        }
+        
+        .kb-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--kb-shadow-xl);
+            border-color: var(--kb-primary);
+        }
+        
+        .kb-card-flat {
+            background: var(--kb-bg-card);
+            border: 1px solid var(--kb-border);
+            border-radius: var(--kb-radius-lg);
+        }
+        
+        /* ========================================
+           BADGES & ETATS
+           ======================================== */
+        .kb-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: var(--kb-radius-full);
+        }
+        
+        .kb-badge-success {
+            background: var(--kb-primary-subtle);
+            color: var(--kb-primary-dark);
+        }
+        
+        [data-theme="dark"] .kb-badge-success {
+            background: rgba(5, 150, 105, 0.2);
+            color: var(--kb-primary-light);
+        }
+        
+        .kb-badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        [data-theme="dark"] .kb-badge-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--kb-accent-light);
+        }
+        
+        .kb-badge-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        [data-theme="dark"] .kb-badge-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+        
+        /* ========================================
+           ALERTES
+           ======================================== */
+        .kb-alert {
+            padding: 1rem 1.25rem;
+            border-radius: var(--kb-radius);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border: none;
+        }
+        
+        .kb-alert-success {
+            background: var(--kb-primary-subtle);
+            color: var(--kb-primary-dark);
+        }
+        
+        [data-theme="dark"] .kb-alert-success {
+            background: rgba(5, 150, 105, 0.15);
+            color: var(--kb-primary-light);
+        }
+        
+        .kb-alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        [data-theme="dark"] .kb-alert-error {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+        }
+        
+        /* ========================================
+           USER MENU
+           ======================================== */
+        .kb-user-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .kb-user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--kb-radius-full);
+            background: linear-gradient(135deg, var(--kb-primary) 0%, var(--kb-primary-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .kb-user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .kb-user-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--kb-text);
+        }
+        
+        .kb-user-role {
+            font-size: 0.75rem;
+            color: var(--kb-text-muted);
+        }
+        
+        /* Dropdown */
+        .kb-dropdown {
+            background: var(--kb-bg-card);
+            border: 1px solid var(--kb-border);
+            border-radius: var(--kb-radius-lg);
+            box-shadow: var(--kb-shadow-xl);
+            padding: 0.5rem;
+            min-width: 220px;
+        }
+        
+        .kb-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--kb-text-secondary);
+            text-decoration: none;
+            border-radius: var(--kb-radius);
+            transition: var(--kb-transition);
+            font-weight: 500;
+        }
+        
+        .kb-dropdown-item:hover {
+            background: var(--kb-primary-subtle);
+            color: var(--kb-primary);
+        }
+        
+        [data-theme="dark"] .kb-dropdown-item:hover {
+            background: rgba(5, 150, 105, 0.15);
+        }
+        
+        /* ========================================
+           THEME SWITCH
+           ======================================== */
+        .kb-theme-switch {
+            width: 48px;
+            height: 28px;
+            background: var(--kb-bg-elevated);
+            border: 2px solid var(--kb-border);
+            border-radius: var(--kb-radius-full);
+            cursor: pointer;
+            position: relative;
+            transition: var(--kb-transition);
+            display: flex;
+            align-items: center;
+            padding: 0 4px;
+        }
+        
+        .kb-theme-switch::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--kb-primary);
+            border-radius: 50%;
+            transition: var(--kb-transition);
+            left: 2px;
+        }
+        
+        [data-theme="dark"] .kb-theme-switch::before {
+            left: calc(100% - 22px);
+        }
+        
+        .kb-theme-switch i {
+            font-size: 0.7rem;
+            color: var(--kb-text-muted);
+            position: absolute;
+        }
+        
+        .kb-theme-switch .fa-sun {
+            left: 6px;
+        }
+        
+        .kb-theme-switch .fa-moon {
+            right: 6px;
+            color: white;
+        }
+        
+        /* ========================================
+           FOOTER
+           ======================================== */
+        .kb-footer {
+            background: var(--kb-bg-card);
+            border-top: 1px solid var(--kb-border);
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+        }
+        
+        .kb-footer-brand {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--kb-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .kb-footer-title {
+            font-weight: 600;
+            color: var(--kb-text);
+            margin-bottom: 1.25rem;
+        }
+        
+        .kb-footer-link {
+            color: var(--kb-text-secondary);
+            text-decoration: none;
+            display: block;
+            padding: 0.375rem 0;
+            transition: var(--kb-transition);
+        }
+        
+        .kb-footer-link:hover {
+            color: var(--kb-primary);
+            transform: translateX(4px);
+        }
+        
+        .kb-footer-bottom {
+            border-top: 1px solid var(--kb-border);
+            padding-top: 1.5rem;
+            margin-top: 2rem;
+            text-align: center;
+            color: var(--kb-text-muted);
+        }
+        
+        /* ========================================
+           PANIER BADGE
+           ======================================== */
+        .kb-cart-btn {
+            position: relative;
+            padding: 0.5rem 1rem;
+            background: var(--kb-bg);
+            border-radius: var(--kb-radius);
+            color: var(--kb-text);
+            transition: var(--kb-transition);
+        }
+        
+        .kb-cart-btn:hover {
+            background: var(--kb-primary-subtle);
+            color: var(--kb-primary);
+        }
+        
+        .kb-cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--kb-accent);
+            color: #000;
+            font-size: 0.7rem;
+            font-weight: 700;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* ========================================
+           RESPONSIVE
+           ======================================== */
+        @media (max-width: 991px) {
+            .kb-search {
+                max-width: 100%;
+                margin: 0.5rem 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .kb-navbar .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+        
+        /* ========================================
+           ANIMATIONS
+           ======================================== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .animate-fade-in {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+        
+        .animate-scale-in {
+            animation: scaleIn 0.3s ease forwards;
+        }
+        
+        /* Stagger children */
+        .stagger-children > * {
+            opacity: 0;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+        
+        .stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
+        .stagger-children > *:nth-child(2) { animation-delay: 0.15s; }
+        .stagger-children > *:nth-child(3) { animation-delay: 0.2s; }
+        .stagger-children > *:nth-child(4) { animation-delay: 0.25s; }
+        .stagger-children > *:nth-child(5) { animation-delay: 0.3s; }
+        .stagger-children > *:nth-child(6) { animation-delay: 0.35s; }
+        
+        /* Main content */
+        main {
+            min-height: calc(100vh - 200px);
+            padding-top: 1rem;
+        }
+        
+        /* Spacer for fixed navbar */
+        .kb-spacer {
+            height: 80px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="kb-navbar fixed-top" id="navbar">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between w-100">
+                <a class="navbar-brand" href="{{ path('app_home') }}">
+                    <i class="fas fa-leaf"></i>
+                    KilysAgri
+                </a>
+                
+                <!-- Search Bar - Desktop -->
+                <div class="kb-search d-none d-lg-flex">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Rechercher un produit..." id="searchInput">
+                    <button class="kb-btn-ghost px-2" onclick="performSearch()">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Theme Switch -->
+                    <button class="kb-theme-switch" onclick="toggleTheme()" title="Changer le thème">
+                        <i class="fas fa-sun"></i>
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    
+                    <!-- Cart -->
+                    <a href="{{ path('panier_index') }}" class="kb-cart-btn">
+                        <i class="fas fa-shopping-cart"></<span class="kbi>
+                        -cart-badge" id="cartBadge" style="display: none;">0</span>
+                    </a>
+                    
+                    {% if app.user %}
+                        <!-- User Menu -->
+                        <div class="dropdown">
+                            <button class="kb-user-menu btn" type="button" data-bs-toggle="dropdown">
+                                <div class="kb-user-avatar">
+                                    {% if app.user.nomComplet %}{{ app.user.nomComplet|first|upper }}{% else %}{{ app.user.email|first|upper }}{% endif %}
+                                </div>
+                                <span class="d-none d-md-inline">{{ app.user.nomComplet|default(app.user.email|split('@')[0]) }}</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="kb-dropdown dropdown-menu dropdown-menu-end">
+                                {% if app.user.canSell() %}
+                                    <a class="kb-dropdown-item" href="{{ path('vendeur_dashboard') }}">
+                                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                                    </a>
+                                    <a class="kb-dropdown-item" href="{{ path('vendeur_produits') }}">
+                                        <i class="fas fa-boxes"></i> Mes produits
+                                    </a>
+                                    <hr class="my-2">
+                                {% else %}
+                                    <a class="kb-dropdown-item" href="{{ path('kyc_submit') }}">
+                                        <i class="fas fa-store"></i> Devenir vendeur
+                                    </a>
+                                    <hr class="my-2">
+                                {% endif %}
+                                <a class="kb-dropdown-item" href="{{ path('commande_mes_commandes') }}">
+                                    <i class="fas fa-shopping-bag"></i> Mes achats
+                                </a>
+                                <a class="kb-dropdown-item" href="{{ path('kyc_status') }}">
+                                    <i class="fas fa-id-card"></i> Mon KYC
+                                </a>
+                                <hr class="my-2">
+                                <a class="kb-dropdown-item text-danger" href="{{ path('app_logout') }}">
+                                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                                </a>
+                            </div>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="kb-btn kb-btn-ghost">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span class="d-none d-md-inline">Connexion</span>
+                        </a>
+                        <a href="{{ path('app_register') }}" class="kb-btn kb-btn-primary">
+                            <i class="fas fa-user-plus"></i>
+                            <span class="d-none d-md-inline">Inscription</span>
+                        </a>
+                    {% endif %}
+                </div>
+            
+            <!-- Mobile Search -->
+            <div class="kb-search d-lg-none mt-3">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Rechercher un produit...">
+            </div>
+    </nav>
+
+    <!-- Spacer -->
+    <div class="kb-spacer"></div>
+
+    <!-- Flash Messages -->
+    <div class="container mt-3">
+        {% for message in app.flashes('success') %}
+            <div class="kb-alert kb-alert-success animate-fade-in mb-3">
+                <i class="fas fa-check-circle"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('error') %}
+            <div class="kb-alert kb-alert-error animate-fade-in mb-3">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('warning') %}
+            <div class="kb-alert kb-alert-warning animate-fade-in mb-3">
+                <i class="fas fa-exclamation-triangle"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        {% block body %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="kb-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <div class="kb-footer-brand">
+                        <i class="fas fa-leaf"></i>
+                        KilysAgri
+                    </div>
+                    <p style="color: var(--kb-text-secondary);">
+                        Votre plateforme agricole de confiance pour connecter producteurs et acheteurs.
+                    </p>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h6 class="kb-footer-title">Navigation</h6>
+                    <a href="{{ path('app_home') }}" class="kb-footer-link">Accueil</a>
+                    <a href="{{ path('produits_index') }}" class="kb-footer-link">Produits</a>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h6 class="kb-footer-title">Compte</h6>
+                    {% if app.user %}
+                        <a href="{{ path('commande_mes_commandes') }}" class="kb-footer-link">Mes commandes</a>
+                        <a href="{{ path('kyc_status') }}" class="kb-footer-link">Mon KYC</a>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="kb-footer-link">Connexion</a>
+                        <a href="{{ path('app_register') }}" class="kb-footer-link">Inscription</a>
+                    {% endif %}
+                </div>
+                <div class="col-lg-4">
+                    <h6 class="kb-footer-title">Contact</h6>
+                    <p style="color: var(--kb-text-secondary);">
+                        <i class="fas fa-envelope me-2"></i>contact@kilysagri.com<br>
+                        <i class="fas fa-phone me-2"></i>+229 00 00 00 00
+                    </p>
+                    <div class="d-flex gap-3 mt-3">
+                        <a href="#" class="kb-btn kb-btn-ghost"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="kb-btn kb-btn-ghost"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="kb-btn kb-btn-ghost"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+            </div>
+            <div class="kb-footer-bottom">
+                <p class="mb-0">&copy; {{ "now"|date("Y") }} KilysAgri. Tous droits réservés.</p>
+            </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // ========================================
+        // THEME MANAGEMENT
+        // ========================================
+        
+        // Initialize theme from localStorage or system preference
+        function initTheme() {
+            const savedTheme = localStorage.getItem('kilysagri-theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        }
+        
+        // Toggle theme
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('kilysagri-theme', newTheme);
+        }
+        
+        // ========================================
+        // SEARCH
+        // ========================================
+        
+        function performSearch() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput && searchInput.value.trim()) {
+                window.location.href = '{{ path("produits_search") }}?q=' + encodeURIComponent(searchInput.value.trim());
+            }
+        }
+        
+        // Allow Enter key to search
+        document.getElementById('searchInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+        
+        // ========================================
+        // CART BADGE
+        // ========================================
+        
+        function updateCartBadge() {
+            fetch('{{ path("panier_count") }}')
+                .then(response => response.json())
+                .then(data => {
+                    const badge = document.getElementById('cartBadge');
+                    if (badge) {
+                        if (data.count > 0) {
+                            badge.textContent = data.count;
+                            badge.style.display = 'flex';
+                        } else {
+                            badge.style.display = 'none';
+                        }
+                    }
+                })
+                .catch(error => console.log('Erreur panier:', error));
+        }
+        
+        // ========================================
+        // NAVBAR SCROLL EFFECT
+        // ========================================
+        
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            updateCartBadge();
+        });
+        
+        // Expose functions globally
+        window.toggleTheme = toggleTheme;
+        window.performSearch = performSearch;
+        window.refreshCartBadge = updateCartBadge;
+    </script>
+    
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,5 @@
+framework:
+    mailer:
+        dsn: 'smtp://constantkilayossi@gmail.com:dvmcagynrseciexs@smtp.gmail.com:587'
+        envelope:
+            sender: 'constantkilayossi@gmail.com'

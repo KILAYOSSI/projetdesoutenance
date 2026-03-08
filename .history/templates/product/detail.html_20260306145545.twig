@@ -1,0 +1,190 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ produit.nom }} - KilysAgri{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .pd-section { padding: 30px 0; background: #f8f9fa; min-height: 70vh; }
+    .pd-breadcrumb { background: linear-gradient(135deg, #198754 0%, #146c43 100%); padding: 12px 0; margin-top: 70px; }
+    .pd-breadcrumb a { color: rgba(255,255,255,0.85) !important; text-decoration: none; }
+    .pd-breadcrumb a:hover { color: white !important; }
+    .pd-breadcrumb .breadcrumb-item { color: rgba(255,255,255,0.85); }
+    .pd-breadcrumb .breadcrumb-item.active { color: white !important; }
+    .pd-breadcrumb .breadcrumb-item + .breadcrumb-item::before { color: rgba(255,255,255,0.6); }
+    .pd-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+    .pd-image-container { background: #f8f9fa; padding: 30px; min-height: 350px; display: flex; align-items: center; justify-content: center; border-radius: 16px 0 0 16px; }
+    .pd-image-container img { max-width: 100%; max-height: 320px; border-radius: 12px; object-fit: contain; }
+    .pd-image-placeholder { width: 100%; height: 280px; display: flex; align-items: center; justify-content: center; background: #e9ecef; border-radius: 12px; }
+    .pd-image-placeholder i { font-size: 5rem; color: #adb5bd; }
+    .pd-details { padding: 24px; }
+    .pd-category { display: inline-block; background: rgba(25,135,84,0.1); color: #198754; padding: 6px 14px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; margin-bottom: 12px; }
+    .pd-product-name { font-size: 1.6rem; font-weight: 800; color: #1a1a2e; margin-bottom: 10px; }
+    .pd-stock-status { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 50px; font-weight: 600; font-size: 0.85rem; margin-bottom: 14px; }
+    .pd-stock-status.in-stock { background: rgba(25,135,84,0.1); color: #198754; }
+    .pd-stock-status.out-stock { background: rgba(220,53,69,0.1); color: #dc3545; }
+    .pd-product-price { font-size: 2rem; font-weight: 800; color: #198754; margin-bottom: 16px; }
+    .pd-product-price span { font-size: 0.9rem; font-weight: 500; color: #6c757d; }
+    .pd-section-title { font-size: 1rem; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
+    .pd-description { color: #6c757d; line-height: 1.7; margin-bottom: 16px; }
+    .pd-info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 18px; }
+    .pd-info-item { background: #f8f9fa; padding: 12px; border-radius: 10px; }
+    .pd-info-item small { color: #6c757d; font-size: 0.7rem; text-transform: uppercase; }
+    .pd-info-item strong { display: block; color: #1a1a2e; font-size: 0.9rem; margin-top: 2px; }
+    .pd-quantity-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .pd-qty-button { width: 36px; height: 36px; border: 2px solid #198754; background: transparent; color: #198754; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+    .pd-qty-button:hover { background: #198754; color: white; }
+    .pd-qty-input { width: 56px; height: 36px; text-align: center; border: 2px solid #e9ecef; border-radius: 8px; font-weight: 600; }
+    .pd-qty-input:focus { outline: none; border-color: #198754; }
+    .pd-add-button { width: 100%; background: #198754; color: white; border: none; padding: 14px; border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .pd-add-button:hover { background: #146c43; }
+    .pd-add-button:disabled { background: #6c757d; cursor: not-allowed; }
+    .pd-shipping { background: #f8f9fa; padding: 14px; border-radius: 10px; display: flex; align-items: center; gap: 12px; margin-top: 16px; }
+    .pd-shipping-icon { width: 40px; height: 40px; background: rgba(25,135,84,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #198754; }
+    .pd-shipping-text strong { color: #1a1a2e; display: block; font-size: 0.9rem; }
+    .pd-shipping-text p { color: #6c757d; margin: 0; font-size: 0.8rem; }
+    .pd-related { margin-top: 30px; }
+    .pd-related-title { font-size: 1.3rem; font-weight: 700; color: #1a1a2e; margin-bottom: 15px; }
+    @media (max-width: 768px) {
+        .pd-image-container { border-radius: 16px 16px 0 0; }
+        .pd-product-name { font-size: 1.3rem; }
+        .pd-product-price { font-size: 1.6rem; }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+
+<!-- Breadcrumb -->
+<nav class="pd-breadcrumb">
+    <div class="container">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('produits_index') }}">Produits</a></li>
+            {% if produit.categorie %}
+                <li class="breadcrumb-item"><a href="{{ path('produits_categorie', {id: produit.categorie.id}) }}">{{ produit.categorie.nom }}</a></li>
+            {% endif %}
+            <li class="breadcrumb-item active">{{ produit.nom }}</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Product Detail Section -->
+<main class="pd-section">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Product Image Column -->
+            <div class="col-lg-6">
+                <div class="pd-card h-100">
+                    <div class="pd-image-container">
+                        {% if produit.image %}
+                            <img src="{{ asset(produit.image) }}" alt="{{ produit.nom }}">
+                        {% else %}
+                            <div class="pd-image-placeholder">
+                                <i class="fas fa-image"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+            </div>
+            
+            <!-- Product Info Column -->
+            <div class="col-lg-6">
+                <div class="pd-card">
+                    <div class="pd-details">
+                        {% if produit.categorie %}
+                            <span class="pd-category">
+                                <i class="fas fa-tag me-1"></i>{{ produit.categorie.nom }}
+                            </span>
+                        {% endif %}
+                        
+                        <h1 class="pd-product-name">{{ produit.nom }}</h1>
+                        
+                        <div class="pd-stock-status {% if produit.quantite > 0 %}in-stock{% else %}out-stock{% endif %}">
+                            <i class="fas {% if produit.quantite > 0 %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
+                            {% if produit.quantite > 0 %}En stock ({{ produit.quantite }}){% else %}Rupture{% endif %}
+                        </div>
+                        
+                        <div class="pd-product-price">
+                            {{ produit.prix|number_format(0, ',', ' ') }} <span>FCA</span>
+                        </div>
+                        
+                        <div class="pd-section-title">
+                            <i class="fas fa-align-left me-2"></i>Description
+                        </div>
+                        <p class="pd-description">{{ produit.description ?: 'Aucune description disponible pour ce produit.' }}</p>
+                        
+                        <!-- Info Grid -->
+                        <div class="pd-info-grid">
+                            <div class="pd-info-item">
+                                <small>Prix unitaire</small>
+                                <strong>{{ produit.prix|number_format(0, ',', ' ') }} FCA</strong>
+                            </div>
+                            <div class="pd-info-item">
+                                <small>Disponibilite</small>
+                                <strong>{{ produit.quantite }} unites</strong>
+                            </div>
+                            {% if produit.categorie %}
+                            <div class="pd-info-item">
+                                <small>Categorie</small>
+                                <strong>{{ produit.categorie.nom }}</strong>
+                            </div>
+                            {% endif %}
+                            <div class="pd-info-item">
+                                <small>Date ajout</small>
+                                <strong>{{ produit.createdAt ? produit.createdAt|date('d/m/Y') : '-' }}</strong>
+                            </div>
+                        
+                        <!-- Add to Cart Form -->
+                        {% if produit.quantite > 0 %}
+                            <form method="post" action="{{ path('panier_ajouter', {id: produit.id}) }}">
+                                <div class="pd-quantity-row">
+                                    <button type="button" class="pd-qty-button" onclick="var q=document.getElementById('qty');q.value=Math.max(1,parseInt(q.value)-1)">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="number" id="qty" name="quantite" class="pd-qty-input" value="1" min="1" max="{{ produit.quantite }}">
+                                    <button type="button" class="pd-qty-button" onclick="var q=document.getElementById('qty');q.value=Math.min({{ produit.quantite }},parseInt(q.value)+1)">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                    <span style="color:#6c757d;font-size:0.85rem">Max: {{ produit.quantite }}</span>
+                                </div>
+                                <button type="submit" class="pd-add-button">
+                                    <i class="fas fa-cart-plus"></i>
+                                    Ajouter au panier
+                                </button>
+                            </form>
+                        {% else %}
+                            <button class="pd-add-button" disabled>
+                                <i class="fas fa-ban"></i>
+                                Produit indisponible
+                            </button>
+                        {% endif %}
+                        
+                        <!-- Shipping Info -->
+                        <div class="pd-shipping">
+                            <div class="pd-shipping-icon">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <div class="pd-shipping-text">
+                                <strong>Livraison disponible</strong>
+                                <p>3-5 jours ouvres</p>
+                            </div>
+                    </div>
+            </div>
+        
+        <!-- Related Products -->
+        {% if produit.categorie %}
+        <div class="pd-related">
+            <h3 class="pd-related-title">
+                <i class="fas fa-th-large me-2 text-success"></i>Produits similaires
+            </h3>
+            <div class="text-center py-4 bg-white rounded-3 shadow-sm">
+                <i class="fas fa-folder-open text-muted fa-2x mb-3 d-block"></i>
+                <p class="text-muted mb-3">Decouvrez tous les produits dans {{ produit.categorie.nom }}</p>
+                <a href="{{ path('produits_categorie', {id: produit.categorie.id}) }}" class="btn btn-success">
+                    <i class="fas fa-eye me-2"></i>Voir tout
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</main>
+
+{% endblock %}

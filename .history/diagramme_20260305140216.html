@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Diagramme de Classes - KilysAgri</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background: white; 
+            padding: 10px;
+            width: 100%;
+            min-width: 1300px;
+        }
+        h1 { color: #198754; text-align: center; margin: 5px 0; }
+        
+        .diagram-container {
+            position: relative;
+            width: 1300px;
+            height: 650px;
+            margin: 10px auto;
+            border: 1px solid #ccc;
+            background: #fafafa;
+        }
+        
+        .class-box {
+            position: absolute;
+            border: 2px solid #333;
+            background: white;
+            border-radius: 5px;
+            font-size: 10px;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.15);
+            z-index: 2;
+        }
+        
+        .class-header {
+            background: #198754;
+            color: white;
+            padding: 4px 8px;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 3px 3px 0 0;
+        }
+        
+        .class-attr {
+            padding: 2px 6px;
+            border-top: 1px solid #eee;
+            white-space: nowrap;
+        }
+        
+        /* Positions - ranges left to right */
+        #user { left: 20px; top: 30px; width: 130px; }
+        #kyc { left: 170px; top: 30px; width: 120px; }
+        #notif { left: 170px; top: 180px; width: 120px; }
+        #conseil { left: 170px; top: 280px; width: 120px; }
+        #admin { left: 20px; top: 250px; width: 110px; }
+        
+        #cat { left: 320px; top: 30px; width: 100px; }
+        #prod { left: 320px; top: 130px; width: 120px; }
+        
+        #cmd { left: 480px; top: 30px; width: 110px; }
+        #lc { left: 610px; top: 30px; width: 110px; }
+        #pa { left: 610px; top: 150px; width: 110px; }
+        
+        #expl { left: 760px; top: 30px; width: 120px; }
+        #suivi { left: 760px; top: 180px; width: 120px; }
+        #rend { left: 760px; top: 320px; width: 120px; }
+        
+        /* SVG lines */
+        svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        line {
+            stroke: #333;
+            stroke-width: 1.5;
+            fill: none;
+        }
+        
+        .cardinality {
+            font-size: 9px;
+            fill: #666;
+            font-weight: bold;
+        }
+        
+        .arrow-head {
+            fill: #333;
+        }
+        
+        /* Legend */
+        .legend {
+            width: 1300px;
+            margin: 10px auto;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            font-size: 10px;
+        }
+        
+        .legend h3 { margin: 0 0 5px 0; color: #198754; }
+        
+        footer { 
+            text-align: center; 
+            padding: 10px; 
+            background: #198754; 
+            color: white; 
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Diagramme de Classes - KilysAgri</h1>
+    
+    <div class="diagram-container">
+        <svg>
+            <!-- User -> Kyc (1:0..*) -->
+            <line x1="150" y1="55" x2="165" y2="55" />
+            <text x="152" y="50" class="cardinality">1</text>
+            <text x="155" y="70" class="cardinality">0..*</text>
+            <polygon points="165,55 160,52 160,58" class="arrow-head"/>
+            
+            <!-- User -> Notif (1:0..*) -->
+            <line x1="150" y1="95" x2="165" y2="205" />
+            <text x="155" y="140" class="cardinality">1</text>
+            <text x="155" y="195" class="cardinality">0..*</text>
+            
+            <!-- User -> Conseil (1:0..*) -->
+            <line x1="150" y1="105" x2="165" y2="305" />
+            <text x="155" y="200" class="cardinality">1</text>
+            <text x="155" y="295" class="cardinality">0..*</text>
+            
+            <!-- User -> Admin (0..1:1) -->
+            <line x1="85" y1="165" x2="85" y2="240" />
+            <text x="50" y="195" class="cardinality">0..1</text>
+            <text x="50" y="235" class="cardinality">1</text>
+            
+            <!-- User -> Produit (1:0..*) -->
+            <line x1="150" y1="75" x2="315" y2="145" />
+            <text x="220" y="100" class="cardinality">1</text>
+            <text x="305" y="140" class="cardinality">0..*</text>
+            
+            <!-- User -> Commande (1:0..*) -->
+            <line x1="150" y1="85" x2="475" y2="55" />
+            <text x="300" y="65" class="cardinality">1</text>
+            <text x="465" y="55" class="cardinality">0..*</text>
+            
+            <!-- User -> Exploitation (1:0..*) -->
+            <line x1="150" y1="100" x2="755" y2="55" />
+            <text x="440" y="70" class="cardinality">1</text>
+            <text x="745" y="55" class="cardinality">0..*</text>
+            
+            <!-- Categorie -> Produit (1:0..*) -->
+            <line x1="420" y1="55" x2="420" y2="120" />
+            <text x="395" y="80" class="cardinality">1</text>
+            <text x="395" y="110" class="cardinality">0..*</text>
+            
+            <!-- Commande -> LigneCommande (1:0..*) -->
+            <line x1="590" y1="55" x2="605" y2="55" />
+            <text x="592" y="50" class="cardinality">1</text>
+            <text x="595" y="70" class="cardinality">0..*</text>
+            
+            <!-- Commande -> Paiement (1:0..1) -->
+            <line x1="590" y1="60" x2="605" y2="175" />
+            <text x="600" y="110" class="cardinality">1</text>
+            <text x="600" y="165" class="cardinality">0..1</text>
+            
+            <!-- LigneCommande -> Produit (many:1) -->
+            <line x1="610" y1="75" x2="440" y2="135" />
+            <text x="520" y="100" class="cardinality">many</text>
+            <text x="450" y="130" class="cardinality">1</text>
+            
+            <!-- LigneCommande -> Commande (many:1) -->
+            <line x1="610" y1="55" x2="535" y2="55" />
+            <text x="570" y="50" class="cardinality">many</text>
+            <text x="530" y="50" class="cardinality">1</text>
+            
+            <!-- Paiement -> Commande (many:1) -->
+            <line x1="610" y1="165" x2="590" y2="60" />
+            <text x="580" y="120" class="cardinality">many</text>
+            
+            <!-- Exploitation -> SuiviCulture (1:0..*) -->
+            <line x1="880" y1="55" x2="880" y2="170" />
+            <text x="855" y="100" class="cardinality">1</text>
+            <text x="855" y="160" class="cardinality">0..*</text>
+            
+            <!-- Exploitation -> Rendement (1:0..*) -->
+            <line x1="880" y1="85" x2="880" y2="310" />
+            <text x="855" y="180" class="cardinality">1</text>
+            <text x="855" y="300" class="cardinality">0..*</text>
+        </svg>
+        
+        <!-- Classes -->
+        <div class="class-box" id="user">
+            <div class="class-header">Utilisateur</div>
+            <div class="class-attr">- id: Integer</div>
+            <div class="class-attr">- email: String</div>
+            <div class="class-attr">- motDePasse: String</div>
+            <div class="class-attr">- nomComplet: String</div>
+            <div class="class-attr">- telephone: String</div>
+            <div class="class-attr">- roles: JSON</div>
+            <div class="class-attr">- estVendeur: Boolean</div>
+            <div class="class-attr">- estKycValide: Boolean</div>
+        
+        <div class="class-box" id="admin">
+            <div class="class-header">Administrateur</div>
+            <div class="class-attr">- id: Integer</div>
+        
+        <div class="class-box" id="kyc">
+            <div class="class-header">Kyc</div>
+            <div class="class-attr">- id: Integer</div>
+            <div class="class-attr">- typePiece: String</div>
+            <div class="class-attr">- numeroPiece: String</div>
+            <div class="class-attr">- photoRecto: String</div>
+            <div class="class-attr">- photoVerso: String</div>
+            <div class="class-attr">- photoSelfie: String</div>
+            <div class="class-attr">- statut: String</div>
+        
+        <div class="class-box" id="notif">
+            <div class="class-header">Notification</div>
+            <div class="class-attr">- id: Integer</div>
+            <div class="class-attr">- titre: String</div>
+            <div class="class-attr">- message: String</div>
+            <div class="class-attr">- estLu: Boolean</div>
+        
+        <div class="class-box" id="conseil">
+            <div class="class-header">Conseil</div>
+            <div class="class-attr">- id: Integer</div>
+            <div class="class-attr">- titre: String</div>
+            <div class="class-attr">- contenu: Text</div>
+        
+        <div class="class-box" id="cat">
+            <div class="class-header">Categorie</div>
+            <div class="class-attr">- id: Integer</div>
+            <div class="class-attr">- nom: String</div>
+            <div class="class-attr">- description: String</div>
+        
+        <div class="class-box" id="prod">
+            <div class="class-header">Produit</div>
+            <div class="class-attr">- id: Integer</div>
+            <div class="class-attr">- nom: String</div>
+            <div class="class-attr">- description: Text</div>
+            <div class="class-attr">- prix: Decimal</div>
+            <div class="class-attr">- quantite: Integer</div>
+        
+        <div class="class-box" id="cmd">
+            <div class="class-header">Commande</div>
+            <div class="class-attr">- id: Integer</div>
+            <div class="class-attr">- montantTotal: Decimal</div>
+            <div class="class-attr">- statut: String</div>
+            <div class="class-attr">- dateCommande: Date</div>
+        
+        <div class="class-box" id="lc">
+            <div class="class-header">LigneCommande</div>
+            <div class="class-attr">- id: Integer</div>
+            <div class="class-attr">- quantite: Integer</div>
+            <div class="class-attr">- prixUnitaire: Decimal</div>
+        
+        <div class="class-box" id="pa">
+            <div class="class-header">Paiement</div>
+            <div class="class-attr">- id: Integer</div>
+            <div class="class-attr">- montant: Decimal</div>
+            <div class="class-attr">- reference: String</div>
+            <div class="class-attr">- methode: String</div>
+            <div class="class-attr">- statut: String</div>
+        
+        <div class="class-box" id="expl">
+            <div class="class-header">Exploitation</div>
+            <div class="class-attr">- id: Integer</div>
+            <div class="class-attr">- nom: String</div>
+            <div class="class-attr">- superficie: Decimal</div>
+            <div class="class-attr">- localisation: String</div>
+            <div class="class-attr">- typeSol: String</div>
+            <div class="class-attr">- sourceEau: String</div>
+        
+        <div class="class-box" id="suivi">
+            <div class="class-header">SuiviCulture</div>
+            <div class="class-attr">- id: Integer</div>
+            <div class="class-attr">- typeCulture: String</div>
+            <div class="class-attr">- datePlantation: Date</div>
+            <div class="class-attr">- dateRecolte: Date</div>
+            <div class="class-attr">- superficie: Float</div>
+        
+        <div class="class-box" id="rend">
+            <div class="class-header">Rendement</div>
+            <div class="class-attr">- id: Integer</div>
+            <div class="class-attr">- typeCulture: String</div>
+            <div class="class-attr">- quantite: Decimal</div>
+            <div class="class-attr">- rendement: Decimal</div>
+    </div>
+    
+    <div class="legend">
+        <h3>Cardinalités:</h3>
+        <p><strong>Utilisateur → Kyc:</strong> 1 utilisateur peut soumettre 0 à plusieurs KYC</p>
+        <p><strong>Utilisateur → Produit:</strong> 1 producteur peut publier 0 à plusieurs produits</p>
+        <p><strong>Utilisateur → Commande:</strong> 1 client peut passer 0 à plusieurs commandes</p>
+        <p><strong>Utilisateur → Exploitation:</strong> 1 agriculteur peut avoir 0 à plusieurs exploitations</p>
+        <p><strong>Categorie → Produit:</strong> 1 catégorie peut contenir 0 à plusieurs produits</p>
+        <p><strong>Commande → LigneCommande:</strong> 1 commande peut avoir 0 à plusieurs lignes</p>
+        <p><strong>Commande → Paiement:</strong> 1 commande peut avoir 0 ou 1 paiement</p>
+        <p><strong>Exploitation → SuiviCulture:</strong> 1 exploitation peut avoir 0 à plusieurs suivis</p>
+        <hr>
+        <p><strong>Kyc.statut:</strong> en_attente | valide | rejete</p>
+        <p><strong>Commande.statut:</strong> en_attente | payee | en_cours | livree | annulee</p>
+        <p><strong>Paiement.statut:</strong> en_attente | valide | echoue</p>
+        <p><strong>Exploitation.statut:</strong> active | inactive</p>
+    </div>
+    
+    <footer>© 2024 KilysAgri - Plateforme Agricole</footer>
+</body>
+</html>

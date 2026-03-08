@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Diagramme de Classes - KilysAgri</title>
+    <style>
+        body { margin: 0; padding: 20px; font-family: Arial; background: white; }
+        h1 { text-align: center; color: #198754; }
+        
+        .diagram {
+            position: relative;
+            width: 1400px;
+            height: 900px;
+            margin: 0 auto;
+        }
+        
+        /* Classes as UML boxes */
+        .class-box {
+            position: absolute;
+            width: 140px;
+            border: 2px solid #333;
+            background: white;
+            font-size: 10px;
+        }
+        
+        .class-name {
+            background: #198754;
+            color: white;
+            padding: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .class-attrs {
+            padding: 5px;
+        }
+        
+        .attr {
+            padding: 2px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        /* Positionnement des classes */
+        #user { left: 30px; top: 50px; }
+        #admin { left: 30px; top: 280px; }
+        #kyc { left: 220px; top: 50px; }
+        #notif { left: 220px; top: 250px; }
+        #conseil { left: 220px; top: 380px; }
+        
+        #cat { left: 420px; top: 50px; }
+        #prod { left: 420px; top: 150px; }
+        
+        #cmd { left: 620px; top: 50px; }
+        #lc { left: 800px; top: 50px; }
+        #pa { left: 800px; top: 180px; }
+        
+        #expl { left: 1000px; top: 50px; }
+        #suivi { left: 1000px; top: 230px; }
+        #rend { left: 1000px; top: 400px; }
+        
+        /* SVG pour les fleches */
+        svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        line { stroke: #333; stroke-width: 1.5; }
+        text { font-size: 9px; fill: #333; }
+        
+        /* Legend */
+        .legend {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 10px;
+        }
+        .legend h3 { margin: 0 0 10px 0; color: #198754; }
+        
+        /* Cardinality labels */
+        .card {
+            background: white;
+            padding: 1px 3px;
+            font-size: 8px;
+            border: 1px solid #999;
+        }
+    </style>
+</head>
+<body>
+    <h1>Diagramme de Classes - KilysAgri</h1>
+    
+    <div class="diagram">
+        <svg>
+            <!-- User -> Kyc -->
+            <line x1="170" y1="80" x2="210" y2="80"/>
+            <text x="175" y="75" class="card">1</text>
+            <text x="200" y="75" class="card">0..*</text>
+            
+            <!-- User -> Produit -->
+            <line x1="170" y1="110" x2="410" y2="180"/>
+            <text x="280" y="140" class="card">1</text>
+            <text x="400" y="170" class="card">0..*</text>
+            
+            <!-- User -> Commande -->
+            <line x1="170" y1="130" x2="610" y2="80"/>
+            <text x="380" y="100" class="card">1</text>
+            <text x="600" y="80" class="card">0..*</text>
+            
+            <!-- User -> Exploitation -->
+            <line x1="170" y1="160" x2="990" y2="80"/>
+            <text x="570" y="110" class="card">1</text>
+            <text x="980" y="80" class="card">0..*</text>
+            
+            <!-- User -> Notification -->
+            <line x1="100" y1="170" x2="210" y2="280"/>
+            <text x="140" y="220" class="card">1</text>
+            <text x="200" y="270" class="card">0..*</text>
+            
+            <!-- User -> Conseil -->
+            <line x1="80" y1="180" x2="210" y2="410"/>
+            <text x="120" y="290" class="card">1</text>
+            <text x="200" y="400" class="card">0..*</text>
+            
+            <!-- User -> Admin -->
+            <line x1="80" y1="140" x2="80" y2="280"/>
+            <text x="40" y="200" class="card">0..1</text>
+            <text x="50" y="270" class="card">1</text>
+            
+            <!-- Categorie -> Produit -->
+            <line x1="560" y1="80" x2="560" y2="140"/>
+            <text x="545" y="100" class="card">1</text>
+            <text x="545" y="130" class="card">0..*</text>
+            
+            <!-- Commande -> LigneCommande -->
+            <line x1="760" y1="80" x2="790" y2="80"/>
+            <text x="765" y="75" class="card">1</text>
+            <text x="780" y="75" class="card">0..*</text>
+            
+            <!-- Commande -> Paiement -->
+            <line x1="760" y1="90" x2="790" y2="210"/>
+            <text x="775" y="140" class="card">1</text>
+            <text x="775" y="200" class="card">0..1</text>
+            
+            <!-- LigneCommande -> Produit -->
+            <line x1="800" y1="95" x2="560" y2="180"/>
+            <text x="670" y="130" class="card">N</text>
+            <text x="570" y="175" class="card">1</text>
+            
+            <!-- LigneCommande -> Commande -->
+            <line x1="800" y1="65" x2="670" y2="65"/>
+            <text x="730" y="60" class="card">N</text>
+            <text x="660" y="60" class="card">1</text>
+            
+            <!-- Paiement -> Commande -->
+            <line x1="800" y1="205" x2="760" y2="95"/>
+            <text x="770" y="150" class="card">N</text>
+            
+            <!-- Exploitation -> SuiviCulture -->
+            <line x1="1140" y1="80" x2="1140" y2="220"/>
+            <text x="1125" y="140" class="card">1</text>
+            <text x="1125" y="210" class="card">0..*</text>
+            
+            <!-- Exploitation -> Rendement -->
+            <line x1="1140" y1="100" x2="1140" y2="390"/>
+            <text x="1125" y="230" class="card">1</text>
+            <text x="1125" y="380" class="card">0..*</text>
+        </svg>
+        
+        <!-- Classes -->
+        <div class="class-box" id="user">
+            <div class="class-name">Utilisateur</div>
+            <div class="class-attrs">
+                <div class="attr">- id: Integer</div>
+                <div class="attr">- email: String</div>
+                <div class="attr">- motDePasse: String</div>
+                <div class="attr">- nomComplet: String</div>
+                <div class="attr">- telephone: String</div>
+                <div class="attr">- roles: JSON</div>
+                <div class="attr">- estVendeur: Boolean</div>
+                <div class="attr">- estKycValide: Boolean</div>
+        </div>
+        
+        <div class="class-box" id="admin">
+            <div class="class-name">Administrateur</div>
+            <div class="class-attrs">
+                <div class="attr">- id: Integer</div>
+        </div>
+        
+        <div class="class-box" id="kyc">
+            <div class="class-name">Kyc</div>
+            <div class="class-attrs">
+                <div class="attr">- id: Integer</div>
+                <div class="attr">- typePiece: String</div>
+                <div class="attr">- numeroPiece: String</div>
+                <div class="attr">- photoRecto: String</div>
+                <div class="attr">- photoVerso: String</div>
+                <div class="attr">- photoSelfie: String</div>
+                <div class="attr">- statut: String</div>
+        </div>
+        
+        <div class="class-box" id="notif">
+            <div class="class-name">Notification</div>
+            <div class="class-attrs">
+                <div class="attr">- id: Integer</div>
+                <div class="attr">- titre: String</div>
+                <div class="attr">- message: String</div>
+                <div class="attr">- estLu: Boolean</div>
+        </div>
+        
+        <div class="class-box" id="conseil">
+            <div class="class-name">Conseil</div>
+            <div class="class-attrs">
+                <div class="attr">- id: Integer</div>
+                <div class="attr">- titre: String</div>
+                <div class="attr">- contenu: Text</div>
+        </div>
+        
+        <div class="class-box" id="cat">
+            <div class="class-name">Categorie</div>
+            <div class="class-attrs">
+                <div class="attr">- id: Integer</div>
+                <div class="attr">- nom: String</div>
+                <div class="attr">- description: String</div>
+        </div>
+        
+        <div class="class-box" id="prod">
+            <div class="class-name">Produit</div>
+            <div class="class-attrs">
+                <div class="attr">- id: Integer</div>
+                <div class="attr">- nom: String</div>
+                <div class="attr">- description: Text</div>
+                <div class="attr">- prix: Decimal</div>
+                <div class="attr">- quantite: Integer</div>
+        </div>
+        
+        <div class="class-box" id="cmd">
+            <div class="class-name">Commande</div>
+            <div class="class-attrs">
+                <div class="attr">- id: Integer</div>
+                <div class="attr">- montantTotal: Decimal</div>
+                <div class="attr">- statut: String</div>
+                <div class="attr">- dateCommande: Date</div>
+        </div>
+        
+        <div class="class-box" id="lc">
+            <div class="class-name">LigneCommande</div>
+            <div class="class-attrs">
+                <div class="attr">- id: Integer</div>
+                <div class="attr">- quantite: Integer</div>
+                <div class="attr">- prixUnitaire: Decimal</div>
+        </div>
+        
+        <div class="class-box" id="pa">
+            <div class="class-name">Paiement</div>
+            <div class="class-attrs">
+                <div class="attr">- id: Integer</div>
+                <div class="attr">- montant: Decimal</div>
+                <div class="attr">- reference: String</div>
+                <div class="attr">- methode: String</div>
+                <div class="attr">- statut: String</div>
+        </div>
+        
+        <div class="class-box" id="expl">
+            <div class="class-name">Exploitation</div>
+            <div class="class-attrs">
+                <div class="attr">- id: Integer</div>
+                <div class="attr">- nom: String</div>
+                <div class="attr">- superficie: Decimal</div>
+                <div class="attr">- localisation: String</div>
+                <div class="attr">- typeSol: String</div>
+                <div class="attr">- sourceEau: String</div>
+        </div>
+        
+        <div class="class-box" id="suivi">
+            <div class="class-name">SuiviCulture</div>
+            <div class="class-attrs">
+                <div class="attr">- id: Integer</div>
+                <div class="attr">- typeCulture: String</div>
+                <div class="attr">- datePlantation: Date</div>
+                <div class="attr">- dateRecolte: Date</div>
+                <div class="attr">- superficie: Float</div>
+        </div>
+        
+        <div class="class-box" id="rend">
+            <div class="class-name">Rendement</div>
+            <div class="class-attrs">
+                <div class="attr">- id: Integer</div>
+                <div class="attr">- typeCulture: String</div>
+                <div class="attr">- quantite: Decimal</div>
+                <div class="attr">- rendement: Decimal</div>
+        </div>
+    
+    <div class="legend">
+        <h3>Legend / Légende:</h3>
+        <p><strong>Kyc.statut:</strong> en_attente | valide | rejete</p>
+        <p><strong>Commande.statut:</strong> en_attente | payee | en_cours | livree | annulee</p>
+        <p><strong>Paiement.statut:</strong> en_attente | valide | echoue</p>
+        <p><strong>Exploitation.statut:</strong> active | inactive</p>
+    </div>
+</body>
+</html>

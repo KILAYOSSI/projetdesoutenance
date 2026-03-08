@@ -1,0 +1,10 @@
+# Import attributes routing (PHP 8 attributes)
+controllers:
+    resource: '../src/Controller/'
+    type: attribute
+
+# Define routes directly in YAML
+app_home:
+    path: /
+    controller: App\Controller\HomeController::index
+    methods: [GET]

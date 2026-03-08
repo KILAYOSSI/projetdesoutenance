@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - KilysAgri{% endblock %}
+
+{% block body %}
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="logo">KilysAgri</div>
+    <ul>
+        <li><a href="#">ACCUEIL</a></li>
+        <li><a href="#">PRODUITS</a></li>
+        <li><a href="#">PRODUCTEURS</a></li>
+    </ul>
+    <a href="#" class="btn-login">CONNEXION</a>
+</nav>
+
+<!-- HERO SECTION -->
+<section class="hero">
+    <div class="overlay">
+        <h1>Bienvenue sur <span>KilysAgri</span></h1>
+        <p>Nous Connectons les Producteurs Agricoles et les Acheteurs Facilement !</p>
+
+        <div class="buttons">
+            <a href="#" class="btn-primary">Inscrivez-vous Gratuitement</a>
+            <a href="#" class="btn-outline">Comment utiliser ce plateforme</a>
+        </div>
+    </div>
+</section>
+
+<!-- A PROPOS -->
+<section class="about">
+    <div class="container">
+        <div class="about-image">
+            <img src="{{ asset('images/zooll.jpeg') }}" alt="">
+        </div>
+        <div class="about-text">
+            <h2>À propos de nous</h2>
+
+            <ul>
+                <li>Connecter producteurs et acheteurs</li>
+                <li>Simplifier la mise en marché</li>
+                <li>Soutenir la durabilité</li>
+            </ul>
+
+            <a href="#" class="btn-green">Rejoignez-nous maintenant !</a>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION FUTUR -->
+<section class="future">
+    <div class="container">
+        <div class="future-image">
+            <img src="{{ asset('images/zzis.jpeg') }}" alt="">
+        </div>
+        <div class="future-text">
+            <h2>Vers un avenir riche en services innovants</h2>
+            <p>
+                Nous développons des solutions numériques modernes pour améliorer
+                la production agricole et faciliter les échanges.
+            </p>
+            <a href="#" class="btn-primary">En savoir plus</a>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-section">
+            <h3>KilysAgri</h3>
+            <p>Votre plateforme de confiance pour connecter les producteurs agricoles et les acheteurs. Nous simplifions la mise en marché et soutenons la durabilité.</p>
+        </div>
+        <div class="footer-section">
+            <h3>Liens rapides</h3>
+            <ul>
+                <li><a href="#">Accueil</a></li>
+                <li><a href="#">Produits</a></li>
+                <li><a href="#">Producteurs</a></li>
+                <li><a href="#">À propos</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Contact</h3>
+            <ul>
+                <li><a href="#">Email: contact@KilysAgri.com</a></li>
+                <li><a href="#">Téléphone: +229 00 00 00 00</a></li>
+                <li><a href="#">Adresse: Cotonou, Benin</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Suivez-nous</h3>
+            <div class="social-links">
+                <a href="#">F</a>
+                <a href="#">T</a>
+                <a href="#">I</a>
+                <a href="#">L</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2024 KilysAgri. Tous droits réservés.</p>
+    </div>
+</footer>
+
+{% endblock %}

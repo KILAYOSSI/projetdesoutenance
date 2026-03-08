@@ -1,0 +1,4 @@
+# Import routes using attributes (PHP 8)
+controllers:
+    resource: ../src/Controller/
+    type: attribute

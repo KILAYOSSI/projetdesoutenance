@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - Nyaama{% endblock %}
+
+{% block body %}
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="logo">nyaama</div>
+    <ul>
+        <li><a href="#">ACCUEIL</a></li>
+        <li><a href="#">PRODUITS</a></li>
+        <li><a href="#">PRODUCTEURS</a></li>
+    </ul>
+    <a href="#" class="btn-login">CONNEXION</a>
+</nav>
+
+<!-- HERO SECTION -->
+<section class="hero">
+    <div class="overlay">
+        <h1>Bienvenue sur <span>nyaama</span></h1>
+        <p>Nous Connectons les Producteurs Agricoles et les Acheteurs Facilement !</p>
+
+        <div class="buttons">
+            <a href="#" class="btn-primary">Inscrivez-vous Gratuitement</a>
+            <a href="#" class="btn-outline">Comment utiliser nyaama</a>
+        </div>
+    </div>
+</section>
+
+<!-- A PROPOS -->
+<section class="about">
+    <div class="container">
+        <div class="about-image">
+            <img src="{{ asset('images/farmer.jpg') }}" alt="Agriculteur">
+        </div>
+        <div class="about-text">
+            <h2>À propos de nous</h2>
+
+            <ul>
+                <li>✔ Connecter producteurs et acheteurs</li>
+                <li>✔ Simplifier la mise en marché</li>
+                <li>✔ Soutenir la durabilité</li>
+            </ul>
+
+            <a href="#" class="btn-green">Rejoignez-nous maintenant !</a>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION FUTUR -->
+<section class="future">
+    <div class="container">
+        <div class="future-image">
+            <img src="{{ asset('images/agriculture.jpg') }}" alt="Agriculture">
+        </div>
+        <div class="future-text">
+            <h2>Vers un avenir riche en services innovants</h2>
+            <p>
+                Nous développons des solutions numériques modernes pour améliorer
+                la production agricole et faciliter les échanges.
+            </p>
+            <a href="#" class="btn-primary">En savoir plus</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

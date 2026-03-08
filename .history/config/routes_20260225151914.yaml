@@ -1,0 +1,4 @@
+# Import routes from annotations
+annotations:
+    resource: '@AppBundle/Controller/'
+    type: annotation

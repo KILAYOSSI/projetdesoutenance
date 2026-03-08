@@ -1,0 +1,485 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - KilysAgri{% endblock %}
+
+{% block stylesheets %}
+<style>
+    /* Hero Section */
+    .hero-section {
+        position: relative;
+        min-height: 85vh;
+        display: flex;
+        align-items: center;
+        background: linear-gradient(135deg, rgba(25, 135, 84, 0.92) 0%, rgba(20, 108, 67, 0.95) 100%),
+                    url('{{ asset('images/ZOS.jpeg') }}') center/cover no-repeat;
+        margin-top: -80px;
+        padding-top: 80px;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%);
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 1;
+        color: white;
+    }
+    
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+        animation: fadeInUp 0.8s ease-out;
+    }
+    
+    .hero-title span {
+        color: #fdcb6e;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.25rem;
+        opacity: 0.9;
+        margin-bottom: 2rem;
+        animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+    
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        animation: fadeInUp 0.8s ease-out 0.4s both;
+    }
+    
+    .btn-hero-primary {
+        background: #fdcb6e;
+        color: #1a1a2e;
+        padding: 1rem 2rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-hero-primary:hover {
+        background: #f5b041;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(253, 203, 110, 0.4);
+        color: #1a1a2e;
+    }
+    
+    .btn-hero-outline {
+        background: transparent;
+        color: white;
+        padding: 1rem 2rem;
+        border: 2px solid rgba(255,255,255,0.5);
+        border-radius: 0.75rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-hero-outline:hover {
+        background: white;
+        color: #198754;
+        border-color: white;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Feature Cards */
+    .feature-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        height: 100%;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.1);
+    }
+    
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, rgba(25, 135, 84, 0.1) 0%, rgba(32, 201, 151, 0.1) 100%);
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+    }
+    
+    .feature-icon i {
+        font-size: 2rem;
+        color: #198754;
+    }
+    
+    .feature-card h4 {
+        color: #1a1a2e;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+    
+    .feature-card p {
+        color: #6c757d;
+        margin-bottom: 0;
+    }
+    
+    /* Section Titles */
+    .section-title {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .section-title h2 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #1a1a2e;
+        margin-bottom: 1rem;
+    }
+    
+    .section-title p {
+        font-size: 1.125rem;
+        color: #6c757d;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .title-accent {
+        display: inline-block;
+        position: relative;
+    }
+    
+    .title-accent::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(90deg, #198754, #20c997);
+        border-radius: 2px;
+    }
+    
+    /* About Section */
+    .about-section {
+        background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+    }
+    
+    .about-image {
+        border-radius: 1.5rem;
+        overflow: hidden;
+        box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.1);
+    }
+    
+    .about-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .about-image:hover img {
+        transform: scale(1.05);
+    }
+    
+    .about-content h2 {
+        font-size: 2.25rem;
+        font-weight: 800;
+        color: #1a1a2e;
+        margin-bottom: 1.5rem;
+    }
+    
+    .about-content p {
+        color: #6c757d;
+        font-size: 1.0625rem;
+        line-height: 1.8;
+    }
+    
+    .about-list {
+        list-style: none;
+        padding: 0;
+        margin: 2rem 0;
+    }
+    
+    .about-list li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        color: #495057;
+    }
+    
+    .about-list li i {
+        width: 32px;
+        height: 32px;
+        background: #198754;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        font-size: 0.875rem;
+    }
+    
+    /* Stats Section */
+    .stats-section {
+        background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+        padding: 4rem 0;
+    }
+    
+    .stat-item {
+        text-align: center;
+        color: white;
+    }
+    
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #fdcb6e;
+    }
+    
+    .stat-label {
+        font-size: 1.125rem;
+        opacity: 0.9;
+    }
+    
+    /* CTA Section */
+    .cta-section {
+        background: #f8f9fa;
+        border-radius: 1.5rem;
+        padding: 4rem 2rem;
+        margin: 4rem 0;
+    }
+    
+    .cta-content {
+        text-align: center;
+    }
+    
+    .cta-content h2 {
+        font-size: 2.25rem;
+        font-weight: 800;
+        color: #1a1a2e;
+        margin-bottom: 1rem;
+    }
+    
+    .cta-content p {
+        color: #6c757d;
+        font-size: 1.125rem;
+        margin-bottom: 2rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 992px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.125rem;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .hero-section {
+            min-height: 70vh;
+        }
+        
+        .hero-title {
+            font-size: 2rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2rem;
+        }
+        
+        .hero-buttons {
+            flex-direction: column;
+        }
+        
+        .btn-hero-primary,
+        .btn-hero-outline {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+
+<!-- HERO SECTION -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 hero-content">
+                <h1 class="hero-title">
+                    Votre Marketplace <span>Agricole</span> de Confiance
+                </h1>
+                <p class="hero-subtitle">
+                    Connectez-vous avec des producteurs locaux et achetez des produits agricoles frais. 
+                    Vendez vos récoltes facilement et atteignez des milliers d'acheteurs.
+                </p>
+                <div class="hero-buttons">
+                    <a href="{{ path('app_register') }}" class="btn btn-hero-primary">
+                        <i class="fas fa-user-plus me-2"></i>Commencer maintenant
+                    </a>
+                    <a href="{{ path('produits_index') }}" class="btn btn-hero-outline">
+                        <i class="fas fa-store me-2"></i>Découvrir les produits
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STATS SECTION -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">Producteurs</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">1000+</div>
+                    <div class="stat-label">Produits</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">5000+</div>
+                    <div class="stat-label">Clients</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Satisfaction</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COMMENT ÇA MARCHE -->
+<section class="py-5">
+    <div class="container py-5">
+        <div class="section-title">
+            <h2><span class="title-accent">Comment ça marche ?</span></h2>
+            <p>Achetezy vos produits agricoles en quelques étapes simples</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h4>1. Créez un compte</h4>
+                    <p>Inscrivez-vous gratuitement en quelques clics pour accéder à notre plateforme.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shopping-basket"></i>
+                    </div>
+                    <h4>2. Achetez ou vendez</h4>
+                    <p>Parcourez les produits ou devenez vendeur après validation de votre KYC.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <h4>3. Transactions sécurisées</h4>
+                    <p>Effectuez vos paiements en toute sécurité et recevez vos commandes.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- POUR LES PRODUCTEURS -->
+<section class="about-section py-5">
+    <div class="container py-5">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="about-image" style="height: 450px;">
+                    <img src="{{ asset('images/zzis.jpeg') }}" alt="Producteur agricole" style="height: 100%; object-fit: cover;">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="about-content">
+                    <h2>Vous êtes producteur agricole ?</h2>
+                    <p>
+                        Rejoignez KilysAgri pour atteindre des milliers d'acheteurs potentiels. 
+                        Après validation de votre identité (KYC), vous pouvez :
+                    </p>
+                    <ul class="about-list">
+                        <li><i class="fas fa-check"></i> Publier vos produits en quelques clics</li>
+                        <li><i class="fas fa-check"></i> Gérer vos commandes depuis votre dashboard</li>
+                        <li><i class="fas fa-check"></i> Suivre vos revenus en temps réel</li>
+                        <li><i class="fas fa-check"></i> Bénéficier de notre support dédié</li>
+                    </ul>
+                    {% if app.user and app.user.canSell() %}
+                        <a href="{{ path('vendeur_dashboard') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-tachometer-alt me-2"></i>Accéder à mon espace
+                        </a>
+                    {% else %}
+                        <a href="{{ path('kyc_submit') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-store me-2"></i>Devenir vendeur
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA SECTION -->
+<section class="container">
+    <div class="cta-section">
+        <div class="cta-content">
+            <h2>Prêt à commencer ?</h2>
+            <p>Rejoignez notre communauté et commencez à acheter ou vendre dès aujourd'hui</p>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a href="{{ path('app_register') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-user-plus me-2"></i>Créer un compte
+                </a>
+                <a href="{{ path('produits_index') }}" class="btn btn-outline-success btn-lg">
+                    <i class="fas fa-store me-2"></i>Voir les produits
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+

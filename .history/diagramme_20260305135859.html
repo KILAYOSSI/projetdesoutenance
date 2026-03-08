@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Diagramme de Classes - KilysAgri</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: white; 
+            padding: 20px;
+            width: 1400px;
+            height: 800px;
+            overflow: auto;
+        }
+        h1 { 
+            color: #198754; 
+            text-align: center; 
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        /* Styles des boites */
+        .class-box {
+            position: absolute;
+            border: 2px solid #198754;
+            background: #e8f5e9;
+            border-radius: 8px;
+            padding: 0;
+            font-size: 11px;
+            width: 160px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .class-header {
+            background: #198754;
+            color: white;
+            padding: 6px;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 6px 6px 0 0;
+        }
+        
+        .class-attr {
+            padding: 4px 8px;
+            border-top: 1px solid #ccc;
+            font-size: 10px;
+        }
+        
+        /* Couleurs differentes */
+        .user { background: #e3f2fd; border-color: #1976d2; }
+        .user .class-header { background: #1976d2; }
+        
+        .admin { background: #ffcdd2; border-color: #d32f2f; }
+        .admin .class-header { background: #d32f2f; }
+        
+        .kyc { background: #fff3e0; border-color: #f57c00; }
+        .kyc .class-header { background: #f57c00; }
+        
+        .cat { background: #e8f5e9; border-color: #388e3c; }
+        .cat .class-header { background: #388e3c; }
+        
+        .prod { background: #e8f5e9; border-color: #2e7d32; }
+        .prod .class-header { background: #2e7d32; }
+        
+        .cmd { background: #f3e5f5; border-color: #7b1fa2; }
+        .cmd .class-header { background: #7b1fa2; }
+        
+        .lc { background: #f3e5f5; border-color: #6a1b9a; }
+        .lc .class-header { background: #6a1b9a; }
+        
+        .paiement { background: #fce4ec; border-color: #c2185b; }
+        .paiement .class-header { background: #c2185b; }
+        
+        .expl { background: #fff8e1; border-color: #f9a825; }
+        .expl .class-header { background: #f9a825; }
+        
+        .suivi { background: #fff8e1; border-color: #f57f17; }
+        .suivi .class-header { background: #f57f17; }
+        
+        .rend { background: #fff8e1; border-color: #ff8f00; }
+        .rend .class-header { background: #ff8f00; }
+        
+        .notif { background: #e0f7fa; border-color: #0097a7; }
+        .notif .class-header { background: #0097a7; }
+        
+        .conseil { background: #e0f7fa; border-color: #00838f; }
+        .conseil .class-header { background: #00838f; }
+        
+        /* Positions */
+        #user { left: 20px; top: 80px; }
+        #admin { left: 20px; top: 350px; }
+        #kyc { left: 220px; top: 80px; }
+        #cat { left: 420px; top: 80px; }
+        #prod { left: 420px; top: 200px; }
+        #cmd { left: 620px; top: 80px; }
+        #lc { left: 620px; top: 220px; }
+        #pa { left: 820px; top: 80px; }
+        #expl { left: 1020px; top: 80px; }
+        #suivi { left: 1020px; top: 250px; }
+        #rend { left: 1020px; top: 400px; }
+        #notif { left: 220px; top: 280px; }
+        #conseil { left: 220px; top: 420px; }
+        
+        /* Legend */
+        .legend {
+            position: absolute;
+            left: 20px;
+            top: 450px;
+            font-size: 10px;
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .legend h3 { font-size: 12px; margin-bottom: 5px; }
+        
+        /* Arrows */
+        svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        line { stroke: #333; stroke-width: 1.5; }
+        text { font-size: 9px; fill: #333; }
+        
+        .cardinalite { 
+            background: white; 
+            padding: 1px 3px; 
+            font-size: 8px;
+            border: 1px solid #999;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Diagramme de Classes - KilysAgri</h1>
+    
+    <svg>
+        <!-- Utilisateur vers Kyc -->
+        <line x1="180" y1="120" x2="210" y2="120" />
+        <text x="185" y="115">1</text>
+        <text x="205" y="115">0..*</text>
+        
+        <!-- Utilisateur vers Produit -->
+        <line x1="180" y1="150" x2="410" y2="180" />
+        <text x="250" y="160">1</text>
+        <text x="370" y="175">0..*</text>
+        
+        <!-- Utilisateur vers Commande -->
+        <line x1="180" y1="170" x2="610" y2="120" />
+        <text x="350" y="140">1</text>
+        <text x="580" y="125">0..*</text>
+        
+        <!-- Utilisateur vers Exploitation -->
+        <line x1="180" y1="190" x2="1010" y2="120" />
+        <text x="550" y="150">1</text>
+        <text x="980" y="125">0..*</text>
+        
+        <!-- Utilisateur vers Notification -->
+        <line x1="100" y1="200" x2="210" y2="310" />
+        <text x="140" y="240">1</text>
+        <text x="200" y="300">0..*</text>
+        
+        <!-- Utilisateur vers Conseil -->
+        <line x1="80" y1="210" x2="210" y2="450" />
+        <text x="120" y="320">1</text>
+        <text x="200" y="440">0..*</text>
+        
+        <!-- Utilisateur vers Administrateur (0..1) -->
+        <line x1="80" y1="280" x2="80" y2="380" />
+        <text x="40" y="310">0..1</text>
+        <text x="60" y="370">1</text>
+        
+        <!-- Categorie vers Produit -->
+        <line x1="580" y1="130" x2="580" y2="190" />
+        <text x="565" y="150">1</text>
+        <text x="565" y="180">0..*</text>
+        
+        <!-- Commande vers LigneCommande -->
+        <line x1="780" y1="140" x2="780" y2="210" />
+        <text x="765" y="160">1</text>
+        <text x="765" y="200">0..*</text>
+        
+        <!-- Commande vers Paiement -->
+        <line x1="780" y1="150" x2="810" y2="150" />
+        <text x="790" y="145">1</text>
+        <text x="800" y="145">0..1</text>
+        
+        <!-- LigneCommande vers Produit -->
+        <line x1="620" y1="280" x2="580" y2="250" />
+        <text x="590" y="270">many</text>
+        <text x="570" y="255">1</text>
+        
+        <!-- LigneCommande vers Commande -->
+        <line x1="620" y1="260" x2="620" y2="180" />
+        <text x="605" y="220">many</text>
+        <text x="605" y="185">1</text>
+        
+        <!-- Paiement vers Commande -->
+        <line x1="820" y1="150" x2="810" y2="150" />
+        <text x="800" y="140">many</text>
+        
+        <!-- Exploitation vers SuiviCulture -->
+        <line x1="1180" y1="180" x2="1180" y2="240" />
+        <text x="1165" y="200">1</text>
+        <text x="1165" y="230">0..*</text>
+        
+        <!-- Exploitation vers Rendement -->
+        <line x1="1180" y1="230" x2="1180" y2="390" />
+        <text x="1165" y="280">1</text>
+        <text x="1165" y="380">0..*</text>
+        
+        <!-- SuiviCulture vers Exploitation -->
+        <line x1="1020" y1="310" x2="1020" y2="230" />
+        <text x="1005" y="280">many</text>
+        
+        <!-- Rendement vers Exploitation -->
+        <line x1="1020" y1="460" x2="1020" y2="280" />
+        <text x="1005" y="380">many</text>
+    </svg>
+    
+    <!-- Classes -->
+    <div class="class-box user" id="user">
+        <div class="class-header">Utilisateur</div>
+        <div class="class-attr">- id</div>
+        <div class="class-attr">- email</div>
+        <div class="class-attr">- motDePasse</div>
+        <div class="class-attr">- nomComplet</div>
+        <div class="class-attr">- telephone</div>
+        <div class="class-attr">- roles</div>
+        <div class="class-attr">- estVendeur</div>
+        <div class="class-attr">- estKycValide</div>
+    
+    <div class="class-box admin" id="admin">
+        <div class="class-header">Administrateur</div>
+        <div class="class-attr">- id</div>
+    
+    <div class="class-box kyc" id="kyc">
+        <div class="class-header">Kyc</div>
+        <div class="class-attr">- id</div>
+        <div class="class-attr">- typePiece</div>
+        <div class="class-attr">- numeroPiece</div>
+        <div class="class-attr">- photoRecto</div>
+        <div class="class-attr">- photoVerso</div>
+        <div class="class-attr">- photoSelfie</div>
+        <div class="class-attr">- statut</div>
+    
+    <div class="class-box cat" id="cat">
+        <div class="class-header">Categorie</div>
+        <div class="class-attr">- id</div>
+        <div class="class-attr">- nom</div>
+        <div class="class-attr">- description</div>
+    
+    <div class="class-box prod" id="prod">
+        <div class="class-header">Produit</div>
+        <div class="class-attr">- id</div>
+        <div class="class-attr">- nom</div>
+        <div class="class-attr">- description</div>
+        <div class="class-attr">- prix</div>
+        <div class="class-attr">- quantite</div>
+    
+    <div class="class-box cmd" id="cmd">
+        <div class="class-header">Commande</div>
+        <div class="class-attr">- id</div>
+        <div class="class-attr">- montantTotal</div>
+        <div class="class-attr">- statut</div>
+        <div class="class-attr">- dateCommande</div>
+    
+    <div class="class-box lc" id="lc">
+        <div class="class-header">LigneCommande</div>
+        <div class="class-attr">- id</div>
+        <div class="class-attr">- quantite</div>
+        <div class="class-attr">- prixUnitaire</div>
+    
+    <div class="class-box paiement" id="pa">
+        <div class="class-header">Paiement</div>
+        <div class="class-attr">- id</div>
+        <div class="class-attr">- montant</div>
+        <div class="class-attr">- reference</div>
+        <div class="class-attr">- methode</div>
+        <div class="class-attr">- statut</div>
+    
+    <div class="class-box expl" id="expl">
+        <div class="class-header">Exploitation</div>
+        <div class="class-attr">- id</div>
+        <div class="class-attr">- nom</div>
+        <div class="class-attr">- superficie</div>
+        <div class="class-attr">- localisation</div>
+        <div class="class-attr">- typeSol</div>
+        <div class="class-attr">- sourceEau</div>
+    
+    <div class="class-box suivi" id="suivi">
+        <div class="class-header">SuiviCulture</div>
+        <div class="class-attr">- id</div>
+        <div class="class-attr">- typeCulture</div>
+        <div class="class-attr">- datePlantation</div>
+        <div class="class-attr">- dateRecolte</div>
+        <div class="class-attr">- superficie</div>
+    
+    <div class="class-box rend" id="rend">
+        <div class="class-header">Rendement</div>
+        <div class="class-attr">- id</div>
+        <div class="class-attr">- typeCulture</div>
+        <div class="class-attr">- quantite</div>
+        <div class="class-attr">- rendement</div>
+    
+    <div class="class-box notif" id="notif">
+        <div class="class-header">Notification</div>
+        <div class="class-attr">- id</div>
+        <div class="class-attr">- titre</div>
+        <div class="class-attr">- message</div>
+        <div class="class-attr">- estLu</div>
+    
+    <div class="class-box conseil" id="conseil">
+        <div class="class-header">Conseil</div>
+        <div class="class-attr">- id</div>
+        <div class="class-attr">- titre</div>
+        <div class="class-attr">- contenu</div>
+    
+    <!-- Legend -->
+    <div class="legend">
+        <h3>Legend:</h3>
+        <p><strong>Kyc.statut:</strong> en_attente, valide, rejete</p>
+        <p><strong>Commande.statut:</strong> en_attente, payee, en_cours, livree, annulee</p>
+        <p><strong>Paiement.statut:</strong> en_attente, valide, echoue</p>
+    </div>
+    
+    <footer style="text-align: center; padding: 10px; background: #198754; color: white; margin-top: 20px;">
+        © 2024 KilysAgri - Plateforme Agricole
+    </footer>
+</body>
+</html>

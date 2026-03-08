@@ -1,0 +1,1129 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Catalogue Produits - KilysAgri{% endblock %}
+
+{% block stylesheets %}
+<style>
+    /* ========================================
+       MOVIEBOX PRO STYLE - KILYSAGRI
+       ======================================== */
+    
+    :root {
+        --kb-primary: #198754;
+        --kb-primary-dark: #146c43;
+        --kb-accent: #ffd700;
+        --kb-dark: #0d1117;
+        --kb-dark-secondary: #161b22;
+        --kb-card-bg: #21262d;
+        --kb-text: #f0f6fc;
+        --kb-text-secondary: #8b949e;
+        --kb-border: #30363d;
+        --kb-gradient: linear-gradient(135deg, #198754 0%, #20c997 50%, #ffd700 100%);
+        --kb-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        --kb-hover-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Background Pattern */
+    .kb-page-wrapper {
+        background: var(--kb-dark);
+        min-height: 100vh;
+        background-image: 
+            radial-gradient(ellipse at top, rgba(25, 135, 84, 0.15) 0%, transparent 50%),
+            radial-gradient(ellipse at bottom right, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+    }
+
+    /* ========================================
+       HERO CAROUSEL SECTION
+       ======================================== */
+    .kb-hero-section {
+        position: relative;
+        padding: 100px 0 40px;
+        overflow: hidden;
+    }
+
+    .kb-hero-carousel {
+        position: relative;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: var(--kb-shadow);
+    }
+
+    .kb-hero-slide {
+        position: relative;
+        height: 400px;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: flex-end;
+    }
+
+    .kb-hero-slide::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(13, 17, 23, 0.95) 0%, rgba(13, 17, 23, 0.4) 50%, transparent 100%);
+    }
+
+    .kb-hero-content {
+        position: relative;
+        padding: 40px;
+        z-index: 2;
+    }
+
+    .kb-hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--kb-gradient);
+        color: var(--kb-dark);
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 16px;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    .kb-hero-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 12px;
+        line-height: 1.2;
+    }
+
+    .kb-hero-meta {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        color: var(--kb-text-secondary);
+        margin-bottom: 16px;
+        font-size: 0.95rem;
+    }
+
+    .kb-hero-meta span {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .kb-hero-price {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--kb-accent);
+    }
+
+    .kb-hero-price span {
+        font-size: 1rem;
+        color: var(--kb-text-secondary);
+    }
+
+    .kb-carousel-indicators {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        gap: 8px;
+        z-index: 10;
+    }
+
+    .kb-carousel-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .kb-carousel-dot.active {
+        background: var(--kb-accent);
+        transform: scale(1.3);
+    }
+
+    .kb-carousel-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+    }
+
+    .kb-carousel-nav:hover {
+        background: var(--kb-primary);
+        border-color: var(--kb-primary);
+    }
+
+    .kb-carousel-nav.prev { left: 20px; }
+    .kb-carousel-nav.next { right: 20px; }
+
+    /* ========================================
+       SEARCH & FILTER SECTION
+       ======================================== */
+    .kb-search-section {
+        padding: 30px 0;
+    }
+
+    .kb-search-container {
+        background: var(--kb-dark-secondary);
+        border: 1px solid var(--kb-border);
+        border-radius: 20px;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .kb-search-input-wrapper {
+        flex: 1;
+        min-width: 250px;
+        position: relative;
+    }
+
+    .kb-search-input-wrapper i {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--kb-text-secondary);
+    }
+
+    .kb-search-input {
+        width: 100%;
+        background: var(--kb-dark);
+        border: 1px solid var(--kb-border);
+        border-radius: 12px;
+        padding: 14px 14px 14px 48px;
+        color: var(--kb-text);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .kb-search-input:focus {
+        outline: none;
+        border-color: var(--kb-primary);
+        box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.2);
+    }
+
+    .kb-search-input::placeholder {
+        color: var(--kb-text-secondary);
+    }
+
+    .kb-filter-select {
+        background: var(--kb-dark);
+        border: 1px solid var(--kb-border);
+        border-radius: 12px;
+        padding: 14px 40px 14px 16px;
+        color: var(--kb-text);
+        font-size: 1rem;
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238b949e' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: calc(100% - 12px) center;
+        transition: all 0.3s ease;
+    }
+
+    .kb-filter-select:focus {
+        outline: none;
+        border-color: var(--kb-primary);
+    }
+
+    .kb-search-btn {
+        background: var(--kb-gradient);
+        border: none;
+        border-radius: 12px;
+        padding: 14px 28px;
+        color: var(--kb-dark);
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .kb-search-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(25, 135, 84, 0.4);
+    }
+
+    /* ========================================
+       CATEGORY TABS
+       ======================================== */
+    .kb-categories-nav {
+        padding: 20px 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .kb-categories-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .kb-category-tabs {
+        display: flex;
+        gap: 12px;
+        padding: 4px;
+    }
+
+    .kb-category-tab {
+        background: var(--kb-dark-secondary);
+        border: 1px solid var(--kb-border);
+        border-radius: 50px;
+        padding: 12px 24px;
+        color: var(--kb-text-secondary);
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .kb-category-tab:hover {
+        background: var(--kb-card-bg);
+        color: var(--kb-text);
+        border-color: var(--kb-primary);
+    }
+
+    .kb-category-tab.active {
+        background: var(--kb-primary);
+        border-color: var(--kb-primary);
+        color: white;
+    }
+
+    .kb-category-tab .kb-count {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 2px 8px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+    }
+
+    /* ========================================
+       CATEGORY SECTIONS
+       ======================================== */
+    .kb-category-section {
+        padding: 30px 0;
+    }
+
+    .kb-category-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+    }
+
+    .kb-category-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .kb-category-icon {
+        width: 48px;
+        height: 48px;
+        background: var(--kb-gradient);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+    }
+
+    .kb-category-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+        margin: 0;
+    }
+
+    .kb-category-count {
+        font-size: 0.9rem;
+        color: var(--kb-text-secondary);
+    }
+
+    .kb-category-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .kb-btn-view {
+        background: transparent;
+        border: 1px solid var(--kb-border);
+        border-radius: 10px;
+        padding: 10px 20px;
+        color: var(--kb-text-secondary);
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .kb-btn-view:hover {
+        background: var(--kb-card-bg);
+        color: var(--kb-text);
+        border-color: var(--kb-text-secondary);
+    }
+
+    .kb-btn-view-all {
+        background: var(--kb-primary);
+        border: none;
+        border-radius: 10px;
+        padding: 10px 20px;
+        color: white;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .kb-btn-view-all:hover {
+        background: var(--kb-primary-dark);
+        transform: translateY(-2px);
+    }
+
+    /* ========================================
+       PRODUCT CARDS - HORIZONTAL SCROLL
+       ======================================== */
+    .kb-products-scroll {
+        display: flex;
+        gap: 20px;
+        overflow-x: auto;
+        padding: 8px 4px 20px;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+    }
+
+    .kb-products-scroll::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .kb-products-scroll::-webkit-scrollbar-track {
+        background: var(--kb-dark-secondary);
+        border-radius: 4px;
+    }
+
+    .kb-products-scroll::-webkit-scrollbar-thumb {
+        background: var(--kb-border);
+        border-radius: 4px;
+    }
+
+    .kb-products-scroll::-webkit-scrollbar-thumb:hover {
+        background: var(--kb-text-secondary);
+    }
+
+    .kb-product-card {
+        flex: 0 0 260px;
+        background: var(--kb-dark-secondary);
+        border: 1px solid var(--kb-border);
+        border-radius: 20px;
+        overflow: hidden;
+        scroll-snap-align: start;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        cursor: pointer;
+    }
+
+    .kb-product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--kb-hover-shadow);
+        border-color: var(--kb-primary);
+    }
+
+    .kb-product-image-wrapper {
+        position: relative;
+        height: 180px;
+        overflow: hidden;
+    }
+
+    .kb-product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .kb-product-card:hover .kb-product-image {
+        transform: scale(1.1);
+    }
+
+    .kb-product-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .kb-badge-stock {
+        background: rgba(25, 135, 84, 0.9);
+        color: white;
+    }
+
+    .kb-badge-out {
+        background: rgba(220, 53, 69, 0.9);
+        color: white;
+    }
+
+    .kb-product-favorite {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 36px;
+        height: 36px;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .kb-product-favorite:hover {
+        background: var(--kb-accent);
+        color: var(--kb-dark);
+    }
+
+    .kb-product-body {
+        padding: 20px;
+    }
+
+    .kb-product-category {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--kb-primary);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+    }
+
+    .kb-product-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 8px;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .kb-product-description {
+        font-size: 0.85rem;
+        color: var(--kb-text-secondary);
+        line-height: 1.5;
+        margin-bottom: 16px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .kb-product-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .kb-product-price {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--kb-accent);
+    }
+
+    .kb-product-price span {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--kb-text-secondary);
+    }
+
+    .kb-product-stock {
+        font-size: 0.8rem;
+        color: var(--kb-text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .kb-product-stock.in-stock {
+        color: var(--kb-primary);
+    }
+
+    .kb-product-btn {
+        width: 100%;
+        margin-top: 16px;
+        background: var(--kb-primary);
+        border: none;
+        border-radius: 12px;
+        padding: 12px;
+        color: white;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .kb-product-btn:hover {
+        background: var(--kb-primary-dark);
+    }
+
+    .kb-product-btn:disabled {
+        background: var(--kb-border);
+        color: var(--kb-text-secondary);
+        cursor: not-allowed;
+    }
+
+    /* ========================================
+       FEATURED PRODUCTS GRID
+       ======================================== */
+    .kb-featured-section {
+        padding: 40px 0;
+    }
+
+    .kb-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 30px;
+    }
+
+    .kb-section-title {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .kb-section-icon {
+        width: 56px;
+        height: 56px;
+        background: var(--kb-gradient);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+    }
+
+    .kb-section-title h2 {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: white;
+        margin: 0;
+    }
+
+    .kb-section-title p {
+        color: var(--kb-text-secondary);
+        margin: 0;
+        font-size: 0.95rem;
+    }
+
+    /* ========================================
+       EMPTY STATE
+       ======================================== */
+    .kb-empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        color: var(--kb-text-secondary);
+    }
+
+    .kb-empty-state i {
+        font-size: 5rem;
+        margin-bottom: 24px;
+        opacity: 0.3;
+    }
+
+    .kb-empty-state h3 {
+        color: var(--kb-text);
+        margin-bottom: 12px;
+    }
+
+    .kb-empty-state a {
+        color: var(--kb-primary);
+        text-decoration: none;
+    }
+
+    /* ========================================
+       LOAD MORE
+       ======================================== */
+    .kb-load-more {
+        text-align: center;
+        padding: 40px 0;
+    }
+
+    .kb-btn-load-more {
+        background: transparent;
+        border: 2px solid var(--kb-primary);
+        border-radius: 50px;
+        padding: 16px 48px;
+        color: var(--kb-primary);
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .kb-btn-load-more:hover {
+        background: var(--kb-primary);
+        color: white;
+        transform: scale(1.05);
+    }
+
+    /* ========================================
+       RESPONSIVE
+       ======================================== */
+    @media (max-width: 768px) {
+        .kb-hero-slide {
+            height: 350px;
+        }
+
+        .kb-hero-title {
+            font-size: 1.75rem;
+        }
+
+        .kb-hero-content {
+            padding: 24px;
+        }
+
+        .kb-search-container {
+            flex-direction: column;
+        }
+
+        .kb-search-input-wrapper {
+            width: 100%;
+        }
+
+        .kb-filter-select {
+            width: 100%;
+        }
+
+        .kb-search-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .kb-product-card {
+            flex: 0 0 220px;
+        }
+
+        .kb-category-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .kb-category-actions {
+            width: 100%;
+        }
+
+        .kb-btn-view, .kb-btn-view-all {
+            flex: 1;
+            justify-content: center;
+        }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .kb-animate-in {
+        animation: fadeInUp 0.6s ease-out forwards;
+    }
+
+    .kb-animate-delay-1 { animation-delay: 0.1s; }
+    .kb-animate-delay-2 { animation-delay: 0.2s; }
+    .kb-animate-delay-3 { animation-delay: 0.3s; }
+    .kb-animate-delay-4 { animation-delay: 0.4s; }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="kb-page-wrapper">
+    <!-- Hero Carousel Section -->
+    <section class="kb-hero-section">
+        <div class="container">
+            <div class="kb-hero-carousel" id="heroCarousel">
+                {% if featuredProducts|length > 0 %}
+                    {% for i in 0..min(5, featuredProducts|length - 1) %}
+                        {% set produit = featuredProducts[i] %}
+                        <div class="kb-hero-slide {% if loop.first %}active{% endif %}" 
+                             style="background-image: url('{{ produit.image ? asset(produit.image) : 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200' }}');">
+                            <div class="kb-hero-content">
+                                <div class="kb-hero-badge">
+                                    <i class="fas fa-fire"></i>
+                                    {% if loop.first %}Produit Star{% else %}Populaire{% endif %}
+                                </div>
+                                <h1 class="kb-hero-title">{{ produit.nom }}</h1>
+                                <div class="kb-hero-meta">
+                                    {% if produit.categorie %}
+                                        <span><i class="fas fa-tag"></i> {{ produit.categorie.nom }}</span>
+                                    {% endif %}
+                                    <span><i class="fas fa-box"></i> {{ produit.quantite }} en stock</span>
+                                </div>
+                                <div class="kb-hero-price">
+                                    {{ produit.prix|number_format(0, ',', ' ') }} <span>FCA</span>
+                                </div>
+                                <a href="{{ path('produits_detail', {id: produit.id}) }}" class="btn btn-primary btn-lg mt-3" style="background: var(--kb-gradient); border: none; padding: 14px 32px; font-weight: 700;">
+                                    <i class="fas fa-eye me-2"></i>Voir détails
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="kb-hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200');">
+                        <div class="kb-hero-content">
+                            <div class="kb-hero-badge">
+                                <i class="fas fa-leaf"></i> Bienvenue
+                            </div>
+                            <h1 class="kb-hero-title">Découvrez nos produits agricoles</h1>
+                            <div class="kb-hero-meta">
+                                <span><i class="fas fa-store"></i> Qualité garantie</span>
+                                <span><i class="fas fa-truck"></i> Livraison rapide</span>
+                            </div>
+                            <a href="#products" class="btn btn-primary btn-lg mt-3" style="background: var(--kb-gradient); border: none; padding: 14px 32px; font-weight: 700;">
+                                <i class="fas fa-compass me-2"></i>Explorer
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Carousel Navigation -->
+                <button class="kb-carousel-nav prev" onclick="moveCarousel(-1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="kb-carousel-nav next" onclick="moveCarousel(1)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+
+                <!-- Carousel Indicators -->
+                <div class="kb-carousel-indicators">
+                    {% for i in 0..min(5, (featuredProducts|length > 0 ? featuredProducts|length - 1 : 0)) %}
+                        <div class="kb-carousel-dot {% if loop.first %}active{% endif %}" onclick="goToSlide({{ i }})"></div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search & Filter Section -->
+    <section class="kb-search-section">
+        <div class="container">
+            <div class="kb-search-container">
+                <div class="kb-search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="kb-search-input" placeholder="Rechercher un produit..." id="searchInput">
+                </div>
+                <select class="kb-filter-select" id="categoryFilter">
+                    <option value="">Toutes les catégories</option>
+                    {% for categorie in categories %}
+                        <option value="{{ categorie.id }}">{{ categorie.nom }}</option>
+                    {% endfor %}
+                </select>
+                <button class="kb-search-btn" onclick="filterProducts()">
+                    <i class="fas fa-filter"></i>
+                    Filtrer
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category Tabs -->
+    <section class="kb-categories-nav">
+        <div class="container">
+            <div class="kb-category-tabs">
+                <a href="{{ path('produits_index') }}" class="kb-category-tab active">
+                    <i class="fas fa-th-large"></i>
+                    Tous les produits
+                </a>
+                {% for categorie in categories %}
+                    <a href="{{ path('produits_categorie', {id: categorie.id}) }}" class="kb-category-tab">
+                        {{ categorie.nom }}
+                        <span class="kb-count">{{ categorie.produits|length }}</span>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Products by Category -->
+    <main class="kb-products-main" id="products">
+        <div class="container">
+            
+            {% if categoriesWithProducts|length > 0 %}
+                {% for catData in categoriesWithProducts %}
+                    <section class="kb-category-section">
+                        <div class="kb-category-header">
+                            <div class="kb-category-title">
+                                <div class="kb-category-icon">
+                                    <i class="fas fa-{% if catData.categorie.nom == 'Légumes' %}carrot{% elseif catData.categorie.nom == 'Fruits' %}apple-alt{% elseif catData.categorie.nom == 'Céréales' %}wheat{% elseif catData.categorie.nom == 'Tubercules' %}potato{% else %}seedling{% endif %}"></i>
+                                </div>
+                                <div>
+                                    <h2 class="kb-category-name">{{ catData.categorie.nom }}</h2>
+                                    <span class="kb-category-count">{{ catData.total }} produit(s)</span>
+                                </div>
+                            </div>
+                            <div class="kb-category-actions">
+                                <button class="kb-btn-view" onclick="showMoreProducts('cat-{{ catData.categorie.id }}')">
+                                    <i class="fas fa-plus"></i> Voir plus
+                                </button>
+                                <a href="{{ path('produits_categorie', {id: catData.categorie.id}) }}" class="kb-btn-view-all">
+                                    Voir tous <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="kb-products-scroll" id="cat-{{ catData.categorie.id }}">
+                            {% for produit in catData.produits|slice(0, 10) %}
+                                <div class="kb-product-card kb-animate-in" style="animation-delay: {{ loop.index * 0.05 }}s">
+                                    <div class="kb-product-image-wrapper">
+                                        {% if produit.image %}
+                                            <img src="{{ asset(produit.image) }}" alt="{{ produit.nom }}" class="kb-product-image">
+                                        {% else %}
+                                            <div class="kb-product-image d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, var(--kb-card-bg), var(--kb-dark));">
+                                                <i class="fas fa-image fa-3x text-muted"></i>
+                                            </div>
+                                        {% endif %}
+                                        <span class="kb-product-badge {% if produit.quantite > 0 %}kb-badge-stock{% else %}kb-badge-out{% endif %}">
+                                            {% if produit.quantite > 0 %}En stock{% else %}Rupture{% endif %}
+                                        </span>
+                                        <div class="kb-product-favorite" onclick="toggleFavorite({{ produit.id }}, event)">
+                                            <i class="far fa-heart"></i>
+                                        </div>
+                                    </div>
+                                    <div class="kb-product-body">
+                                        {% if produit.categorie %}
+                                            <div class="kb-product-category">{{ produit.categorie.nom }}</div>
+                                        {% endif %}
+                                        <h3 class="kb-product-title">{{ produit.nom }}</h3>
+                                        <p class="kb-product-description">{{ produit.description|slice(0, 80) }}{% if produit.description|length > 80 %}...{% endif %}</p>
+                                        <div class="kb-product-footer">
+                                            <div class="kb-product-price">
+                                                {{ produit.prix|number_format(0, ',', ' ') }} <span>FCA</span>
+                                            </div>
+                                            <div class="kb-product-stock {% if produit.quantite > 0 %}in-stock{% endif %}">
+                                                <i class="fas fa-{% if produit.quantite > 0 %}check-circle{% else %}{% endif %}"></i>
+                                                {{ produit.quantite }}
+                                            </div>
+                                        </div>
+                                        <a href="{{ path('produits_detail', {id: produit.id}) }}" class="kb-product-btn {% if produit.quantite == 0 %}disabled{% endif %}">
+                                            <i class="fas {% if produit.quantite > 0 %}fa-cart-plus{% else %}fa-ban{% endif %}"></i>
+                                            {% if produit.quantite > 0 %}Ajouter au panier{% else %}Indisponible{% endif %}
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endfor %}
+            {% else %}
+                <div class="kb-empty-state">
+                    <i class="fas fa-seedling"></i>
+                    <h3>Aucun produit disponible</h3>
+                    <p>Découvrez bientôt notre catalogue de produits agricoles</p>
+                    <a href="{{ path('app_home') }}" class="kb-btn-view-all" style="display: inline-flex; margin-top: 20px;">
+                        <i class="fas fa-home me-2"></i>Retour à l'accueil
+                    </a>
+                </div>
+            {% endif %}
+
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    // ========================================
+    // HERO CAROUSEL FUNCTIONALITY
+    // ========================================
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.kb-hero-slide');
+    const dots = document.querySelectorAll('.kb-carousel-dot');
+    const totalSlides = slides.length;
+
+    function showSlide(index) {
+        slides.forEach((slide, i) => {
+            slide.classList.remove('active');
+            if (i === index) slide.classList.add('active');
+        });
+        dots.forEach((dot, i) => {
+            dot.classList.remove('active');
+            if (i === index) dot.classList.add('active');
+        });
+        currentSlide = index;
+    }
+
+    function moveCarousel(direction) {
+        let newIndex = currentSlide + direction;
+        if (newIndex < 0) newIndex = totalSlides - 1;
+        if (newIndex >= totalSlides) newIndex = 0;
+        showSlide(newIndex);
+    }
+
+    function goToSlide(index) {
+        showSlide(index);
+    }
+
+    // Auto-rotate carousel
+    setInterval(() => {
+        if (totalSlides > 1) {
+            moveCarousel(1);
+        }
+    }, 5000);
+
+    // ========================================
+    // SEARCH & FILTER FUNCTIONALITY
+    // ========================================
+    document.getElementById('searchInput').addEventListener('keyup', function(e) {
+        if (e.key === 'Enter') {
+            filterProducts();
+        }
+    });
+
+    function filterProducts() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const categoryId = document.getElementById('categoryFilter').value;
+        
+        // Build URL with query parameters
+        let url = '{{ path("produits_search") }}?';
+        if (searchTerm) url += 'q=' + encodeURIComponent(searchTerm);
+        if (categoryId) {
+            if (searchTerm) url += '&';
+            url += 'categorie=' + categoryId;
+        }
+        
+        window.location.href = url;
+    }
+
+    // ========================================
+    // FAVORITE TOGGLE
+    // ========================================
+    function toggleFavorite(productId, event) {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        const heartIcon = event.currentTarget.querySelector('i');
+        
+        if (heartIcon.classList.contains('far')) {
+            heartIcon.classList.remove('far');
+            heartIcon.classList.add('fas', 'text-danger');
+            
+            // Animation
+            event.currentTarget.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                event.currentTarget.style.transform = 'scale(1)';
+            }, 200);
+        } else {
+            heartIcon.classList.remove('fas', 'text-danger');
+            heartIcon.classList.add('far');
+        }
+    }
+
+    // ========================================
+    // SHOW MORE PRODUCTS
+    // ========================================
+    function showMoreProducts(categoryId) {
+        const container = document.getElementById(categoryId);
+        const cards = container.querySelectorAll('.kb-product-card');
+        
+        // Show 3 more products
+        let shown = 0;
+        for (let i = 0; i < cards.length && shown < 3; i++) {
+            if (cards[i].style.display === 'none') {
+                cards[i].style.display = '';
+                cards[i].classList.add('kb-animate-in');
+                shown++;
+            }
+        }
+        
+        // Hide "Voir plus" button if all products are shown
+        const allShown = Array.from(cards).every(card => card.style.display !== 'none');
+        if (allShown) {
+            const btn = container.parentElement.querySelector('.kb-btn-view');
+            if (btn) btn.style.display = 'none';
+        }
+    }
+
+    // ========================================
+    // SMOOTH SCROLL
+    // ========================================
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // ========================================
+    // PRODUCT CARD CLICK
+    // ========================================
+    document.querySelectorAll('.kb-product-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+            if (!e.target.closest('.kb-product-favorite') && !e.target.closest('.kb-product-btn')) {
+                const link = this.querySelector('.kb-product-btn');
+                if (link && !link.classList.contains('disabled')) {
+                    window.location.href = link.href;
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
+

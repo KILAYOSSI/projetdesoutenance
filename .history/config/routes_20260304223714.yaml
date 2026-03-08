@@ -1,0 +1,88 @@
+# Import annotations routing
+controllers:
+    resource: '../src/Controller/'
+    type: annotation
+
+# Define routes directly in YAML
+app_home:
+    path: /
+    controller: App\Controller\HomeController::index
+    methods: [GET]
+
+# Routes du panier
+panier_index:
+    path: /panier
+    controller: App\Controller\PanierController::index
+    methods: [GET]
+
+panier_ajouter:
+    path: /panier/ajouter/{id}
+    controller: App\Controller\PanierController::ajouter
+    methods: [GET|POST]
+
+panier_modifier:
+    path: /panier/modifier/{id}
+    controller: App\Controller\PanierController::modifier
+    methods: [POST]
+
+panier_supprimer:
+    path: /panier/supprimer/{id}
+    controller: App\Controller\PanierController::supprimer
+    methods: [GET|POST]
+
+panier_vider:
+    path: /panier/vider
+    controller: App\Controller\PanierController::vider
+    methods: [GET|POST]
+
+panier_count:
+    path: /panier/count
+    controller: App\Controller\PanierController::count
+    methods: [GET]
+
+# Routes des commandes
+commande_passer:
+    path: /commande/passer
+    controller: App\Controller\CommandeController::passer
+    methods: [GET|POST]
+
+commande_confirmee:
+    path: /commande/confirmee/{id}
+    controller: App\Controller\CommandeController::confirmee
+    methods: [GET]
+
+commande_mes_commandes:
+    path: /commande/mes-commandes
+    controller: App\Controller\CommandeController::mesCommandes
+    methods: [GET]
+
+commande_details:
+    path: /commande/details/{id}
+    controller: App\Controller\CommandeController::details
+    methods: [GET]
+
+# Routes KYC
+kyc_submit:
+    path: /kyc/submit
+    controller: App\Controller\KycController::submit
+    methods: [GET|POST]
+
+kyc_status:
+    path: /kyc/status
+    controller: App\Controller\KycController::status
+    methods: [GET]
+
+kyc_admin_list:
+    path: /kyc/admin/list
+    controller: App\Controller\KycController::adminList
+    methods: [GET]
+
+kyc_admin_validate:
+    path: /kyc/admin/validate/{id}
+    controller: App\Controller\KycController::adminValidate
+    methods: [GET|POST]
+
+kyc_admin_detail:
+    path: /kyc/admin/detail/{id}
+    controller: App\Controller\KycController::adminDetail
+    methods: [GET]

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagramme de Classes - KilysAgri</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1 style="text-align: center; color: #198754;">Diagramme de Classes - KilysAgri</h1>
+    
+    <!-- Diagramme des entités principales -->
+    <div class="mermaid">
+    classDiagram
+        class User {
+            +int id
+            +string email
+            +string password
+            +string nomComplet
+            +string telephone
+            +boolean isVerified
+            +boolean isVendeur
+            +boolean isKycValidated
+            +json roles
+            +datetime createdAt
+        }
+        
+        class Admin {
+            +int id
+        }
+        
+        class Kyc {
+            +int id
+            +string typePiece
+            +string numeroPiece
+            +string photoPieceRecto
+            +string photoPieceVerso
+            +string photoSelfie
+            +string adresseComplete
+            +string region
+            +float superficieExploitee
+            +string typeAgriculture
+            +int experience
+            +string status
+            +datetime createdAt
+        }
+        
+        class Produit {
+            +int id
+            +string nom
+            +string description
+            +decimal prix
+            +int quantite
+            +string image
+            +datetime createdAt
+            +datetime updatedAt
+        }
+        
+        class Categorie {
+            +int id
+            +string nom
+            +string description
+            +string image
+        }
+        
+        class Commande {
+            +int id
+            +decimal montantTotal
+            +string status
+            +datetime dateCommande
+            +datetime updatedAt
+        }
+        
+        class LigneCommande {
+            +int id
+            +int quantite
+            +decimal prixUnitaire
+        }
+        
+        class Paiement {
+            +int id
+            +decimal montant
+            +string reference
+            +string methode
+            +string status
+            +datetime datePaiement
+        }
+        
+        class Exploitation {
+            +int id
+            +string nom
+            +decimal superficie
+            +string localisation
+            +string typeSol
+            +string sourceEau
+            +string statut
+            +datetime createdAt
+        }
+        
+        class SuiviCulture {
+            +int id
+            +string typeCulture
+            +datetime datePlantation
+            +datetime dateRecolteEstimee
+            +float superficie
+            +string observations
+            +datetime createdAt
+        }
+        
+        class Rendement {
+            +int id
+            +string typeCulture
+            +decimal quantite
+            +decimal rendementEstime
+            +datetime dateRecolte
+        }
+        
+        class Equipement {
+            +int id
+            +string nom
+            +string type
+            +int quantite
+        }
+        
+        class Stock {
+            +int id
+            +int quantite
+            +datetime dateMisAJour
+        }
+        
+        class Notification {
+            +int id
+            +string titre
+            +string message
+            +boolean isRead
+            +datetime createdAt
+        }
+        
+        class Conversation {
+            +int id
+            +datetime createdAt
+            +datetime updatedAt
+        }
+        
+        class Message {
+            +int id
+            +string contenu
+            +boolean isRead
+            +datetime createdAt
+        }
+        
+        class Conseil {
+            +int id
+            +string titre
+            +string contenu
+            +datetime createdAt
+        }
+        
+        %% Relations
+        User "1" -- "0..*" Kyc : soumet
+        User "1" -- "0..*" Produit : publie
+        User "1" -- "0..*" Commande : passe
+        User "1" -- "0..*" Exploitation : possede
+        User "1" -- "0..*" Notification : recoit
+        User "1" -- "0..*" Conversation : initie
+        User "1" -- "0..*" Conseil : redige
+        User "0..1" -- "1" Admin : est_un
+        
+        Produit "1" -- "0..*" LigneCommande : contient
+        Produit "1" -- "0..*" Stock : a_en_stock
+        Produit "many" -- "1" Categorie : appartient_a
+        
+        Categorie "1" -- "0..*" Produit : contient
+        
+        Commande "1" -- "0..*" LigneCommande : composee_de
+        Commande "1" -- "0..1" Paiement : possede
+        
+        LigneCommande "many" -- "1" Produit : concerne
+        LigneCommande "many" -- "1" Commande : appartient_a
+        
+        Paiement "many" -- "1" Commande : paiement_de
+        
+        Exploitation "1" -- "0..*" SuiviCulture : suivi
+        Exploitation "1" -- "0..*" Rendement : rendements
+        Exploitation "1" -- "0..*" Equipement : equipements
+        Exploitation "1" -- "0..*" Stock : stocks
+        
+        SuiviCulture "many" -- "1" Exploitation : culture_de
+        Rendement "many" -- "1" Exploitation : exploit
+        Equipement "many" -- "1" Exploitation : equipement_de
+        Stock "many" -- "1" Exploitation : stock_de
+        
+        Conversation "1" -- "0..*" Message : messages
+        Message "many" -- "1" User : auteur
+    </div>
+    
+    <hr>
+    
+    <h2 style="color: #198754;">Légende des Statuts</h2>
+    
+    <table style="border-collapse: collapse; width: 100%; margin: 20px 0;">
+        <tr style="background-color: #198754; color: white;">
+            <th style="padding: 10px; border: 1px solid #ddd;">Entité</th>
+            <th style="padding: 10px; border: 1px solid #ddd;">Statut</th>
+            <th style="padding: 10px; border: 1px solid #ddd;">Valeurs</th>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;"><strong>Kyc</strong></td>
+            <td style="padding: 10px; border: 1px solid #ddd;">status</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">en_attente, valide, rejete</td>
+        </tr>
+        <tr style="background-color: #f9f9f9;">
+            <td style="padding: 10px; border: 1px solid #ddd;"><strong>Commande</strong></td>
+            <td style="padding: 10px; border: 1px solid #ddd;">status</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">en_attente, payee, en_cours, livree, annulee</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;"><strong>Paiement</strong></td>
+            <td style="padding: 10px; border: 1px solid #ddd;">status</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">en_attente, valide, echoue</td>
+        </tr>
+    </table>
+    
+    <hr>
+    
+    <h2 style="color: #198754;">Rôles Utilisateurs</h2>
+    
+    <table style="border-collapse: collapse; width: 100%; margin: 20px 0;">
+        <tr style="background-color: #198754; color: white;">
+            <th style="padding: 10px; border: 1px solid #ddd;">Rôle</th>
+            <th style="padding: 10px; border: 1px solid #ddd;">Description</th>
+            <th style="padding: 10px; border: 1px solid #ddd;">Permissions</th>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;"><strong>VISITEUR</strong></td>
+            <td style="padding: 10px; border: 1px solid #ddd;">Utilisateur non connecté</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">Parcourir produits, recherches</td>
+        </tr>
+        <tr style="background-color: #f9f9f9;">
+            <td style="padding: 10px; border: 1px solid #ddd;"><strong>ACHETEUR</strong></td>
+            <td style="padding: 10px; border: 1px solid #ddd;">Utilisateur connecté</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">+ Acheter, passer commandes</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;"><strong>PRODUCTEUR</strong></td>
+            <td style="padding: 10px; border: 1px solid #ddd;">Acheteur + KYC validé</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">+ Publier produits, gérer exploitations</td>
+        </tr>
+        <tr style="background-color: #f9f9f9;">
+            <td style="padding: 10px; border: 1px solid #ddd;"><strong>ADMIN</strong></td>
+            <td style="padding: 10px; border: 1px solid #ddd;">Administrateur</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">+ Valider KYC, gérer plateforme</td>
+        </tr>
+    </table>
+    
+    <hr>
+    
+    <h2 style="color: #198754;">Cardinalités</h2>
+    
+    <table style="border-collapse: collapse; width: 100%; margin: 20px 0;">
+        <tr style="background-color: #198754; color: white;">
+            <th style="padding: 10px; border: 1px solid #ddd;">Relation</th>
+            <th style="padding: 10px; border: 1px solid #ddd;">Cardinalité</th>
+            <th style="padding: 10px; border: 1px solid #ddd;">Description</th>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">User → Kyc</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">1 : 0..*</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">Un utilisateur peut soumettre 0 ou plusieurs demandes KYC</td>
+        </tr>
+        <tr style="background-color: #f9f9f9;">
+            <td style="padding: 10px; border: 1px solid #ddd;">User → Produit</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">1 : 0..*</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">Un producteur peut publier 0 ou plusieurs produits</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">User → Commande</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">1 : 0..*</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">Un client peut passer 0 ou plusieurs commandes</td>
+        </tr>
+        <tr style="background-color: #f9f9f9;">
+            <td style="padding: 10px; border: 1px solid #ddd;">Commande → LigneCommande</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">1 : 0..*</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">Une commande contient 0 ou plusieurs lignes</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Commande → Paiement</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">1 : 0..1</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">Une commande peut avoir 0 ou 1 paiement</td>
+        </tr>
+        <tr style="background-color: #f9f9f9;">
+            <td style="padding: 10px; border: 1px solid #ddd;">Exploitation → SuiviCulture</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">1 : 0..*</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">Une exploitation peut avoir 0 ou plusieurs cultures</td>
+        </tr>
+    </table>
+
+    <footer style="text-align: center; margin-top: 40px; padding: 20px; background-color: #198754; color: white;">
+        <p>© 2024 KilysAgri - Plateforme Agricole</p>
+    </footer>
+</body>
+</html>

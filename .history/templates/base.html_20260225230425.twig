@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+        {% block stylesheets %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+    </head>
+    <body>
+        {% block body %}
+            {% for flash_success in app.flashes('success') %}
+                <div class="alert alert-success">{{ flash_success }}</div>
+            {% endfor %}
+            {% for flash_error in app.flashes('error') %}
+                <div class="alert alert-danger">{{ flash_error }}</div>
+            {% endfor %}
+        {% endblock %}
+    </body>
+</html>

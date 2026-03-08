@@ -1,0 +1,164 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard Vendeur - KilysAgri{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4"><i class="fas fa-tachometer-alt me-2"></i>Dashboard Vendeur</h2>
+            
+            <!-- Statistiques -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">Produits en vente</h6>
+                                    <h2 class="mb-0">{{ produitsCount }}</h2>
+                                </div>
+                                <i class="fas fa-box fa-3x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">Commandes reçues</h6>
+                                    <h2 class="mb-0">{{ commandesCount }}</h2>
+                                </div>
+                                <i class="fas fa-shopping-cart fa-3x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">Revenus totaux</h6>
+                                    <h2 class="mb-0">{{ revenus|number_format(0, ',', ' ') }} FCA</h2>
+                                </div>
+                                <i class="fas fa-money-bill fa-3x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions rapides -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Actions rapides</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <a href="{{ path('vendeur_produit_new') }}" class="btn btn-success w-100 py-3">
+                                        <i class="fas fa-plus-circle fa-2x mb-2 d-block"></i>
+                                        Ajouter un produit
+                                    </a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="{{ path('vendeur_produits') }}" class="btn btn-outline-success w-100 py-3">
+                                        <i class="fas fa-boxes fa-2x mb-2 d-block"></i>
+                                        Gérer mes produits
+                                    </a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="{{ path('vendeur_commandes') }}" class="btn btn-outline-primary w-100 py-3">
+                                        <i class="fas fa-clipboard-list fa-2x mb-2 d-block"></i>
+                                        Voir mes commandes
+                                    </a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="{{ path('app_home') }}" class="btn btn-outline-secondary w-100 py-3">
+                                        <i class="fas fa-store fa-2x mb-2 d-block"></i>
+                                        Voir ma boutique
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Derniers produits -->
+<div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-box me-2"></i>Mes produits récents</h5>
+                </div>
+                <div class="card-body">
+                    {% if produits|length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Catégorie</th>
+                                    <th>Prix</th>
+                                    <th>Stock</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for produit in produits|slice(0, 5) %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            {% if produit.image %}
+                                                <img src="{{ asset(produit.image) }}" class="rounded me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                                            {% else %}
+                                                <div class="bg-light rounded me-2 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                    <i class="fas fa-image text-muted"></i>
+                                                </div>
+                                            {% endif %}
+                                            <span>{{ produit.nom }}</span>
+                                        </div>
+                                    </td>
+                                    <td>{{ produit.categorie.nom|default('-') }}</td>
+                                    <td>{{ produit.prix|number_format(0, ',', ' ') }} FCA</td>
+                                    <td>
+                                        {% if produit.quantite > 0 %}
+                                            <span class="badge bg-success">{{ produit.quantite }}</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Rupture</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ path('vendeur_produit_edit', {id: produit.id}) }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{{ path('vendeur_produit_delete', {id: produit.id}) }}" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                        <h5>Vous n'avez pas encore de produits</h5>
+                        <p class="text-muted">Commencez par ajouter votre premier produit !</p>
+                        <a href="{{ path('vendeur_produit_new') }}" class="btn btn-success">
+                            <i class="fas fa-plus me-2"></i>Ajouter un produit
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

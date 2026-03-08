@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+        {% block stylesheets %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+    </head>
+    <body>
+        <!-- NAVBAR -->
+        <nav class="navbar">
+            <div class="logo">KilysAgri</div>
+            <ul>
+                <li><a href="{{ path('app_home') }}">ACCUEIL</a></li>
+                <li><a href="#">PRODUITS</a></li>
+                <li><a href="#">PRODUCTEURS</a></li>
+            </ul>
+            {% if app.user %}
+                <a href="{{ path('app_logout') }}" class="btn-login">DÉCONNEXION</a>
+            {% else %}
+                <a href="{{ path('app_auth') }}" class="btn-login">CONNEXION</a>
+            {% endif %}
+        </nav>
+
+        {% block body %}{% endblock %}
+    </body>
+</html>

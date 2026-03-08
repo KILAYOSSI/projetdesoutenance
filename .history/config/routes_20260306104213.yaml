@@ -1,0 +1,35 @@
+# Routes pour le contrôleur Vendeur
+vendeur_dashboard:
+    path: /vendeur/dashboard
+    controller: App\Controller\VendeurController::dashboard
+    methods: [GET]
+
+vendeur_produits:
+    path: /vendeur/produits
+    controller: App\Controller\VendeurController::produits
+    methods: [GET]
+
+vendeur_produit_new:
+    path: /vendeur/produits/new
+    controller: App\Controller\VendeurController::newProduit
+    methods: [GET, POST]
+
+vendeur_produit_edit:
+    path: /vendeur/produits/{id}/edit
+    controller: App\Controller\VendeurController::editProduit
+    methods: [GET, POST]
+
+vendeur_produit_delete:
+    path: /vendeur/produits/{id}/delete
+    controller: App\Controller\VendeurController::deleteProduit
+    methods: [GET]
+
+vendeur_commandes:
+    path: /vendeur/commandes
+    controller: App\Controller\VendeurController::commandes
+    methods: [GET]
+
+vendeur_commande_status:
+    path: /vendeur/commandes/{id}/status
+    controller: App\Controller\VendeurController::updateCommandeStatus
+    methods: [POST]

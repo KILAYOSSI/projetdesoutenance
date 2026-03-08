@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Catalogue Produits - KilysAgri{% endblock %}
+
+{% block stylesheets %}
+<style>
+    :root { --kb-primary: #198754; --kb-primary-dark: #146c43; --kb-accent: #ffd700; --kb-dark: #0d1117; --kb-dark-secondary: #161b22; --kb-card-bg: #21262d; --kb-text: #f0f6fc; --kb-text-secondary: #8b949e; --kb-border: #30363d; --kb-gradient: linear-gradient(135deg, #198754 0%, #20c997 50%, #ffd700 100%); --kb-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); --kb-hover-shadow: 0 16px 48px rgba(0, 0, 0, 0.6); }
+    .kb-page-wrapper { background: var(--kb-dark); min-height: 100vh; background-image: radial-gradient(ellipse at top, rgba(25, 135, 84, 0.15) 0%, transparent 50%), radial-gradient(ellipse at bottom right, rgba(255, 215, 0, 0.05) 0%, transparent 50%); }
+    .kb-hero-section { position: relative; padding: 100px 0 40px; overflow: hidden; }
+    .kb-hero-carousel { position: relative; border-radius: 24px; overflow: hidden; box-shadow: var(--kb-shadow); }
+    .kb-hero-slide { position: relative; height: 400px; background-size: cover; background-position: center; display: flex; align-items: flex-end; }
+    .kb-hero-slide::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(13, 17, 23, 0.95) 0%, rgba(13, 17, 23, 0.4) 50%, transparent 100%); }
+    .kb-hero-content { position: relative; padding: 40px; z-index: 2; }
+    .kb-hero-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--kb-gradient); color: var(--kb-dark); padding: 8px 16px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 16px; }
+    .kb-hero-title { font-size: 2.5rem; font-weight: 800; color: white; margin-bottom: 12px; line-height: 1.2; }
+    .kb-hero-meta { display: flex; align-items: center; gap: 20px; color: var(--kb-text-secondary); margin-bottom: 16px; }
+    .kb-hero-price { font-size: 2rem; font-weight: 800; color: var(--kb-accent); }
+    .kb-hero-price span { font-size: 1rem; color: var(--kb-text-secondary); }
+    .kb-search-section { padding: 30px 0; }
+    .kb-search-container { background: var(--kb-dark-secondary); border: 1px solid var(--kb-border); border-radius: 20px; padding: 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .kb-search-input-wrapper { flex: 1; min-width: 250px; position: relative; }
+    .kb-search-input-wrapper i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--kb-text-secondary); }
+    .kb-search-input { width: 100%; background: var(--kb-dark); border: 1px solid var(--kb-border); border-radius: 12px; padding: 14px 14px 14px 48px; color: var(--kb-text); font-size: 1rem; }
+    .kb-search-input:focus { outline: none; border-color: var(--kb-primary); }
+    .kb-filter-select { background: var(--kb-dark); border: 1px solid var(--kb-border); border-radius: 12px; padding: 14px 40px 14px 16px; color: var(--kb-text); font-size: 1rem; }
+    .kb-search-btn { background: var(--kb-gradient); border: none; border-radius: 12px; padding: 14px 28px; color: var(--kb-dark); font-weight: 700; cursor: pointer; }
+    .kb-categories-nav { padding: 20px 0; overflow-x: auto; }
+    .kb-category-tabs { display: flex; gap: 12px; padding: 4px; }
+    .kb-category-tab { background: var(--kb-dark-secondary); border: 1px solid var(--kb-border); border-radius: 50px; padding: 12px 24px; color: var(--kb-text-secondary); font-weight: 600; cursor: pointer; white-space: nowrap; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .kb-category-tab:hover, .kb-category-tab.active { background: var(--kb-primary); border-color: var(--kb-primary); color: white; }
+    .kb-products-scroll { display: flex; gap: 20px; overflow-x: auto; padding: 8px 4px 20px; scroll-snap-type: x mandatory; }
+    .kb-product-card { flex: 0 0 260px; background: var(--kb-dark-secondary); border: 1px solid var(--kb-border); border-radius: 20px; overflow: hidden; scroll-snap-align: start; transition: all 0.4s; cursor: pointer; }
+    .kb-product-card:hover { transform: translateY(-8px); box-shadow: var(--kb-hover-shadow); border-color: var(--kb-primary); }
+    .kb-product-image-wrapper { position: relative; height: 180px; overflow: hidden; }
+    .kb-product-image { width: 100%; height: 100%; object-fit: cover; }
+    .kb-product-badge { position: absolute; top: 12px; left: 12px; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; }
+    .kb-badge-stock { background: rgba(25, 135, 84, 0.9); color: white; }
+    .kb-badge-out { background: rgba(220, 53, 69, 0.9); color: white; }
+    .kb-product-body { padding: 20px; }
+    .kb-product-category { font-size: 0.75rem; font-weight: 600; color: var(--kb-primary); text-transform: uppercase; margin-bottom: 8px; }
+    .kb-product-title { font-size: 1.1rem; font-weight: 700; color: white; margin-bottom: 8px; }
+    .kb-product-footer { display: flex; align-items: center; justify-content: space-between; }
+    .kb-product-price { font-size: 1.4rem; font-weight: 800; color: var(--kb-accent); }
+    .kb-product-stock { font-size: 0.8rem; color: var(--kb-text-secondary); }
+    .kb-product-stock.in-stock { color: var(--kb-primary); }
+    .kb-product-btn { width: 100%; margin-top: 16px; background: var(--kb-primary); border: none; border-radius: 12px; padding: 12px; color: white; font-weight: 600; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .kb-product-btn:hover { background: var(--kb-primary-dark); }
+    .kb-product-btn:disabled { background: var(--kb-border); cursor: not-allowed; }
+    .kb-category-header { display: flex; align-items: center; justify-content: space-between; margin: 40px 0 24px; }
+    .kb-category-icon { width: 48px; height: 48px; background: var(--kb-gradient); border-radius: 14px; display: flex; align-items: center; justify-content: center; }
+    .kb-category-name { font-size: 1.5rem; font-weight: 700; color: white; margin: 0; }
+    @media (max-width: 768px) { .kb-hero-slide { height: 350px; } .kb-hero-title { font-size: 1.75rem; } }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="kb-page-wrapper">
+    <section class="kb-hero-section">
+        <div class="container">
+            <div class="kb-hero-carousel">
+                {% if featuredProducts|length > 0 %}
+                    {% for produit in featuredProducts|slice(0, 3) %}
+                        <div class="kb-hero-slide {% if loop.first %}active{% endif %}" style="background-image: url('{{ produit.image ? asset(produit.image) : 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200' }}');">
+                            <div class="kb-hero-content">
+                                <div class="kb-hero-badge"><i class="fas fa-fire"></i> {% if loop.first %}Produit Star{% else %}Populaire{% endif %}</div>
+                                <h1 class="kb-hero-title">{{ produit.nom }}</h1>
+                                <div class="kb-hero-meta">{% if produit.categorie %}<span><i class="fas fa-tag"></i> {{ produit.categorie.nom }}</span>{% endif %}<span><i class="fas fa-box"></i> {{ produit.quantite }} en stock</span></div>
+                                <div class="kb-hero-price">{{ produit.prix|number_format(0, ',', ' ') }} <span>FCA</span></div>
+                                <a href="{{ path('produits_detail', {id: produit.id}) }}" class="btn btn-primary btn-lg mt-3" style="background: var(--kb-gradient); border: none; padding: 14px 32px; font-weight: 700;"><i class="fas fa-eye me-2"></i>Voir détails</a>
+                            </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="kb-hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200');">
+                        <div class="kb-hero-content"><div class="kb-hero-badge"><i class="fas fa-leaf"></i> Bienvenue</div><h1 class="kb-hero-title">Découvrez nos produits agricoles</h1></div>
+                {% endif %}
+            </div>
+    </section>
+    <section class="kb-search-section">
+        <div class="container">
+            <div class="kb-search-container">
+                <div class="kb-search-input-wrapper"><i class="fas fa-search"></i><input type="text" class="kb-search-input" placeholder="Rechercher un produit..." id="searchInput"></div>
+                <select class="kb-filter-select" id="categoryFilter"><option value="">Toutes les catégories</option>{% for categorie in categories %}<option value="{{ categorie.id }}">{{ categorie.nom }}</option>{% endfor %}</select>
+                <button class="kb-search-btn" onclick="filterProducts()"><i class="fas fa-filter"></i> Filtrer</button>
+            </div>
+    </section>
+    <section class="kb-categories-nav">
+        <div class="container">
+            <div class="kb-category-tabs">
+                <a href="{{ path('produits_index') }}" class="kb-category-tab active"><i class="fas fa-th-large"></i> Tous</a>
+                {% for categorie in categories %}<a href="{{ path('produits_categorie', {id: categorie.id}) }}" class="kb-category-tab">{{ categorie.nom }} ({{ categorie.produits|length }})</a>{% endfor %}
+            </div>
+    </section>
+    <main class="kb-products-main" style="padding-bottom: 60px;">
+        <div class="container">
+            {% if categoriesWithProducts|length > 0 %}
+                {% for catData in categoriesWithProducts %}
+                    <section>
+                        <div class="kb-category-header">
+                            <div style="display: flex; align-items: center; gap: 12px;"><div class="kb-category-icon"><i class="fas fa-seedling"></i></div><div><h2 class="kb-category-name">{{ catData.categorie.nom }}</h2><span style="color: var(--kb-text-secondary);">{{ catData.total }} produit(s)</span></div>
+                            <a href="{{ path('produits_categorie', {id: catData.categorie.id}) }}" class="kb-category-tab">Voir tous <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                        <div class="kb-products-scroll">
+                            {% for produit in catData.produits|slice(0, 10) %}
+                                <div class="kb-product-card">
+                                    <div class="kb-product-image-wrapper">
+                                        {% if produit.image %}<img src="{{ asset(produit.image) }}" alt="{{ produit.nom }}" class="kb-product-image">{% else %}<div class="kb-product-image d-flex align-items-center justify-content-center" style="background: var(--kb-card-bg);"><i class="fas fa-image fa-3x text-muted"></i></div>{% endif %}
+                                        <span class="kb-product-badge {% if produit.quantite > 0 %}kb-badge-stock{% else %}kb-badge-out{% endif %}">{% if produit.quantite > 0 %}En stock{% else %}Rupture{% endif %}</span>
+                                    </div>
+                                    <div class="kb-product-body">
+                                        {% if produit.categorie %}<div class="kb-product-category">{{ produit.categorie.nom }}</div>{% endif %}
+                                        <h3 class="kb-product-title">{{ produit.nom }}</h3>
+                                        <div class="kb-product-footer"><div class="kb-product-price">{{ produit.prix|number_format(0, ',', ' ') }} <span>FCA</span></div><div class="kb-product-stock {% if produit.quantite > 0 %}in-stock{% endif %}"><i class="fas fa-box"></i> {{ produit.quantite }}</div>
+                                        <a href="{{ path('produits_detail', {id: produit.id}) }}" class="kb-product-btn">{% if produit.quantite > 0 %}<i class="fas fa-cart-plus"></i> Ajouter{% else %}<i class="fas fa-ban"></i> Indisponible{% endif %}</a>
+                                    </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-5" style="color: var(--kb-text-secondary);"><i class="fas fa-seedling fa-5x mb-4" style="opacity: 0.3;"></i><h3>Aucun produit disponible</h3></div>
+            {% endif %}
+        </div>
+    </main>
+</div>
+<script>function filterProducts(){const s=document.getElementById('searchInput').value,c=document.getElementById('categoryFilter').value;let u='{{ path("produits_search") }}?';if(s)u+='q='+encodeURIComponent(s);if(c){if(s)u+='&';u+='categorie='+c;}window.location.href=u;}</script>
+{% endblock %}
