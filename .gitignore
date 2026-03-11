@@ -22,3 +22,11 @@
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
+
+###> IDE / History ###
+/.history/
+.idea/
+.vscode/
+*.swp
+*.swo
+###< IDE / History ###

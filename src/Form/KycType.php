@@ -6,6 +6,7 @@ use App\Entity\Kyc;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -39,7 +40,7 @@ class KycType extends AbstractType
                 ],
             ])
             ->add('photoPieceRecto', FileType::class, [
-                'label' => 'Photo de la pièce d\'identité',
+                'label' => 'Photo de la pièce (Recto)',
                 'mapped' => false,
                 'required' => true,
                 'attr' => [
@@ -53,6 +54,33 @@ class KycType extends AbstractType
                         'mimeTypes' => ['image/jpeg', 'image/png', 'image/gif'],
                         'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPEG, PNG, GIF)',
                     ]),
+                ],
+            ])
+            ->add('photoPieceVerso', FileType::class, [
+                'label' => 'Photo de la pièce (Verso)',
+                'mapped' => false,
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'accept' => 'image/*',
+                ],
+                'constraints' => [
+                    new File([
+                        'maxSize' => '5M',
+                        'mimeTypes' => ['image/jpeg', 'image/png', 'image/gif'],
+                        'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPEG, PNG, GIF)',
+                    ]),
+                ],
+            ])
+            // Photo Selfie - Champ caché qui sera rempli par la caméra
+            ->add('photoSelfie', HiddenType::class, [
+                'mapped' => false,
+                'required' => true,
+                'attr' => [
+                    'id' => 'photoSelfie',
+                ],
+                'constraints' => [
+                    new NotBlank(['message' => 'Veuillez prendre une photo selfie avec la caméra']),
                 ],
             ]);
     }

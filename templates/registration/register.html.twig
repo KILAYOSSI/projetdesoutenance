@@ -2,51 +2,341 @@
 
 {% block title %}Inscription - KilysAgri{% endblock %}
 
-{% block body %}
-<div class="container py-5" style="margin-top: 70px;">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body p-4">
-                    <h2 class="text-center mb-4">Créer un compte</h2>
-                    
-                    {% for flash_error in app.flashes('verify_email_error') %}
-                        <div class="alert alert-danger">{{ flash_error }}</div>
-                    {% endfor %}
+{% block footer %}{% endblock %}
 
-                    {{ form_start(registrationForm) }}
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Nom complet</label>
-                                {{ form_widget(registrationForm.nomComplet, {'attr': {'class': 'form-control'}}) }}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Téléphone</label>
-                                {{ form_widget(registrationForm.telephone, {'attr': {'class': 'form-control'}}) }}
-                            </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Mot de passe</label>
-                            {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Confirmer le mot de passe</label>
-                            {{ form_widget(registrationForm.confirmPassword, {'attr': {'class': 'form-control'}}) }}
-                        </div>
-                        <div class="mb-3 form-check">
-                            {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
-                            <label class="form-check-label">J'accepte les conditions</label>
-                        </div>
-                        <button type="submit" class="btn btn-success w-100">S'inscrire</button>
-                    {{ form_end(registrationForm) }}
-                    
-                    <p class="text-center mt-3">
-                        Déjà un compte? <a href="{{ path('app_login') }}">Se connecter</a>
-                    </p>
-                </div>
+{% block stylesheets %}
+<style>
+    .register-page {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #198754 0%, #0d5c3d 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    
+    .register-container {
+        display: flex;
+        max-width: 1000px;
+        width: 100%;
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    
+    .register-image {
+        flex: 1;
+        background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 40px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .register-image::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+    }
+    
+    .register-image i {
+        font-size: 80px;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .register-image h2 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .register-image p {
+        font-size: 14px;
+        opacity: 0.9;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .register-form {
+        flex: 1.2;
+        padding: 40px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .register-form .brand {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    
+    .register-form .brand i {
+        font-size: 32px;
+        color: #198754;
+    }
+    
+    .register-form .brand span {
+        font-size: 24px;
+        font-weight: 700;
+        color: #198754;
+        margin-left: 10px;
+    }
+    
+    .register-form h3 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 25px;
+        font-weight: 600;
+    }
+    
+    .form-floating {
+        margin-bottom: 15px;
+    }
+    
+    .form-floating .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 12px 15px;
+        height: auto;
+        transition: all 0.3s;
+    }
+    
+    .form-floating .form-control:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.1);
+    }
+    
+    .form-floating label {
+        color: #666;
+        padding: 12px 15px;
+    }
+    
+    .form-check {
+        margin: 15px 0;
+    }
+    
+    .form-check-input {
+        width: 20px;
+        height: 20px;
+        margin-top: 0;
+        cursor: pointer;
+    }
+    
+    .form-check-label {
+        cursor: pointer;
+        color: #555;
+    }
+    
+    .form-check-label a {
+        color: #198754;
+        text-decoration: none;
+    }
+    
+    .form-check-label a:hover {
+        text-decoration: underline;
+    }
+    
+    .btn-register {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-weight: 600;
+        font-size: 16px;
+        transition: all 0.3s;
+        margin-top: 10px;
+    }
+    
+    .btn-register:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(25, 135, 84, 0.3);
+    }
+    
+    .divider {
+        display: flex;
+        align-items: center;
+        margin: 20px 0;
+    }
+    
+    .divider::before,
+    .divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: #e0e0e0;
+    }
+    
+    .divider span {
+        padding: 0 15px;
+        color: #666;
+        font-size: 14px;
+    }
+    
+    .login-link {
+        text-align: center;
+        margin-top: 15px;
+        color: #666;
+    }
+    
+    .login-link a {
+        color: #198754;
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+    
+    .login-link a:hover {
+        color: #146c43;
+        text-decoration: underline;
+    }
+    
+    .alert {
+        border-radius: 10px;
+        padding: 12px 15px;
+        margin-bottom: 20px;
+    }
+    
+    .info-box {
+        background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .info-box i {
+        font-size: 24px;
+        color: #198754;
+        margin-right: 15px;
+    }
+    
+    .info-box p {
+        margin: 0;
+        color: #2e7d32;
+        font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+        .register-container {
+            flex-direction: column;
+        }
+        
+        .register-image {
+            padding: 30px;
+        }
+        
+        .register-image i {
+            font-size: 50px;
+        }
+        
+        .register-image h2 {
+            font-size: 22px;
+        }
+        
+        .register-form {
+            padding: 30px 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="register-page">
+    <div class="register-container">
+        <div class="register-image">
+            <i class="fas fa-seedling"></i>
+            <h2>Rejoignez KilysAgri</h2>
+            <p>Commencez votre journey vers une agriculture moderne et rentable. Créez votre compte maintenant et accédez à des milliers de produits agricoles.</p>
         </div>
+        
+        <div class="register-form">
+            <div class="brand">
+                <i class="fas fa-leaf"></i>
+                <span>KilysAgri</span>
+            </div>
+            
+            <h3>Créer un compte</h3>
+            
+            <div class="info-box">
+                <i class="fas fa-info-circle"></i>
+                <p>Inscrivez-vous pour accéder à tous nos services et commencer à acheter ou vendre vos produits agricoles.</p>
+            </div>
+            
+            {% for flash_error in app.flashes('verify_email_error') %}
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i>{{ flash_error }}
+                </div>
+            {% endfor %}
+
+            {{ form_start(registrationForm, {'attr': {'class': 'register-form'}}) }}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            {{ form_widget(registrationForm.nomComplet, {'attr': {'class': 'form-control', 'placeholder': 'Nom complet'}}) }}
+                            <label for="registration_form_nomComplet"><i class="fas fa-user me-2"></i>Nom complet</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            {{ form_widget(registrationForm.telephone, {'attr': {'class': 'form-control', 'placeholder': 'Téléphone'}}) }}
+                            <label for="registration_form_telephone"><i class="fas fa-phone me-2"></i>Téléphone</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-floating">
+                    {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control', 'placeholder': 'Email'}}) }}
+                    <label for="registration_form_email"><i class="fas fa-envelope me-2"></i>Email</label>
+                </div>
+                
+                <div class="form-floating">
+                    {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control', 'placeholder': 'Mot de passe'}}) }}
+                    <label for="registration_form_plainPassword"><i class="fas fa-lock me-2"></i>Mot de passe</label>
+                </div>
+                
+                <div class="form-floating">
+                    {{ form_widget(registrationForm.confirmPassword, {'attr': {'class': 'form-control', 'placeholder': 'Confirmer le mot de passe'}}) }}
+                    <label for="registration_form_confirmPassword"><i class="fas fa-lock me-2"></i>Confirmer le mot de passe</label>
+                </div>
+                
+                <div class="form-check">
+                    {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
+                    <label class="form-check-label" for="registration_form_agreeTerms">
+                        J'accepte les <a href="#">conditions générales</a> et la <a href="#">politique de confidentialité</a>
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn btn-register">
+                    <i class="fas fa-user-plus me-2"></i>Créer mon compte
+                </button>
+            {{ form_end(registrationForm) }}
+            
+            <div class="divider">
+                <span>OU</span>
+            </div>
+            
+            <div class="login-link">
+                <p>Déjà un compte ? <a href="{{ path('app_login') }}">Se connecter</a></p>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

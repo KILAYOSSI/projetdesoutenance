@@ -4,540 +4,211 @@
 
 {% block stylesheets %}
 <style>
-    :root {
-        --primary-color: #2E7D32;
-        --secondary-color: #4CAF50;
-        --dark-bg: #1a1a2e;
-        --light-bg: #f5f5f5;
-    }
-    
-    /* Override pour la page vendeur - masquer la navbar standard */
-    .navbar {
-        display: none !important;
-    }
-    
-    body {
-        background: var(--light-bg);
-        margin-top: 0 !important;
-    }
-    
-    main {
-        margin-top: 0 !important;
-        min-height: 100vh;
-    }
-    
-    footer {
-        display: none !important;
-    }
-    
-    .vendor-layout {
-        display: flex;
-        min-height: 100vh;
-    }
-    
-    /* Sidebar */
-    .vendor-sidebar {
-        width: 260px;
-        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-        padding: 0;
-        position: fixed;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        z-index: 1000;
-        overflow-y: auto;
-    }
-    
-    .vendor-logo {
-        padding: 25px 20px;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        background: rgba(0,0,0,0.2);
-    }
-    
-    .vendor-logo h4 {
-        color: white;
-        margin: 0;
-        font-weight: 700;
-        font-size: 22px;
-    }
-    
-    .vendor-logo span {
-        color: var(--secondary-color);
-    }
-    
-    .menu-section {
-        padding: 20px 20px 10px;
-        color: rgba(255,255,255,0.4);
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        font-weight: 600;
-    }
-    
-    .menu-item {
-        display: flex;
-        align-items: center;
-        padding: 14px 20px;
-        color: rgba(255,255,255,0.7);
-        text-decoration: none;
-        transition: all 0.3s ease;
-        border-left: 3px solid transparent;
-        margin: 2px 0;
-    }
-    
-    .menu-item:hover, .menu-item.active {
-        background: rgba(255,255,255,0.1);
-        color: white;
-        border-left-color: var(--secondary-color);
-    }
-    
-    .menu-item i {
-        width: 24px;
-        margin-right: 12px;
-        font-size: 18px;
-    }
-    
-    .menu-item .badge {
-        margin-left: auto;
-    }
-    
-    /* Main Content */
-    .main-content {
-        flex: 1;
-        margin-left: 260px;
-        background: #f5f5f5;
-    }
-    
-    .top-header {
-        background: white;
-        padding: 20px 30px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: sticky;
-        top: 0;
-        z-index: 100;
-    }
-    
-    .top-header h2 {
-        margin: 0;
-        font-size: 24px;
-        color: #333;
-        font-weight: 600;
-    }
-    
-    .user-info {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-    
-    .user-avatar {
-        width: 45px;
-        height: 45px;
-        border-radius: 12px;
-        background: linear-gradient(135deg, #2E7D32, #4CAF50);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: bold;
-        font-size: 16px;
-    }
-    
-    .content-wrapper {
-        padding: 30px;
-    }
-    
-    /* Stats Cards */
-    .stat-card {
-        background: white;
-        border-radius: 16px;
-        padding: 24px;
-        box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-        transition: all 0.3s ease;
-        border: none;
-        height: 100%;
-    }
-    
-    .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
-    
-    .stat-icon {
-        width: 56px;
-        height: 56px;
-        border-radius: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24px;
-        margin-bottom: 15px;
-    }
-    
-    .stat-icon.products { background: linear-gradient(135deg, #E8F5E9, #C8E6C9); color: #2E7D32; }
-    .stat-icon.orders { background: linear-gradient(135deg, #E3F2FD, #BBDEFB); color: #1565C0; }
-    .stat-icon.revenue { background: linear-gradient(135deg, #FFF8E1, #FFECB3); color: #F57F17; }
-    .stat-icon.kyc { background: linear-gradient(135deg, #FCE4EC, #F8BBD9); color: #C2185B; }
-    
-    .stat-value {
-        font-size: 32px;
-        font-weight: 700;
-        color: #1a1a2e;
-        margin-bottom: 5px;
-    }
-    
-    .stat-label {
-        color: #666;
-        font-size: 14px;
-    }
-    
-    .section-title {
-        font-size: 20px;
-        font-weight: 600;
-        color: #1a1a2e;
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .section-title i {
-        color: var(--primary-color);
-    }
-    
-    /* Table */
-    .table-card {
-        background: white;
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-    }
-    
-    .table-header {
-        padding: 20px 24px;
-        border-bottom: 1px solid #eee;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    
-    .table-header h5 {
-        margin: 0;
-        font-weight: 600;
-        color: #1a1a2e;
-    }
-    
-    .custom-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    
-    .custom-table th {
-        padding: 14px 24px;
-        text-align: left;
-        font-weight: 600;
-        color: #666;
-        font-size: 13px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        background: #fafafa;
-        border-bottom: 1px solid #eee;
-    }
-    
-    .custom-table td {
-        padding: 16px 24px;
-        border-bottom: 1px solid #f5f5f5;
-        color: #333;
-    }
-    
-    .custom-table tr:hover {
-        background: #fafafa;
-    }
-    
-    .status-badge {
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 500;
-    }
-    
-    .status-badge.pending { background: #FFF3E0; color: #E65100; }
-    .status-badge.confirmed { background: #E8F5E9; color: #2E7D32; }
-    .status-badge.processing { background: #E3F2FD; color: #1565C0; }
-    .status-badge.delivered { background: #F3E5F5; color: #7B1FA2; }
-    
-    .action-btn {
-        width: 36px;
-        height: 36px;
-        border-radius: 10px;
-        border: none;
-        background: #f5f5f5;
-        color: #666;
-        cursor: pointer;
-        transition: all 0.2s;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-    }
-    
-    .action-btn:hover {
-        background: var(--primary-color);
-        color: white;
-    }
-    
-    /* Quick Actions */
-    .quick-actions {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 15px;
-        margin-bottom: 30px;
-    }
-    
-    .quick-action-btn {
-        background: white;
-        border: 2px dashed #ddd;
-        border-radius: 16px;
-        padding: 25px 20px;
-        text-align: center;
-        text-decoration: none;
-        color: #666;
-        transition: all 0.3s ease;
-    }
-    
-    .quick-action-btn:hover {
-        border-color: var(--primary-color);
-        color: var(--primary-color);
-        transform: translateY(-3px);
-        box-shadow: 0 5px 20px rgba(46, 125, 50, 0.15);
-    }
-    
-    .quick-action-btn i {
-        font-size: 32px;
-        margin-bottom: 12px;
-        display: block;
-    }
-    
-    .quick-action-btn span {
-        font-weight: 500;
-    }
-    
-    .empty-state {
-        padding: 60px 20px;
-        text-align: center;
-    }
-    
-    .empty-state i {
-        font-size: 64px;
-        color: #ddd;
-        margin-bottom: 20px;
-    }
-    
-    .empty-state h4 {
-        color: #666;
-        margin-bottom: 10px;
-    }
-    
-    @media (max-width: 992px) {
-        .vendor-sidebar {
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
-        }
-        .vendor-sidebar.show {
-            transform: translateX(0);
-        }
-        .main-content {
-            margin-left: 0;
-        }
-        .quick-actions {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
+    .navbar, footer { display: none !important; }
+    body { margin-top: 0 !important; background: #f5f5f5; }
+    main { margin-top: 0 !important; }
 </style>
 {% endblock %}
 
 {% block body %}
-<div class="vendor-layout">
-    <!-- Sidebar -->
-    <div class="vendor-sidebar">
-        <div class="vendor-logo">
-            <h4><i class="fas fa-leaf me-2"></i>Kilys<span>Agri</span></h4>
-        </div>
-        
-        <div class="menu-section">Principal</div>
-        <a href="{{ path('vendeur_dashboard') }}" class="menu-item active">
-            <i class="fas fa-th-large"></i>
-            Dashboard
-        </a>
-        <a href="{{ path('vendeur_produits') }}" class="menu-item">
-            <i class="fas fa-box"></i>
-            Mes Produits
-        </a>
-        <a href="{{ path('vendeur_commandes') }}" class="menu-item">
-            <i class="fas fa-shopping-cart"></i>
-            Commandes
-        </a>
-        
-        <div class="menu-section">Gestion</div>
-        <a href="{{ path('kyc_status') }}" class="menu-item">
-            <i class="fas fa-id-card"></i>
-            Mon KYC
-            {% if not app.user.isKycValidated %}
-            <span class="badge bg-warning">!</span>
-            {% endif %}
-        </a>
-        
-        <div class="menu-section">Mon Compte</div>
-        <a href="{{ path('app_home') }}" class="menu-item">
-            <i class="fas fa-arrow-left"></i>
-            Retour au site
-        </a>
-        <a href="{{ path('app_logout') }}" class="menu-item">
-            <i class="fas fa-sign-out-alt"></i>
-            Déconnexion
-        </a>
-    </div>
-    
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Top Header -->
-        <div class="top-header">
-            <h2><i class="fas fa-store me-2 text-success"></i>Mon Espace Vendeur</h2>
-            <div class="user-info">
-                <div class="text-end">
-                    <div style="font-weight: 600; color: #333;">{{ app.user.nomComplet|default(app.user.email) }}</div>
-                    <small class="text-muted">Vendeur</small>
-                </div>
-                <div class="user-avatar">
-                    {{ app.user.nomComplet|default(app.user.email)|slice(0, 2)|upper }}
-                </div>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-2 p-0" style="background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%); min-height: 100vh; position: fixed;">
+            <div class="p-3 text-white border-bottom border-secondary">
+                <h5 class="m-0"><i class="fas fa-leaf me-2"></i>KilysAgri</h5>
+            </div>
+            <div class="p-3">
+                <div class="text-uppercase text-muted small fw-bold mb-2">Principal</div>
+                <a href="{{ path('vendeur_dashboard') }}" class="d-block text-white text-decoration-none py-2">
+                    <i class="fas fa-th-large me-2"></i>Dashboard
+                </a>
+                <a href="{{ path('vendeur_produits') }}" class="d-block text-white-50 text-decoration-none py-2">
+                    <i class="fas fa-box me-2"></i>Mes Produits
+                </a>
+                <a href="{{ path('vendeur_commandes') }}" class="d-block text-white-50 text-decoration-none py-2">
+                    <i class="fas fa-shopping-cart me-2"></i>Commandes
+                </a>
+                
+                <div class="text-uppercase text-muted small fw-bold mt-4 mb-2">Gestion</div>
+                <a href="{{ path('kyc_status') }}" class="d-block text-white-50 text-decoration-none py-2">
+                    <i class="fas fa-id-card me-2"></i>Mon KYC
+                </a>
+                
+                <div class="text-uppercase text-muted small fw-bold mt-4 mb-2">Compte</div>
+                <a href="{{ path('app_home') }}" class="d-block text-white-50 text-decoration-none py-2">
+                    <i class="fas fa-arrow-left me-2"></i>Retour au site
+                </a>
+                <a href="{{ path('app_logout') }}" class="d-block text-white-50 text-decoration-none py-2">
+                    <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+                </a>
             </div>
         </div>
         
-        <!-- Content -->
-        <div class="content-wrapper">
-            <!-- Stats Cards -->
-            <div class="row g-4 mb-4">
-                <div class="col-md-6 col-xl-3">
-                    <div class="stat-card">
-                        <div class="stat-icon products">
-                            <i class="fas fa-box"></i>
-                        </div>
-                        <div class="stat-value">{{ produits|length }}</div>
-                        <div class="stat-label">Produits en vente</div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-xl-3">
-                    <div class="stat-card">
-                        <div class="stat-icon orders">
-                            <i class="fas fa-shopping-cart"></i>
-                        </div>
-                        <div class="stat-value">{{ commandes|length }}</div>
-                        <div class="stat-label">Commandes reçues</div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-xl-3">
-                    <div class="stat-card">
-                        <div class="stat-icon revenue">
-                            <i class="fas fa-dollar-sign"></i>
-                        </div>
-                        <div class="stat-value">{{ revenus|number_format(0, ',', ' ') }}</div>
-                        <div class="stat-label">Revenus (FCA)</div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-xl-3">
-                    <div class="stat-card">
-                        <div class="stat-icon kyc">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        {% if app.user.isKycValidated %}
-                            <div class="stat-value text-success">Validé</div>
-                            <div class="stat-label">Statut KYC</div>
-                        {% else %}
-                            <div class="stat-value text-warning">En attente</div>
-                            <div class="stat-label">Statut KYC</div>
+        <!-- Main Content -->
+        <div class="col-md-10 offset-md-2 p-4">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded shadow-sm">
+                <h4 class="m-0"><i class="fas fa-store me-2 text-success"></i>Mon Espace Vendeur</h4>
+                <div class="d-flex align-items-center">
+                    <a href="{{ path('messagerie_index') }}" class="btn btn-outline-secondary position-relative me-3" title="Messages">
+                        <i class="fas fa-bell"></i>
+                        {% if unreadMessages > 0 %}
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            {{ unreadMessages }}
+                        </span>
                         {% endif %}
+                    </a>
+                    <div class="d-flex align-items-center">
+                        <div class="text-end me-3">
+                            <div class="fw-bold">{{ app.user.nomComplet|default(app.user.email) }}</div>
+                            <small class="text-muted">Vendeur</small>
+                        </div>
+                        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                            {{ app.user.nomComplet|default(app.user.email)|slice(0, 2)|upper }}
+                        </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Quick Actions -->
-            <h5 class="section-title mb-4"><i class="fas fa-bolt"></i>Actions rapides</h5>
-            <div class="quick-actions mb-5">
-                <a href="{{ path('vendeur_produit_new') }}" class="quick-action-btn">
-                    <i class="fas fa-plus-circle text-success"></i>
-                    <span>Nouveau produit</span>
-                </a>
-                <a href="{{ path('vendeur_produits') }}" class="quick-action-btn">
-                    <i class="fas fa-boxes text-primary"></i>
-                    <span>Gérer produits</span>
-                </a>
-                <a href="{{ path('vendeur_commandes') }}" class="quick-action-btn">
-                    <i class="fas fa-clipboard-list text-info"></i>
-                    <span>Voir commandes</span>
-                </a>
-                <a href="{{ path('kyc_status') }}" class="quick-action-btn">
-                    <i class="fas fa-id-card text-warning"></i>
-                    <span>Mon KYC</span>
-                </a>
+            <!-- Stats Cards -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="text-success mb-2"><i class="fas fa-box fa-2x"></i></div>
+                            <h3 class="mb-0">{{ produits|length }}</h3>
+                            <small class="text-muted">Produits en vente</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="text-primary mb-2"><i class="fas fa-shopping-cart fa-2x"></i></div>
+                            <h3 class="mb-0">{{ commandes|length }}</h3>
+                            <small class="text-muted">Commandes reçues</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="text-warning mb-2"><i class="fas fa-dollar-sign fa-2x"></i></div>
+                            <h3 class="mb-0">{{ revenus|number_format(0, ',', ' ') }}</h3>
+                            <small class="text-muted">Revenus (FCA)</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="text-info mb-2"><i class="fas fa-shield-alt fa-2x"></i></div>
+                            {% if app.user.isKycValidated %}
+                                <h3 class="mb-0 text-success">Validé</h3>
+                            {% else %}
+                                <h3 class="mb-0 text-warning">En attente</h3>
+                            {% endif %}
+                            <small class="text-muted">Statut KYC</small>
+                        </div>
+                    </div>
+                </div>
             </div>
             
-            <!-- Recent Orders -->
-            <h5 class="section-title mb-4"><i class="fas fa-clock"></i>Commandes récentes</h5>
-            <div class="table-card">
-                {% if commandes|length > 0 %}
+            <!-- Actions -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <a href="{{ path('vendeur_produit_new') }}" class="text-decoration-none">
+                        <div class="card border-0 shadow-sm h-100 text-center p-4">
+                            <i class="fas fa-plus-circle fa-2x text-success mb-2"></i>
+                            <div class="text-dark">Nouveau produit</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="{{ path('vendeur_produits') }}" class="text-decoration-none">
+                        <div class="card border-0 shadow-sm h-100 text-center p-4">
+                            <i class="fas fa-boxes fa-2x text-primary mb-2"></i>
+                            <div class="text-dark">Gérer produits</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="{{ path('vendeur_commandes') }}" class="text-decoration-none">
+                        <div class="card border-0 shadow-sm h-100 text-center p-4">
+                            <i class="fas fa-clipboard-list fa-2x text-info mb-2"></i>
+                            <div class="text-dark">Voir commandes</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="{{ path('kyc_status') }}" class="text-decoration-none">
+                        <div class="card border-0 shadow-sm h-100 text-center p-4">
+                            <i class="fas fa-id-card fa-2x text-warning mb-2"></i>
+                            <div class="text-dark">Mon KYC</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Commandes -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="m-0">Commandes récentes</h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if commandes|length > 0 %}
                     <div class="table-responsive">
-                        <table class="custom-table">
-                            <thead>
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
                                 <tr>
-                                    <th>Commande</th>
+                                    <th class="ps-4">Commande</th>
                                     <th>Client</th>
                                     <th>Montant</th>
                                     <th>Statut</th>
                                     <th>Date</th>
-                                    <th>Actions</th>
+                                    <th class="pe-4">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for commande in commandes|slice(0, 10) %}
-                                    <tr>
-                                        <td><strong>#{{ commande.id }}</strong></td>
-                                        <td>{{ commande.utilisateur.nomComplet|default(commande.utilisateur.email) }}</td>
-                                        <td><strong>{{ commande.total|number_format(0, ',', ' ') }} FCA</strong></td>
-                                        <td>
-                                            {% if commande.status == 'en_attente' %}
-                                                <span class="status-badge pending">En attente</span>
-                                            {% elseif commande.status == 'confirme' %}
-                                                <span class="status-badge confirmed">Confirmée</span>
-                                            {% elseif commande.status == 'en_cours' %}
-                                                <span class="status-badge processing">En cours</span>
-                                            {% elseif commande.status == 'livre' %}
-                                                <span class="status-badge delivered">Livrée</span>
-                                            {% else %}
-                                                <span class="status-badge">{{ commande.status }}</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>{{ commande.dateCommande|date('d/m/Y') }}</td>
-                                        <td>
-                                            <a href="{{ path('commande_details', {id: commande.id}) }}" class="action-btn" title="Voir détails">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td class="ps-4"><strong>#{{ commande.id }}</strong></td>
+                                    <td>{{ commande.utilisateur.nomComplet|default(commande.utilisateur.email) }}</td>
+                                    <td><strong>{{ commande.total|number_format(0, ',', ' ') }} FCA</strong></td>
+                                    <td>
+                                        {% if commande.status == 'en_attente' %}
+                                            <span class="badge bg-warning text-dark">En attente</span>
+                                        {% elseif commande.status == 'confirme' %}
+                                            <span class="badge bg-success">Confirmée</span>
+                                        {% elseif commande.status == 'en_cours' %}
+                                            <span class="badge bg-primary">En cours</span>
+                                        {% elseif commande.status == 'livre' %}
+                                            <span class="badge bg-info text-dark">Livrée</span>
+                                        {% elseif commande.status == 'annule' or commande.status == 'annulé' %}
+                                            <span class="badge bg-danger">Annulé</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ commande.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ commande.dateCommande|date('d/m/Y') }}</td>
+                                    <td class="pe-4">
+                                        <a href="{{ path('commande_details', {id: commande.id}) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
-                {% else %}
-                    <div class="empty-state">
-                        <i class="fas fa-shopping-basket"></i>
-                        <h4>Aucune commande pour le moment</h4>
-                        <p>Vos commandes apparaîtront ici dès qu'un client passera une commande</p>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-shopping-basket fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Aucune commande pour le moment</p>
                     </div>
-                {% endif %}
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>

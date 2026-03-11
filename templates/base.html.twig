@@ -7,244 +7,602 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-        }
-        .navbar {
-            background: linear-gradient(135deg, #198754 0%, #146c43 100%) !important;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-        }
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.5rem;
-        }
-        .btn-success {
-            background-color: #198754;
-            border-color: #198754;
-        }
-        .btn-success:hover {
-            background-color: #146c43;
-            border-color: #146c43;
-        }
-        .card {
-            border: none;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            border-radius: 10px;
-        }
-        .section-title {
-            font-weight: 700;
-            color: #1a1a2e;
-            margin-bottom: 1.5rem;
-        }
-        footer {
-            background: linear-gradient(135deg, #198754 0%, #146c43 100%);
-            color: white;
-            padding: 4rem 0 2rem;
+    <link rel="stylesheet" href="{{ asset('css/dropdown.css') }}">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; }
+        .navbar { background: linear-gradient(135deg, #198754 0%, #146c43 100%) !important; box-shadow: 0 2px 15px rgba(0,0,0,0.1); }
+        .navbar-brand { font-weight: 700; font-size: 1.5rem; }
+        .btn-success { background-color: #198754; border-color: #198754; }
+        .btn-success:hover { background-color: #146c43; border-color: #146c43; }
+        .card { border: none; box-shadow: 0 0 10px rgba(0,0,0,0.1); border-radius: 10px; }
+        .section-title { font-weight: 700; color: #1a1a2e; margin-bottom: 1.5rem; }
+        .profile-dropdown { position: relative; }
+        .profile-btn { background: transparent; border: none; padding: 5px 10px; border-radius: 25px; color: white; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .profile-btn:hover { background: rgba(255,255,255,0.1); }
+        .profile-btn .avatar { width: 32px; height: 32px; background: white; color: #198754; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+        .profile-btn .name { font-weight: 600; font-size: 0.9rem; }
+        .profile-menu { position: absolute; top: 100%; right: 0; width: 280px; background: white; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); display: none; z-index: 1000; overflow: hidden; }
+        .profile-menu.show { display: block; }
+        .profile-menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 999; display: none; }
+        .profile-menu-overlay.show { display: block; }
+        .profile-menu-header { background: #198754; color: white; padding: 15px; text-align: center; }
+        .profile-menu-header .user-name { font-weight: 600; font-size: 1rem; }
+        .profile-menu-header .user-email { font-size: 0.8rem; opacity: 0.9; }
+        .profile-menu-section { padding: 10px 0; }
+        .profile-menu-link { display: flex; align-items: center; padding: 12px 20px; color: #333; text-decoration: none; font-size: 0.9rem; transition: all 0.2s; }
+        .profile-menu-link:hover { background: #198754; color: white; }
+        .profile-menu-link:hover i { color: white !important; }
+        .profile-menu-link i { width: 25px; color: #198754; }
+        .profile-menu-link.text-danger i { color: #dc3545; }
+        .profile-menu-link.text-danger:hover { background: #dc3545; color: white; }
+        .profile-menu-link.text-danger:hover i { color: white !important; }
+        .profile-menu-divider { border-top: 1px solid #eee; margin: 5px 0; }
+    </style>
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+    <div class="profile-menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ path('app_home') }}"><i class="fas fa-leaf me-2"></i>KilysAgri</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ path('app_home') }}">Accueil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('produits_index') }}">Produits</a></li>
+                    {% if is_granted('ROLE_VENDEUR') %}
+                    <li class="nav-item"><a class="nav-link" href="{{ path('vendeur_dashboard') }}">Mon Espace</a></li>
+                    {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item"><a class="nav-link" href="{{ path('admin_dashboard') }}">Admin</a></li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    {% if app.user %}
+                        <li class="nav-item">
+                            <a class="nav-link position-relative" href="{{ path('panier_index') }}">
+                                <i class="fas fa-shopping-cart"></i>
+                                {% set panier = app.session.get('panier', []) %}
+                                {% set totalItems = panier|reduce((carry, v) => carry + v, 0) %}
+                                {% if totalItems > 0 %}
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">{{ totalItems }}</span>
+                                {% endif %}
+                            </a>
+                        </li>
+                        <li class="nav-item profile-dropdown">
+                            <button class="profile-btn" onclick="toggleMenu(event)">
+                                <span class="avatar"><i class="fas fa-user"></i></span>
+                                <span class="name">{% if app.user.nomComplet %}{{ app.user.nomComplet }}{% else %}{{ app.user.email|split('@')[0] }}{% endif %}</span>
+                            </button>
+                            <div class="profile-menu" id="profileMenu">
+                                <div class="profile-menu-header">
+                                    <div class="user-name">{% if app.user.nomComplet %}{{ app.user.nomComplet }}{% else %}Utilisateur{% endif %}</div>
+                                    <div class="user-email">{{ app.user.email }}</div>
+                                <div class="profile-menu-section">
+                                    <a href="{{ path('app_profile') }}" class="profile-menu-link"><i class="fas fa-user"></i> Mon profil</a>
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                    <a href="{{ path('admin_dashboard') }}" class="profile-menu-link"><i class="fas fa-cogs"></i> Tableau de bord Admin</a>
+                                    {% endif %}
+                                    {% if app.user.isVendeur %}
+                                    <a href="{{ path('vendeur_dashboard') }}" class="profile-menu-link"><i class="fas fa-store"></i> Mon espace vendeur</a>
+                                    {% endif %}
+                                    <a href="{{ path('commande_mes_commandes') }}" class="profile-menu-link"><i class="fas fa-box"></i> Mes commandes</a>
+                                    <a href="{{ path('messagerie_index') }}" class="profile-menu-link"><i class="fas fa-comments"></i> Messages</a>
+                                    {% if not app.user.isVendeur %}
+                                    <a href="{{ path('devenir_vendeur') }}" class="profile-menu-link"><i class="fas fa-store"></i> Devenir vendeur</a>
+                                    {% endif %}
+                                    <div class="profile-menu-divider"></div>
+                                    <a href="{{ path('app_logout') }}" class="profile-menu-link text-danger"><i class="fas fa-sign-out-alt"></i> Deconnexion</a>
+                                </div>
+                        </li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{{ path('app_login') }}">Connexion</a></li>
+                        <li class="nav-item"><a class="btn btn-light text-success ms-2" href="{{ path('app_register') }}">Inscription</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+    </nav>
+
+    <main style="margin-top: 70px; min-height: 60vh;">
+        {% block body %}{% endblock %}
+    </main>
+
+    {% block footer %}
+    <footer class="site-footer">
+        <div class="footer-wave">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+            </svg>
+        </div>
+        <div class="footer-main">
+            <div class="container">
+                <div class="row g-4">
+                    <!-- À propos -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-about">
+                            <div class="footer-brand mb-4">
+                                <i class="fas fa-leaf me-2"></i>KilysAgri
+                            </div>
+                            <p class="footer-description mb-4">
+                                Votre marketplace agricole de confiance au Benin. Achetez et vendez des produits frais directement des producteurs locaux.
+                            </p>
+                            <div class="footer-social">
+                                <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                                <a href="#" class="social-link" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                                <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                                <a href="#" class="social-link" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Liens rapides -->
+                    <div class="col-lg-2 col-md-6">
+                        <h5 class="footer-heading">Liens Rapides</h5>
+                        <ul class="footer-links">
+                            <li><a href="{{ path('app_home') }}"><i class="fas fa-chevron-right"></i>Accueil</a></li>
+                            <li><a href="{{ path('produits_index') }}"><i class="fas fa-chevron-right"></i>Produits</a></li>
+                            <li><a href="{{ path('app_register') }}"><i class="fas fa-chevron-right"></i>Devenir vendeur</a></li>
+                            <li><a href="{{ path('app_login') }}"><i class="fas fa-chevron-right"></i>Connexion</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Support -->
+                    <div class="col-lg-2 col-md-6">
+                        <h5 class="footer-heading">Support</h5>
+                        <ul class="footer-links">
+                            <li><a href="#"><i class="fas fa-chevron-right"></i>Centre d'aide</a></li>
+                            <li><a href="#"><i class="fas fa-chevron-right"></i>FAQ</a></li>
+                            <li><a href="#"><i class="fas fa-chevron-right"></i>Comment ça marche</a></li>
+                            <li><a href="#"><i class="fas fa-chevron-right"></i>Signaler un probleme</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Contact -->
+                    <div class="col-lg-4 col-md-6">
+                        <h5 class="footer-heading">Contactez-nous</h5>
+                        <ul class="footer-contact">
+                            <li>
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Cotonou, Benin</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-phone"></i>
+                                <a href="tel:+22901000000">+229 01 00 00 00</a>
+                            </li>
+                            <li>
+                                <i class="fas fa-envelope"></i>
+                                <a href="mailto:contact@kilysagri.com">contact@kilysagri.com</a>
+                            </li>
+                            <li>
+                                <i class="fas fa-clock"></i>
+                                <span>Lun - Sam: 8h - 20h</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Newsletter -->
+                <div class="newsletter-section">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6">
+                            <div class="newsletter-content">
+                                <i class="fas fa-paper-plane"></i>
+                                <div>
+                                    <h5>Abonnez-vous a notre newsletter</h5>
+                                    <p>Recevez les dernieres nouvelles et offres speciales</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Merci pour votre inscription!');">
+                                <input type="email" placeholder="Votre adresse email" required>
+                                <button type="submit">S'abonner</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Methodes de paiement -->
+                <div class="payment-methods">
+                    <span><i class="fas fa-lock"></i> Paiement securise</span>
+                    <div class="payment-icons">
+                        <i class="fab fa-cc-visa" title="Visa"></i>
+                        <i class="fab fa-cc-mastercard" title="Mastercard"></i>
+                        <i class="fab fa-cc-paypal" title="PayPal"></i>
+                        <i class="fab fa-mobile-alt" title="Mobile Money"></i>
+                        <i class="fas fa-money-bill-wave" title="Especes"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6 text-center text-md-start">
+                        <p class="mb-0">&copy; {{ "now"|date("Y") }} <strong>KilysAgri</strong>. Tous droits reserves.</p>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <div class="footer-legal">
+                            <a href="#">Mentions legales</a>
+                            <span class="divider">|</span>
+                            <a href="#">Politique de confidentialite</a>
+                            <span class="divider">|</span>
+                            <a href="#">CGV</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll to top button -->
+        <a href="#" class="scroll-to-top" aria-label="Retour en haut">
+            <i class="fas fa-arrow-up"></i>
+        </a>
+    </footer>
+    <style>
+        .site-footer {
+            position: relative;
             margin-top: 0;
+            background: linear-gradient(135deg, #198754 0%, #0d4d2e 50%, #146c43 100%);
+            color: white;
+            overflow: hidden;
         }
+        
+        .footer-wave {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+            transform: rotate(180deg);
+        }
+        
+        .footer-wave svg {
+            position: relative;
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 50px;
+        }
+        
+        .footer-wave .shape-fill {
+            fill: #f8f9fa;
+        }
+        
+        .footer-main {
+            padding: 80px 0 40px;
+        }
+        
         .footer-brand {
             font-size: 1.8rem;
             font-weight: 700;
-            margin-bottom: 1rem;
-        }
-        .footer-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            position: relative;
-            padding-bottom: 0.5rem;
-        }
-        .footer-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 40px;
-            height: 3px;
-            background: rgba(255,255,255,0.5);
-            border-radius: 2px;
-        }
-        .footer-links {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .footer-links li {
-            margin-bottom: 0.75rem;
-        }
-        .footer-links a {
-            color: rgba(255,255,255,0.85);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-        .footer-links a:hover {
             color: white;
-            padding-left: 8px;
         }
+        
+        .footer-description {
+            color: rgba(255,255,255,0.8);
+            line-height: 1.7;
+        }
+        
         .footer-social {
             display: flex;
-            gap: 15px;
-            margin-top: 1.5rem;
+            gap: 12px;
         }
-        .footer-social a {
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.15);
+        
+        .social-link {
+            width: 42px;
+            height: 42px;
+            background: rgba(255,255,255,0.1);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
         }
-        .footer-social a:hover {
+        
+        .social-link:hover {
             background: white;
             color: #198754;
-            transform: translateY(-3px);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
-        .footer-bottom {
-            border-top: 1px solid rgba(255,255,255,0.2);
-            padding-top: 2rem;
-            margin-top: 3rem;
-            text-align: center;
+        
+        .footer-heading {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.75rem;
+            color: white;
+        }
+        
+        .footer-heading::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 2px;
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.85rem;
+        }
+        
+        .footer-links a {
             color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+            padding-left: 10px;
+        }
+        
+        .footer-links i {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .footer-contact {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .footer-contact li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 1rem;
+            color: rgba(255,255,255,0.85);
+        }
+        
+        .footer-contact i {
+            width: 20px;
+            margin-top: 4px;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .footer-contact a {
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-contact a:hover {
+            color: white;
+        }
+        
+        .newsletter-section {
+            background: rgba(255,255,255,0.08);
+            border-radius: 15px;
+            padding: 25px 30px;
+            margin: 40px 0 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .newsletter-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .newsletter-content i {
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .newsletter-content h5 {
+            margin: 0 0 5px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .newsletter-content p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .newsletter-form {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .newsletter-form input {
+            flex: 1;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.95);
+            font-size: 0.95rem;
+        }
+        
+        .newsletter-form input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+        }
+        
+        .newsletter-form button {
+            padding: 12px 25px;
+            background: white;
+            color: #198754;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .newsletter-form button:hover {
+            background: #ffc107;
+            color: #1a1a2e;
+            transform: scale(1.02);
+        }
+        
+        .payment-methods {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px 0;
+            border-top: 1px solid rgba(255,255,255,0.15);
+            margin-top: 20px;
+        }
+        
+        .payment-methods > span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+        }
+        
+        .payment-icons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .payment-icons i {
+            font-size: 1.5rem;
+            color: rgba(255,255,255,0.8);
+            transition: all 0.3s;
+        }
+        
+        .payment-icons i:hover {
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .footer-bottom {
+            background: rgba(0,0,0,0.2);
+            padding: 20px 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .footer-bottom p {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+        }
+        
+        .footer-legal {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .footer-legal a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s;
+        }
+        
+        .footer-legal a:hover {
+            color: white;
+        }
+        
+        .footer-legal .divider {
+            color: rgba(255,255,255,0.4);
+        }
+        
+        .scroll-to-top {
+            position: absolute;
+            bottom: 80px;
+            right: 25px;
+            width: 45px;
+            height: 45px;
+            background: #ffc107;
+            color: #1a1a2e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .scroll-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .newsletter-section .row {
+                text-align: center;
+            }
+            
+            .newsletter-content {
+                justify-content: center;
+                margin-bottom: 15px;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+            
+            .payment-methods {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .footer-bottom .row {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .scroll-to-top {
+                bottom: 20px;
+                right: 20px;
+            }
         }
     </style>
-    {% block stylesheets %}{% endblock %}
-</head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="{{ path('app_home') }}">
-                <i class="fas fa-leaf me-2"></i>KilysAgri
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_home') }}">Accueil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('produits_index') }}">Produits</a>
-                    </li>
-                    {% if is_granted('ROLE_VENDEUR') %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('vendeur_dashboard') }}">Mon Espace</a>
-                    </li>
-                    {% endif %}
-                    {% if is_granted('ROLE_ADMIN') %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('admin_dashboard') }}">Admin</a>
-                    </li>
-                    {% endif %}
-                </ul>
-                <ul class="navbar-nav">
-                    {% if app.user %}
-                        {% if not app.user.isVendeur %}
-                        <li class="nav-item">
-                            <a class="nav-link text-warning" href="{{ path('kyc_submit') }}">
-                                <i class="fas fa-store"></i> Devenir vendeur
-                            </a>
-                        </li>
-                        {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('panier_index') }}">
-                                <i class="fas fa-shopping-cart"></i> Panier
-                            </a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle me-1"></i> 
-                                {% if app.user.nomComplet %}
-                                    {{ app.user.nomComplet }}
-                                {% else %}
-                                    {{ app.user.email }}
-                                {% endif %}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                {% if app.user.nomComplet %}
-                                <li><span class="dropdown-item-text text-muted small">
-                                    <i class="fas fa-envelope me-1"></i>{{ app.user.email }}
-                                </span></li>
-                                {% if app.user.telephone %}
-                                <li><span class="dropdown-item-text text-muted small">
-                                    <i class="fas fa-phone me-1"></i>{{ app.user.telephone }}
-                                </span></li>
-                                {% endif %}
-                                <li><hr class="dropdown-divider"></li>
-                                {% endif %}
-                                {% if app.user.isVendeur %}
-                                <li><a class="dropdown-item" href="{{ path('vendeur_dashboard') }}"><i class="fas fa-store me-2"></i>Mon espace vendeur</a></li>
-                                {% endif %}
-                                <li><a class="dropdown-item" href="{{ path('commande_mes_commandes') }}"><i class="fas fa-shopping-bag me-2"></i>Mes commandes</a></li>
-                                <li><a class="dropdown-item" href="{{ path('kyc_status') }}"><i class="fas fa-id-card me-2"></i>Mon statut KYC</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-danger" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Déconnexion</a></li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn btn-light text-success ms-2" href="{{ path('app_register') }}">Inscription</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-    </nav>
-
-    <!-- Main Content -->
-<main style="margin-top: 70px; min-height: 60vh;">
-        {% block body %}{% endblock %}
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 mb-4 mb-lg-0">
-                    <div class="footer-brand">
-                        <i class="fas fa-leaf me-2"></i>KilysAgri
-                    </div>
-                    <p class="mb-3">Votre marketplace agricole de confiance au Benin. Achetez et vendez des produits frais directement des producteurs locaux.</p>
-                    <div class="footer-social">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-whatsapp"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-4 mb-4 mb-lg-0">
-                    <h5 class="footer-title">Liens Rapides</h5>
-                    <ul class="footer-links">
-                        <li><a href="{{ path('produits_index') }}"><i class="fas fa-chevron-right me-2"></i>Produits</a></li>
-                        <li><a href="{{ path('app_register') }}"><i class="fas fa-chevron-right me-2"></i>Devenir vendeur</a></li>
-                        <li><a href="{{ path('app_login') }}"><i class="fas fa-chevron-right me-2"></i>Connexion</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right me-2"></i>A propos</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-4">
-                    <h5 class="footer-title">Contact</h5>
-                    <ul class="footer-links">
-                        <li><a href="mailto:contact@kilysagri.com"><i class="fas fa-envelope me-2"></i>contact@kilysagri.com</a></li>
-                        <li><a href="tel:+22901000000"><i class="fas fa-phone me-2"></i>+229 01 00 00 00</a></li>
-                        <li><a href="#"><i class="fas fa-map-marker-alt me-2"></i>Cotonou, Benin</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p class="mb-0">&copy; {{ "now"|date("Y") }} KilysAgri. Tous droits réservés.</p>
-            </div>
-        </div>
-    </footer>
+    {% endblock %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleMenu(event) {
+            event.stopPropagation();
+            document.getElementById('profileMenu').classList.toggle('show');
+            document.getElementById('menuOverlay').classList.toggle('show');
+        }
+        function closeMenu() {
+            document.getElementById('profileMenu').classList.remove('show');
+            document.getElementById('menuOverlay').classList.remove('show');
+        }
+        document.addEventListener('click', function(event) {
+            var menu = document.getElementById('profileMenu');
+            var btn = document.querySelector('.profile-btn');
+            if (menu.classList.contains('show') && !menu.contains(event.target) && !btn.contains(event.target)) {
+                closeMenu();
+            }
+        });
+    </script>
     {% block javascripts %}{% endblock %}
 </body>
 </html>

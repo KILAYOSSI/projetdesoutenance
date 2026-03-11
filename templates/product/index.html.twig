@@ -103,13 +103,22 @@
                                 <span class="product-price">{{ produit.prix|number_format(0, ',', ' ') }} FCA</span>
                             </div>
                             
-                            <div class="product-actions">
+<div class="product-actions">
                                 <a href="{{ path('produits_detail', {id: produit.id}) }}" class="btn-view">
                                     <i class="fas fa-eye"></i> Voir
                                 </a>
-                                <a href="{{ path('produits_detail', {id: produit.id}) }}" class="btn-cart">
+                                {% if app.user %}
+                                <form method="post" action="{{ path('panier_ajouter', {id: produit.id}) }}" style="display:inline;">
+                                    <input type="hidden" name="quantite" value="1">
+                                    <button type="submit" class="btn-cart" style="border:none;cursor:pointer;">
+                                        <i class="fas fa-cart-plus"></i> Ajouter
+                                    </button>
+                                </form>
+                                {% else %}
+                                <a href="{{ path('app_login') }}?redirect={{ path('produits_detail', {id: produit.id})|url_encode }}" class="btn-cart">
                                     <i class="fas fa-shopping-cart"></i> Commander
                                 </a>
+                                {% endif %}
                             </div>
                         </div>
                     </article>
@@ -168,13 +177,19 @@
                             <span class="product-price">{{ produit.prix|number_format(0, ',', ' ') }} FCA</span>
                         </div>
                         
-                        <div class="product-actions">
+<div class="product-actions">
                             <a href="{{ path('produits_detail', {id: produit.id}) }}" class="btn-view">
                                 <i class="fas fa-eye"></i> Voir
                             </a>
+                            {% if app.user %}
                             <a href="{{ path('produits_detail', {id: produit.id}) }}" class="btn-cart">
                                 <i class="fas fa-shopping-cart"></i> Commander
                             </a>
+                            {% else %}
+                            <a href="{{ path('app_login') }}?redirect={{ path('produits_detail', {id: produit.id})|url_encode }}" class="btn-cart">
+                                <i class="fas fa-shopping-cart"></i> Commander
+                            </a>
+                            {% endif %}
                         </div>
                     </div>
                 </article>
@@ -406,7 +421,7 @@
 
 .product-image-container {
     position: relative;
-    height: 180px;
+    height: 200px;
     background: #fafafa;
     display: flex;
     align-items: center;
@@ -415,14 +430,14 @@
 }
 
 .product-img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     transition: transform 0.3s ease;
 }
 
 .product-card:hover .product-img {
-    transform: scale(1.05);
+    transform: scale(1.08);
 }
 
 .stock-badge {

@@ -1,0 +1,436 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vérification KYC - KilysAgri{% endblock %}
+
+{% block body %}
+<!-- Header -->
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <a href="{{ path('devenir_vendeur') }}">Devenir vendeur</a>
+        <span class="separator">/</span>
+<a href="{{ path('devenir_vendeur_step2') }}">Informations</a>
+        <span class="separator">/</span>
+        <span class="current">Vérification</span>
+    </div>
+</nav>
+
+<main class="kyc-page">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="kyc-card">
+                    <div class="card-header">
+                        <h1><i class="fas fa-shield-alt"></i> Vérification de votre identité</h1>
+                        <p>Veuillez fournir vos documents d'identité pour devenir vendeur sur KilysAgri</p>
+                    </div>
+                    
+                    <div class="steps-indicator">
+                        <div class="step completed">
+                            <div class="step-number"><i class="fas fa-check"></i></div>
+                            <div class="step-label">Informations</div>
+                        </div>
+                        <div class="step-line completed"></div>
+                        <div class="step active">
+                            <div class="step-number">2</div>
+                            <div class="step-label">Vérification</div>
+                        </div>
+                        <div class="step-line"></div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-label">Validation</div>
+                        </div>
+                    </div>
+
+                    {{ form_start(form) }}
+                    <div class="form-section">
+                        <h3><i class="fas fa-id-card"></i> Pièce d'identité</h3>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form_label(form.typePiece) }}
+                                    {{ form_widget(form.typePiece) }}
+                                    {{ form_errors(form.typePiece) }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form_label(form.numeroPiece) }}
+                                    {{ form_widget(form.numeroPiece) }}
+                                    {{ form_errors(form.numeroPiece) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3><i class="fas fa-camera"></i> Photos de la pièce</h3>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="upload-box">
+                                    <label>{{ form_label(form.photoPieceRecto) }}</label>
+                                    <div class="file-upload">
+                                        <input type="file" id="photoPieceRecto" name="photoPieceRecto" accept="image/*" required>
+                                        <div class="upload-content">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <span>Cliquez pour uploader</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="upload-box">
+                                    <label>{{ form_label(form.photoPieceVerso) }}</label>
+                                    <div class="file-upload">
+                                        <input type="file" id="photoPieceVerso" name="photoPieceVerso" accept="image/*">
+                                        <div class="upload-content">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <span>Cliquez pour uploader</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3><i class="fas fa-user-circle"></i> Photo selfie</h3>
+                        <p class="section-info">Prenez une photo de vous tenant votre pièce d'identité à côté de votre visage. Cela nous aide à vérifier que vous êtes bien le titulaire de la pièce.</p>
+                        
+                        <div class="upload-box selfie-upload">
+                            <label>{{ form_label(form.photoSelfie) }}</label>
+                            <div class="file-upload">
+                                <input type="file" id="photoSelfie" name="photoSelfie" accept="image/*" capture="user" required>
+                                <div class="upload-content">
+                                    <i class="fas fa-camera"></i>
+                                    <span>Cliquez pour prendre une photo</span>
+                                    <small>ou utilisez la caméra</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+<a href="{{ path('devenir_vendeur_step2') }}" class="btn-back">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </a>
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-check"></i> Soumettre ma demande
+                        </button>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<style>
+.breadcrumb-nav {
+    background: white;
+    padding: 15px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+ .container {
+   .breadcrumb-nav display: flex;
+    align-items: center;
+}
+
+.breadcrumb-nav a {
+    color: #0066c0;
+    text-decoration: none;
+}
+
+.breadcrumb-nav .separator {
+    margin: 0 10px;
+    color: #999;
+}
+
+.breadcrumb-nav .current {
+    color: #333;
+}
+
+.kyc-page {
+    background: #f8f9fa;
+    padding: 40px 0 60px;
+    min-height: 80vh;
+}
+
+.kyc-card {
+    background: white;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.card-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.card-header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 10px;
+}
+
+.card-header h1 i {
+    color: #198754;
+    margin-right: 10px;
+}
+
+.card-header p {
+    color: #666;
+    font-size: 1rem;
+}
+
+.steps-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    background: #e9ecef;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.step.completed .step-number {
+    background: #198754;
+    color: white;
+}
+
+.step.active .step-number {
+    background: #198754;
+    color: white;
+}
+
+.step-label {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.step.active .step-label {
+    color: #198754;
+    font-weight: 600;
+}
+
+.step-line {
+    width: 80px;
+    height: 2px;
+    background: #e9ecef;
+    margin: 0 10px;
+    margin-bottom: 25px;
+}
+
+.step-line.completed {
+    background: #198754;
+}
+
+.form-section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.form-section:last-of-type {
+    border-bottom: none;
+}
+
+.form-section h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-section h3 i {
+    color: #198754;
+}
+
+.section-info {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.form-group .form-control {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+}
+
+.form-group .form-control:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.1);
+    outline: none;
+}
+
+.upload-box label {
+    display: block;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.file-upload {
+    position: relative;
+    border: 2px dashed #ddd;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.file-upload:hover {
+    border-color: #198754;
+    background: #f8f9f8;
+}
+
+.file-upload input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: #666;
+}
+
+.upload-content i {
+    font-size: 2.5rem;
+    color: #198754;
+}
+
+.upload-content span {
+    font-weight: 500;
+}
+
+.upload-content small {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.selfie-upload {
+    background: #f8f9fa;
+    border-color: #198754;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 25px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    color: #666;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-back:hover {
+    background: #f8f9fa;
+    color: #333;
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(25, 135, 84, 0.4);
+}
+
+@media (max-width: 768px) {
+    .kyc-card {
+        padding: 25px;
+    }
+    
+    .steps-indicator {
+        flex-wrap: wrap;
+    }
+    
+    .step-line {
+        width: 40px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .btn-back,
+    .btn-submit {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
+

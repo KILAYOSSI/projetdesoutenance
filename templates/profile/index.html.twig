@@ -1,0 +1,320 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Profil - KilysAgri{% endblock %}
+
+{% block body %}
+<!-- Breadcrumb -->
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <a href="{{ path('app_home') }}">Accueil</a>
+        <span class="separator">/</span>
+        <span class="current">Mon Profil</span>
+    </div>
+</nav>
+
+<main class="profile-page">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Flash Messages -->
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>{{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+
+                <!-- Profile Card -->
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3 class="profile-title">Mon Profil</h3>
+                    </div>
+
+                    <form method="post" class="profile-form">
+                        <div class="form-group">
+                            <label for="nomComplet">Nom complet</label>
+                            <input type="text" id="nomComplet" name="nomComplet" 
+                                   value="{{ user.nomComplet ?: '' }}" 
+                                   placeholder="Entrez votre nom complet"
+                                   class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" 
+                                   value="{{ user.email }}" 
+                                   disabled
+                                   class="form-control">
+                            <small class="text-muted">L'email ne peut pas être modifié</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="telephone">Téléphone</label>
+                            <input type="tel" id="telephone" name="telephone" 
+                                   value="{{ user.telephone ?: '' }}" 
+                                   placeholder="Entrez votre numéro de téléphone"
+                                   class="form-control">
+                        </div>
+
+                        <!-- Statut Badge -->
+                        <div class="form-group">
+                            <label>Statut du compte</label>
+                            <div class="status-badges">
+                                {% if user.isVerified %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check-circle me-1"></i> Email vérifié
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fas fa-clock me-1"></i> En attente de vérification
+                                    </span>
+                                {% endif %}
+                                
+                                {% if user.isVendeur %}
+                                    <span class="badge bg-primary">
+                                        <i class="fas fa-store me-1"></i> Vendeur
+                                    </span>
+                                {% endif %}
+                                
+                                {% if user.isKycValidated %}
+                                    <span class="badge bg-info">
+                                        <i class="fas fa-id-card me-1"></i> KYC validé
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-save">
+                                <i class="fas fa-save"></i> Enregistrer les modifications
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Back Link -->
+                <div class="text-center mt-4">
+                    <a href="{{ path('app_home') }}" class="back-link">
+                        <i class="fas fa-arrow-left"></i> Retour à l'accueil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<style>
+/* Breadcrumb */
+.breadcrumb-nav {
+    background: white;
+    padding: 15px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.breadcrumb-nav .container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.breadcrumb-nav a {
+    color: #0066c0;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.breadcrumb-nav a:hover {
+    color: #c45500;
+}
+
+.breadcrumb-nav .separator {
+    margin: 0 10px;
+    color: #999;
+}
+
+.breadcrumb-nav .current {
+    color: #333;
+    font-size: 0.9rem;
+}
+
+/* Profile Page */
+.profile-page {
+    background: #f8f9fa;
+    padding: 40px 0 60px;
+    min-height: 80vh;
+}
+
+/* Profile Card */
+.profile-card {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+}
+
+.profile-avatar i {
+    font-size: 2.5rem;
+    color: white;
+}
+
+.profile-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+/* Form */
+.profile-form .form-group {
+    margin-bottom: 20px;
+}
+
+.profile-form label {
+    display: block;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.profile-form .form-control {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+}
+
+.profile-form .form-control:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.1);
+    outline: none;
+}
+
+.profile-form .form-control:disabled {
+    background: #f8f9fa;
+    color: #6c757d;
+}
+
+.profile-form small {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.8rem;
+}
+
+/* Status Badges */
+.status-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.status-badges .badge {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Form Actions */
+.form-actions {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.btn-save {
+    width: 100%;
+    background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+    color: white;
+    border: none;
+    padding: 14px 25px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s;
+}
+
+.btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
+}
+
+/* Back Link */
+.back-link {
+    color: #0066c0;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.3s;
+}
+
+.back-link:hover {
+    color: #c45500;
+}
+
+.back-link i {
+    margin-right: 5px;
+}
+
+/* Alert */
+.alert {
+    border-radius: 8px;
+    border: none;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .profile-page {
+        padding: 20px 0 40px;
+    }
+    
+    .profile-card {
+        padding: 20px;
+    }
+    
+    .profile-title {
+        font-size: 1.3rem;
+    }
+    
+    .status-badges {
+        flex-direction: column;
+    }
+    
+    .status-badges .badge {
+        width: 100%;
+        text-align: center;
+    }
+}
+</style>
+{% endblock %}
+

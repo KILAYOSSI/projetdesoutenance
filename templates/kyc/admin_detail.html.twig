@@ -1,0 +1,176 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails KYC - KilysAgri Admin{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-id-card-alt me-2"></i>Détails de la demande KYC</h2>
+        <a href="{{ path('kyc_admin_list') }}" class="btn btn-secondary">Retour à la liste</a>
+    </div>
+
+    <!-- Informations du vendeur -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="fas fa-user me-2"></i>Informations du vendeur</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Nom complet:</strong> {{ kyc.utilisateur.nomComplet|default('Non fourni') }}</p>
+                    <p><strong>Email:</strong> {{ kyc.utilisateur.email }}</p>
+                    <p><strong>Téléphone:</strong> {{ kyc.utilisateur.telephone|default('Non fourni') }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Type de pièce:</strong> 
+                        {% if kyc.typePiece == 'cni' %}CNI
+                        {% elseif kyc.typePiece == 'passeport' %}Passeport
+                        {% else %}Permis de conduire{% endif %}
+                    </p>
+                    <p><strong>Numéro de pièce:</strong> {{ kyc.numeroPiece }}</p>
+                    <p><strong>Date de soumission:</strong> {{ kyc.createdAt|date('d/m/Y H:i') }}</p>
+                    <p><strong>Statut:</strong> 
+                        {% if kyc.status == 'en_attente' %}
+                            <span class="badge bg-warning">En attente</span>
+                        {% elseif kyc.status == 'validé' %}
+                            <span class="badge bg-success">Validé</span>
+                        {% else %}
+                            <span class="badge bg-danger">Rejeté</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Documents -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="fas fa-images me-2"></i>Documents fournis</h5>
+        </div>
+        <div class="card-body">
+            <div class="row text-center">
+                <!-- Photo Selfie -->
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="mb-0">Photo Selfie</h6>
+                        </div>
+                        <div class="card-body">
+                            {% if kyc.photoSelfie %}
+                                <img src="{{ asset(kyc.photoSelfie) }}" class="img-fluid rounded" style="max-height: 250px; object-fit: cover;">
+                            {% else %}
+                                <div class="text-muted py-5">Non fournie</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Photo Pièce Recto -->
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="mb-0">Pièce d'identité (Recto)</h6>
+                        </div>
+                        <div class="card-body">
+                            {% if kyc.photoPieceRecto %}
+                                <img src="{{ asset(kyc.photoPieceRecto) }}" class="img-fluid rounded" style="max-height: 250px; object-fit: cover;">
+                            {% else %}
+                                <div class="text-muted py-5">Non fournie</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Photo Pièce Verso -->
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="mb-0">Pièce d'identité (Verso)</h6>
+                        </div>
+                        <div class="card-body">
+                            {% if kyc.photoPieceVerso %}
+                                <img src="{{ asset(kyc.photoPieceVerso) }}" class="img-fluid rounded" style="max-height: 250px; object-fit: cover;">
+                            {% else %}
+                                <div class="text-muted py-5">Non fournie</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Motif de rejet (si rejeté) -->
+    {% if kyc.status == 'rejeté' %}
+    <div class="card shadow mb-4 border-danger">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0"><i class="fas fa-times-circle me-2"></i>Motif du rejet</h5>
+        </div>
+        <div class="card-body">
+            <p>{{ kyc.motif|default('Aucun motif fourni') }}</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Actions (si en attente) -->
+    {% if kyc.status == 'en_attente' %}
+    <div class="card shadow">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="fas fa-tasks me-2"></i>Actions</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- Valider -->
+                <div class="col-md-6">
+                    <div class="card border-success">
+                        <div class="card-body text-center">
+                            <h5 class="card-title text-success">Valider la demande</h5>
+                            <p class="card-text">Cliquez pour approuver cette demande KYC.</p>
+                            <a href="{{ path('kyc_admin_validate', {id: kyc.id, action: 'validate'}) }}" 
+                               class="btn btn-success btn-lg" 
+                               onclick="return confirm('Êtes-vous sûr de vouloir VALIDER cette demande KYC ?')">
+                                <i class="fas fa-check-circle me-2"></i>Valider
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rejeter -->
+                <div class="col-md-6">
+                    <div class="card border-danger">
+                        <div class="card-body">
+                            <h5 class="card-title text-danger">Rejeter la demande</h5>
+                            <p class="card-text">Veuillez fournir un motif pour le rejet.</p>
+                            <form method="post" action="{{ path('kyc_admin_validate', {id: kyc.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir REJETER cette demande KYC ?')">
+                                <input type="hidden" name="action" value="reject">
+                                <div class="mb-3">
+                                    <label for="motif" class="form-label">Motif du rejet <span class="text-danger">*</span></label>
+                                    <textarea class="form-control" id="motif" name="motif" rows="3" required placeholder="Expliquez pourquoi vous rejetez cette demande..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-danger btn-lg w-100">
+                                    <i class="fas fa-times-circle me-2"></i>Rejeter
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s;
+    }
+    .card:hover {
+        transform: none;
+    }
+    .img-fluid {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+</style>
+{% endblock %}
+

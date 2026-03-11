@@ -46,9 +46,9 @@
                             </td>
                             <td>{{ kyc.numeroPiece }}</td>
                             <td>
-                                <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#docsModal{{ kyc.id }}">
-                                    <i class="fas fa-image"></i> Voir
-                                </button>
+                                <a href="{{ path('kyc_admin_detail', {id: kyc.id}) }}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-eye"></i> Voir
+                                </a>
                             </td>
                             <td>
                                 <div class="btn-group" role="group">

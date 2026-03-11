@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Produit;
 use App\Entity\Commande;
 use App\Entity\LigneCommande;
+use App\Repository\ConversationRepository;
 use App\Form\ProduitType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,16 +29,12 @@ class VendeurController extends AbstractController
         $this->slugger = $slugger;
     }
 
-    /**
-     * Dashboard principal du vendeur
-     */
     #[Route('/dashboard', name: 'vendeur_dashboard')]
     #[IsGranted('ROLE_USER')]
-    public function dashboard(): Response
+    public function dashboard(ConversationRepository $conversationRepository): Response
     {
         $user = $this->getUser();
         
-        // Vérifier si l'utilisateur peut vendre
         if (!$user->canSell()) {
             if ($user->isVendeur()) {
                 return $this->redirectToRoute('kyc_status');
@@ -45,10 +42,8 @@ class VendeurController extends AbstractController
             return $this->redirectToRoute('kyc_submit');
         }
 
-        // Statistiques
         $produits = $this->entityManager->getRepository(Produit::class)->findBy(['utilisateur' => $user]);
         
-        // Calculer les revenus et récupérer les commandes
         $revenus = 0;
         $commandesList = [];
         
@@ -57,20 +52,26 @@ class VendeurController extends AbstractController
             foreach ($lignes as $ligne) {
                 $revenus += $ligne->getQuantite() * $ligne->getPrixUnitaire();
                 $commande = $ligne->getCommande();
-                // Regrouper les lignes par commande
                 if (!isset($commandesList[$commande->getId()])) {
                     $commandesList[$commande->getId()] = $commande;
                 }
             }
         }
 
-        // Convertir en tableau pour le tri
         $commandes = array_values($commandesList);
         
-        // Trier par date (plus récentes en premier)
         usort($commandes, function($a, $b) {
             return $b->getDateCommande() <=> $a->getDateCommande();
         });
+
+        // Get conversations for the user
+        $conversations = $conversationRepository->findByUser($user);
+        
+        // Calculate unread messages
+        $unreadMessages = 0;
+        foreach ($conversations as $conversation) {
+            $unreadMessages += $conversation->getUnreadCountForUser($user);
+        }
 
         return $this->render('vendeur/dashboard.html.twig', [
             'produits' => $produits,
@@ -78,12 +79,11 @@ class VendeurController extends AbstractController
             'commandes' => $commandes,
             'commandesCount' => count($commandes),
             'produitsCount' => count($produits),
+            'conversations' => $conversations,
+            'unreadMessages' => $unreadMessages,
         ]);
     }
 
-    /**
-     * Liste des produits du vendeur
-     */
     #[Route('/produits', name: 'vendeur_produits')]
     #[IsGranted('ROLE_USER')]
     public function produits(): Response
@@ -107,9 +107,6 @@ class VendeurController extends AbstractController
         ]);
     }
 
-    /**
-     * Ajouter un nouveau produit
-     */
     #[Route('/produits/new', name: 'vendeur_produit_new')]
     #[IsGranted('ROLE_USER')]
     public function newProduit(Request $request): Response
@@ -128,7 +125,6 @@ class VendeurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Upload image
             $imageFile = $form->get('imageFile')->getData();
             if ($imageFile) {
                 $produit->setImage($this->uploadFile($imageFile, 'produits'));
@@ -150,18 +146,14 @@ class VendeurController extends AbstractController
         ]);
     }
 
-    /**
-     * Modifier un produit
-     */
     #[Route('/produits/{id}/edit', name: 'vendeur_produit_edit')]
     #[IsGranted('ROLE_USER')]
     public function editProduit(Request $request, int $id): Response
     {
-        // Récupérer le produit manuellement depuis la base de données
-    $produit = $this->entityManager->getRepository(Produit::class)->find($id);
+        $produit = $this->entityManager->getRepository(Produit::class)->find($id);
 
         if (!$produit) {
-         throw $this->createNotFoundException('Produit non trouvé');
+            throw $this->createNotFoundException('Produit non trouvé');
         }
 
         $user = $this->getUser();
@@ -174,7 +166,6 @@ class VendeurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Upload image
             $imageFile = $form->get('imageFile')->getData();
             if ($imageFile) {
                 $produit->setImage($this->uploadFile($imageFile, 'produits'));
@@ -194,9 +185,6 @@ class VendeurController extends AbstractController
         ]);
     }
 
-    /**
-     * Supprimer un produit
-     */
     #[Route('/produits/{id}/delete', name: 'vendeur_produit_delete')]
     #[IsGranted('ROLE_USER')]
     public function deleteProduit(Produit $produit): Response
@@ -214,9 +202,6 @@ class VendeurController extends AbstractController
         return $this->redirectToRoute('vendeur_produits');
     }
 
-    /**
-     * Voir les commandes de mes produits
-     */
     #[Route('/commandes', name: 'vendeur_commandes')]
     #[IsGranted('ROLE_USER')]
     public function commandes(): Response
@@ -230,14 +215,11 @@ class VendeurController extends AbstractController
             return $this->redirectToRoute('kyc_submit');
         }
 
-        // Récupérer tous les produits du vendeur
         $produits = $this->entityManager->getRepository(Produit::class)->findBy(['utilisateur' => $user]);
         $produitIds = array_map(fn($p) => $p->getId(), $produits);
 
-        // Récupérer les lignes de commande liées à ces produits
         $lignes = $this->entityManager->getRepository(LigneCommande::class)->findBy(['produit' => $produitIds]);
 
-        // Regrouper par commande
         $commandes = [];
         foreach ($lignes as $ligne) {
             $commande = $ligne->getCommande();
@@ -257,9 +239,6 @@ class VendeurController extends AbstractController
         ]);
     }
 
-    /**
-     * Mettre à jour le statut d'une commande
-     */
     #[Route('/commandes/{id}/status', name: 'vendeur_commande_status')]
     #[IsGranted('ROLE_USER')]
     public function updateCommandeStatus(Request $request, int $id): Response
@@ -270,7 +249,6 @@ class VendeurController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        // Récupérer la commande manuellement
         $commande = $this->entityManager->getRepository(Commande::class)->find($id);
         
         if (!$commande) {
@@ -287,9 +265,6 @@ class VendeurController extends AbstractController
         return $this->redirectToRoute('vendeur_commandes');
     }
 
-    /**
-     * Upload d'un fichier
-     */
     private function uploadFile(UploadedFile $file, string $directory): string
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
@@ -304,4 +279,3 @@ class VendeurController extends AbstractController
         return '/uploads/' . $directory . '/' . $newFilename;
     }
 }
-

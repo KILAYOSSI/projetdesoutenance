@@ -11,7 +11,9 @@ Plateforme Web pour l'Accès aux Marchés et l'Amélioration de la Productivité
 
 ---
 
-## Liste des Tables
+## Liste des Tables (Triée par ordre logique)
+
+---
 
 ### 1. **user** (Utilisateur)
 | Colonne | Type | Nullable | Description |
@@ -19,260 +21,266 @@ Plateforme Web pour l'Accès aux Marchés et l'Amélioration de la Productivité
 | id | INT | NON | Clé primaire, auto-incrément |
 | email | VARCHAR(180) | NON | Email unique |
 | password | VARCHAR(255) | NON | Mot de passe hashé |
-| nom | VARCHAR(100) | NON | Nom |
-| prenom | VARCHAR(100) | NON | Prénom |
-| nom_complet | VARCHAR(255) | OUI | Nom complet |
-| telephone | VARCHAR(20) | OUI | Numéro de téléphone |
 | roles | JSON | NON | Rôles [ROLE_USER, ROLE_PRODUCTEUR, ROLE_ADMIN] |
-| is_verified | BOOLEAN | NON | Compte vérifié (email) |
-| is_vendeur | BOOLEAN | NON | Peut vendre (après KYC) |
-| is_kyc_validated | BOOLEAN | NON | KYC validé par admin |
+| is_verified | BOOLEAN | NON | Compte vérifié (email), défaut: false |
 | confirmation_code | VARCHAR(6) | OUI | Code OTP |
 | code_expires_at | DATETIME | OUI | Expiration du code OTP |
+| is_vendeur | BOOLEAN | NON | Peut vendre (après KYC), défaut: false |
+| is_kyc_validated | BOOLEAN | NON | KYC validé par admin, défaut: false |
+| nom_complet | VARCHAR(255) | OUI | Nom complet |
+| telephone | VARCHAR(20) | OUI | Numéro de téléphone |
 | created_at | DATETIME | NON | Date de création |
-| updated_at | DATETIME | OUI | Date de modification |
 
-**Rôle :** Gère tous les utilisateurs (acheteurs, producteurs, admins)
+**Relations :**
+- OneToMany: produits, kycs, commandes, notifications, exploitations, conseils
+- OneToOne: admin
 
 ---
 
-### 2. **kyc** (Vérification d'identité - Know Your Customer)
+### 2. **admin** (Administrateur)
 | Colonne | Type | Nullable | Description |
 |---------|------|----------|-------------|
-| id | INT | NON | Clé primaire |
+| id | INT | NON | Clé primaire, auto-incrément |
+| user_id | INT | NON | FK vers user |
+| niveau | VARCHAR(50) | NON | super_admin, admin, moderateur |
+| permissions | JSON | OUI | Permissions spécifiques |
+| est_actif | BOOLEAN | NON | Admin actif, défaut: true |
+| telephone | VARCHAR(255) | OUI | Téléphone |
+| adresse | VARCHAR(255) | OUI | Adresse |
+| date_nomination | DATETIME | NON | Date de nomination |
+| derniere_connexion | DATETIME | OUI | Dernière connexion |
+| created_at | DATETIME | NON | Date de création |
+| updated_at | DATETIME | OUI | Date de mise à jour |
+
+---
+
+### 3. **kyc** (Vérification d'identité - Know Your Customer)
+| Colonne | Type | Nullable | Description |
+|---------|------|----------|-------------|
+| id | INT | NON | Clé primaire, auto-incrément |
 | id_utilisateur | INT | NON | FK vers user |
 | type_piece | VARCHAR(50) | NON | cni, passeport, permis_conduire |
 | numero_piece | VARCHAR(100) | NON | Numéro de la pièce d'identité |
-| photo_piece_recto | VARCHAR(255) | NON | Photo recto de la pièce |
-| photo_piece_verso | VARCHAR(255) | NON | Photo verso de la pièce |
-| photo_selfie | VARCHAR(255) | NON | Photo selfie avec la pièce |
-| adresse_complete | TEXT | OUI | Adresse complète |
-| region | VARCHAR(100) | OUI | Région |
-| superficie_exploitee | DECIMAL(10,2) | OUI | Superficie exploitée (hectares) |
-| type_agriculture | VARCHAR(100) | OUI | Type d'agriculture pratiquée |
-| experience | INT | OUI | Années d'expérience |
-| statut | VARCHAR(20) | NON | en_attente, valide, rejete |
-| created_at | DATETIME | NON | Date de soumission |
-| updated_at | DATETIME | OUI | Date de mise à jour |
-
-**Rôle :** Vérification d'identité pour devenir producteur
-
----
-
-### 3. **categorie** (Catégorie de produits)
-| Colonne | Type | Nullable | Description |
-|---------|------|----------|-------------|
-| id | INT | NON | Clé primaire |
-| nom | VARCHAR(255) | NON | Nom (céréales, fruits, légumes, tubercules, élevage, etc.) |
-| description | TEXT | OUI | Description de la catégorie |
-| image | VARCHAR(255) | OUI | Image de la catégorie |
-| ordre | INT | OUI | Ordre d'affichage |
-| active | BOOLEAN | NON | Catégorie active ou non |
+| photo_piece_recto | VARCHAR(255) | OUI | Photo recto de la pièce |
+| photo_piece_verso | VARCHAR(255) | OUI | Photo verso de la pièce |
+| photo_selfie | VARCHAR(255) | OUI | Photo selfie avec la pièce |
+| status | VARCHAR(20) | NON | en_attente, validé, rejeté |
 | created_at | DATETIME | NON | Date de création |
 
-**Rôle :** Organisation des produits par catégorie
+---
+
+### 4. **categorie** (Catégorie de produits)
+| Colonne | Type | Nullable | Description |
+|---------|------|----------|-------------|
+| id | INT | NON | Clé primaire, auto-incrément |
+| nom | VARCHAR(255) | NON | Nom (céréales, fruits, légumes, tubercules, élevage, etc.) |
+
+**Relations :**
+- OneToMany: produits
 
 ---
 
-### 4. **produit** (Produit agricole)
+### 5. **produit** (Produit agricole)
 | Colonne | Type | Nullable | Description |
 |---------|------|----------|-------------|
-| id | INT | NON | Clé primaire |
+| id | INT | NON | Clé primaire, auto-incrément |
 | id_utilisateur | INT | NON | FK vers user (producteur) |
 | categorie_id | INT | NON | FK vers categorie |
 | nom | VARCHAR(255) | NON | Nom du produit |
 | description | TEXT | OUI | Description détaillée |
 | prix | DECIMAL(10,2) | NON | Prix unitaire |
 | quantite | INT | NON | Quantité en stock |
-| unite | VARCHAR(20) | NON | kg, tonne, piece, lot |
 | image | VARCHAR(255) | OUI | Chemin de l'image principale |
-| images | JSON | OUI | Images supplémentaires |
-| est_actif | BOOLEAN | NON | Produit visible ou non |
-| est_vedette | BOOLEAN | NON | Produit en vedette |
 | created_at | DATETIME | NON | Date de création |
 | updated_at | DATETIME | OUI | Date de modification |
 
-**Rôle :** Produits publiés par les producteurs
-
 ---
 
-### 5. **commande** (Commande client)
+### 6. **commande** (Commande client)
 | Colonne | Type | Nullable | Description |
 |---------|------|----------|-------------|
-| id | INT | NON | Clé primaire |
+| id | INT | NON | Clé primaire, auto-incrément |
 | id_utilisateur | INT | NON | FK vers user (acheteur) |
 | montant_total | DECIMAL(10,2) | NON | Montant total |
-| frais_livraison | DECIMAL(10,2) | OUI | Frais de livraison |
-| statut | VARCHAR(20) | NON | en_attente, payee, en_cours, livree, annulee |
-| adresse_livraison | TEXT | OUI | Adresse de livraison |
-| notes | TEXT | OUI | Notes de la commande |
+| status | VARCHAR(20) | NON | en_attente, confirmé, en_cours, livré, annulé |
 | date_commande | DATETIME | NON | Date de la commande |
-| date_livraison | DATETIME | OUI | Date de livraison prévue |
 
-**Rôle :** Gestion des commandes des acheteurs
+**Relations :**
+- OneToMany: ligneCommandes
 
 ---
 
-### 6. **ligne_commande** (Ligne de commande)
+### 7. **ligne_commande** (Ligne de commande)
 | Colonne | Type | Nullable | Description |
 |---------|------|----------|-------------|
-| id | INT | NON | Clé primaire |
+| id | INT | NON | Clé primaire, auto-incrément |
 | commande_id | INT | NON | FK vers commande |
 | produit_id | INT | NON | FK vers produit |
 | quantite | INT | NON | Quantité commandée |
 | prix_unitaire | DECIMAL(10,2) | NON | Prix au moment de la commande |
-| sous_total | DECIMAL(10,2) | NON | Sous-total (quantité × prix) |
-
-**Rôle :** Détail des produits dans une commande
 
 ---
 
-### 7. **paiement** (Paiement - Intégration FedaPay)
+### 8. **paiement** (Paiement - Intégration FedaPay)
 | Colonne | Type | Nullable | Description |
 |---------|------|----------|-------------|
-| id | INT | NON | Clé primaire |
+| id | INT | NON | Clé primaire, auto-incrément |
+| id_utilisateur | INT | NON | FK vers user |
 | commande_id | INT | NON | FK vers commande |
 | montant | DECIMAL(10,2) | NON | Montant payé |
-| reference | VARCHAR(100) | NON | Référence FedaPay |
-| methode | VARCHAR(50) | OUI | moov_money, orange_money, waved |
-| statut | VARCHAR(20) | NON | en_attente, valide, echoue |
+| statut | VARCHAR(50) | NON | Statut du paiement |
+| methode | VARCHAR(50) | NON | moov_money, orange_money, waved |
+| reference | VARCHAR(255) | OUI | Référence FedaPay |
+| transaction_id | VARCHAR(255) | OUI | ID transaction FedaPay |
+| created_at | DATETIME | NON | Date de création |
+| updated_at | DATETIME | OUI | Date de mise à jour |
 | date_paiement | DATETIME | OUI | Date du paiement |
-| transaction_id | VARCHAR(100) | OUI | ID transaction FedaPay |
-
-**Rôle :** Traçabilité des paiements via FedaPay
 
 ---
 
-### 8. **exploitation** (Exploitation agricole / Parcelle)
+### 9. **exploitation** (Exploitation agricole / Parcelle)
 | Colonne | Type | Nullable | Description |
 |---------|------|----------|-------------|
-| id | INT | NON | Clé primaire |
+| id | INT | NON | Clé primaire, auto-incrément |
 | id_utilisateur | INT | NON | FK vers user (producteur) |
 | nom | VARCHAR(255) | NON | Nom de la parcelle |
-| superficie | DECIMAL(10,2) | NON | Superficie (hectares) |
+| superficie | DECIMAL(10,2) | OUI | Superficie (hectares) |
 | localisation | VARCHAR(255) | OUI | Localisation |
 | type_sol | VARCHAR(100) | OUI | Type de sol |
 | source_eau | VARCHAR(100) | OUI | Source d'eau |
-| latitude | DECIMAL(10,8) | OUI | Latitude GPS |
-| longitude | DECIMAL(11,8) | OUI | Longitude GPS |
-| statut | VARCHAR(50) | NON | active, inactive |
+| statut | VARCHAR(50) | OUI | Statut de l'exploitation |
 | created_at | DATETIME | NON | Date de création |
 | updated_at | DATETIME | OUI | Date de modification |
 
-**Rôle :** Gestion des parcelles par les producteurs
+**Relations :**
+- OneToMany: suiviCultures, equipements, stocks
 
 ---
 
-### 9. **suivi_culture** (Suivi des cultures)
+### 10. **suivi_culture** (Suivi des cultures)
 | Colonne | Type | Nullable | Description |
 |---------|------|----------|-------------|
-| id | INT | NON | Clé primaire |
+| id | INT | NON | Clé primaire, auto-incrément |
 | exploitation_id | INT | NON | FK vers exploitation |
-| type_culture | VARCHAR(100) | NON | Type de culture |
-| date_plantation | DATE | NON | Date de plantation |
+| categorie_id | INT | OUI | FK vers categorie |
+| nom | VARCHAR(255) | NON | Nom de la culture |
+| variete | VARCHAR(100) | OUI | Variété |
+| superficie | DECIMAL(10,2) | OUI | Superficie cultivée |
+| date_semis | DATE | OUI | Date de semis |
 | date_recolte_prevue | DATE | OUI | Date de récolte prévue |
-| date_recolte_effective | DATE | OUI | Date de récolte effective |
-| superficie | FLOAT | NON | Superficie cultivée |
+| date_recolte_reelle | DATE | OUI | Date de récolte réelle |
+| statut | VARCHAR(50) | OUI | en_cours, recolte, terminee |
 | observations | TEXT | OUI | Observations |
-| statut | VARCHAR(50) | NON | en_cours, recolte, terminee |
 | created_at | DATETIME | NON | Date de création |
 | updated_at | DATETIME | OUI | Date de modification |
 
-**Rôle :** Suivi des cultures par parcelle
+**Relations :**
+- OneToMany: rendements
 
 ---
 
-### 10. **rendement** (Rendement agricole)
+### 11. **rendement** (Rendement agricole)
 | Colonne | Type | Nullable | Description |
 |---------|------|----------|-------------|
-| id | INT | NON | Clé primaire |
-| exploitation_id | INT | NON | FK vers exploitation |
+| id | INT | NON | Clé primaire, auto-incrément |
 | suivi_culture_id | INT | OUI | FK vers suivi_culture |
-| type_culture | VARCHAR(100) | NON | Type de culture |
-| quantite_produite | DECIMAL(10,2) | NON | Quantité produite |
-| unite | VARCHAR(20) | NON | kg, tonne |
-| rendement_hectare | DECIMAL(10,2) | OUI | Rendement à l'hectare |
+| quantite | DECIMAL(10,2) | OUI | Quantité produite |
+| unite | VARCHAR(50) | OUI | kg, tonne |
 | date_recolte | DATE | OUI | Date de récolte |
+| observations | TEXT | OUI | Observations |
 | created_at | DATETIME | NON | Date de création |
 
-**Rôle :** Statistiques des rendements par exploitation
-
 ---
 
-### 11. **notification** (Notifications)
+### 12. **notification** (Notifications)
 | Colonne | Type | Nullable | Description |
 |---------|------|----------|-------------|
-| id | INT | NON | Clé primaire |
+| id | INT | NON | Clé primaire, auto-incrément |
 | id_utilisateur | INT | NON | FK vers user |
 | titre | VARCHAR(255) | NON | Titre de la notification |
 | message | TEXT | NON | Message |
-| type | VARCHAR(50) | NON | commande, paiement, kyc, systeme |
-| est_lu | BOOLEAN | NON | Lu ou non |
-| lien | VARCHAR(255) | OUI | Lien vers la page concernée |
+| type | VARCHAR(50) | NON | Type (commande, paiement, kyc, systeme) |
+| lu | BOOLEAN | NON | Lu ou non, défaut: false |
 | created_at | DATETIME | NON | Date de création |
-
-**Rôle :** Notifications aux utilisateurs (commande, paiement, KYC)
+| read_at | DATETIME | OUI | Date de lecture |
 
 ---
 
-### 12. **conversation** (Messagerie interne)
+### 13. **conversation** (Messagerie interne)
 | Colonne | Type | Nullable | Description |
 |---------|------|----------|-------------|
-| id | INT | NON | Clé primaire |
-| id_expediteur | INT | NON | FK vers user (expéditeur) |
-| id_destinataire | INT | NON | FK vers user (destinataire) |
-| id_produit | INT | OUI | FK vers produit (conversation liée) |
-| dernier_message | TEXT | OUI | Aperçu du dernier message |
+| id | INT | NON | Clé primaire, auto-incrément |
+| participant1_id | INT | NON | FK vers user (participant 1) |
+| participant2_id | INT | NON | FK vers user (participant 2) |
 | created_at | DATETIME | NON | Date de création |
-| updated_at | DATETIME | OUI | Date de mise à jour |
+| last_message_at | DATETIME | OUI | Dernier message |
 
-**Rôle :** Conversations entre acheteurs et producteurs
+**Relations :**
+- OneToMany: messages
 
 ---
 
-### 13. **message** (Messages)
+### 14. **message** (Messages)
 | Colonne | Type | Nullable | Description |
 |---------|------|----------|-------------|
-| id | INT | NON | Clé primaire |
+| id | INT | NON | Clé primaire, auto-incrément |
 | conversation_id | INT | NON | FK vers conversation |
-| id_expediteur | INT | NON | FK vers user |
-| contenu | TEXT | NON | Contenu du message |
-| est_lu | BOOLEAN | NON | Lu ou non |
+| sender_id | INT | NON | FK vers user (expéditeur) |
+| content | TEXT | NON | Contenu du message |
+| is_read | BOOLEAN | NON | Lu ou non, défaut: false |
+| is_deleted | BOOLEAN | NON | Supprimé, défaut: false |
+| deleted_for_everyone | BOOLEAN | OUI | Supprimé pour tous |
+| is_edited | BOOLEAN | NON | Édité, défaut: false |
+| edited_at | DATETIME | OUI | Date d'édition |
 | created_at | DATETIME | NON | Date d'envoi |
 
-**Rôle :** Messages échangés dans les conversations
-
 ---
 
-### 14. **conseil** (Conseils agricoles)
+### 15. **conseil** (Conseils agricoles)
 | Colonne | Type | Nullable | Description |
 |---------|------|----------|-------------|
-| id | INT | NON | Clé primaire |
-| id_auteur | INT | NON | FK vers user |
+| id | INT | NON | Clé primaire, auto-incrément |
+| auteur_id | INT | NON | FK vers user |
 | titre | VARCHAR(255) | NON | Titre du conseil |
 | contenu | TEXT | NON | Contenu |
+| type | VARCHAR(50) | NON | Type de conseil |
 | categorie | VARCHAR(100) | OUI | Culture, Elevage, Sol, etc. |
-| est_publie | BOOLEAN | NON | Publié ou non |
-| created_at | DATETIME | NON | Date de création |
-
-**Rôle :** Conseils agricoles (optionnel, peut être généré par IA)
+| image | VARCHAR(255) | OUI | Image |
+| est_publie | BOOLEAN | NON | Publié ou non, défaut: false |
+| date_publication | DATETIME | NON | Date de publication |
+| vues | INT | OUI | Nombre de vues |
 
 ---
 
-### 15. **signalement** (Signalements)
+### 16. **equipement** (Équipements agricoles)
 | Colonne | Type | Nullable | Description |
 |---------|------|----------|-------------|
-| id | INT | NON | Clé primaire |
-| id_signaleur | INT | NON | FK vers user (qui signale) |
-| id_signale | INT | NON | FK vers user (signalé) |
-| id_produit | INT | OUI | FK vers produit (signalé) |
-| id_commande | INT | OUI | FK vers commande |
-| motif | VARCHAR(255) | NON | Motif du signalement |
-| description | TEXT | OUI | Description |
-| statut | VARCHAR(20) | NON | en_attente, traite, rejete |
-| created_at | DATETIME | NON | Date du signalement |
+| id | INT | NON | Clé primaire, auto-incrément |
+| exploitation_id | INT | NON | FK vers exploitation |
+| nom | VARCHAR(255) | NON | Nom de l'équipement |
+| type | VARCHAR(100) | NON | Type (tracteur, pompe, etc.) |
+| etat | VARCHAR(50) | OUI | État (bon, moyen, mauvais) |
+| date_achat | DATE | OUI | Date d'achat |
+| observations | TEXT | OUI | Observations |
+| created_at | DATETIME | NON | Date de création |
+| updated_at | DATETIME | OUI | Date de modification |
 
-**Rôle :** Signalements de comportements Frauduleux
+---
+
+### 17. **stock** (Gestion des stocks)
+| Colonne | Type | Nullable | Description |
+|---------|------|----------|-------------|
+| id | INT | NON | Clé primaire, auto-incrément |
+| exploitation_id | INT | NON | FK vers exploitation |
+| nom | VARCHAR(255) | NON | Nom du stock |
+| type | VARCHAR(100) | NON | Type (semence, engrais, produit, etc.) |
+| quantite | DECIMAL(10,2) | NON | Quantité |
+| unite | VARCHAR(50) | NON | Unité (kg, tonne, sac, litre) |
+| seuil_alerte | DECIMAL(10,2) | OUI | Seuil d'alerte |
+| date_expiration | DATE | OUI | Date d'expiration |
+| observations | TEXT | OUI | Observations |
+| created_at | DATETIME | NON | Date de création |
+| updated_at | DATETIME | OUI | Date de modification |
 
 ---
 
@@ -280,51 +288,63 @@ Plateforme Web pour l'Accès aux Marchés et l'Amélioration de la Productivité
 
 | Table 1 | Table 2 | Cardinalité | Description |
 |---------|---------|-------------|-------------|
+| user | admin | 1 : 0..1 | 1 utilisateur est au plus 1 admin |
 | user | kyc | 1 : 0..* | 1 utilisateur soumet 0 à plusieurs KYC |
 | user | produit | 1 : 0..* | 1 producteur publie 0 à plusieurs produits |
 | user | commande | 1 : 0..* | 1 acheteur passe 0 à plusieurs commandes |
 | user | exploitation | 1 : 0..* | 1 agriculteur possède 0 à plusieurs parcelles |
 | user | notification | 1 : 0..* | 1 utilisateur reçoit 0 à plusieurs notifications |
 | user | conversation | 1 : 0..* | 1 utilisateur peut avoir plusieurs conversations |
+| user | conseil | 1 : 0..* | 1 utilisateur peut écrire plusieurs conseils |
 | categorie | produit | 1 : 0..* | 1 catégorie contient 0 à plusieurs produits |
 | commande | ligne_commande | 1 : 0..* | 1 commande contient 0 à plusieurs lignes |
 | commande | paiement | 1 : 0..1 | 1 commande a 0 ou 1 paiement |
 | ligne_commande | produit | N : 1 | Plusieurs lignes concernent 1 produit |
 | exploitation | suivi_culture | 1 : 0..* | 1 parcelle a 0 à plusieurs suivis |
-| exploitation | rendement | 1 : 0..* | 1 parcelle a 0 à plusieurs rendements |
+| exploitation | equipement | 1 : 0..* | 1 parcelle a 0 à plusieurs équipements |
+| exploitation | stock | 1 : 0..* | 1 parcelle a 0 à plusieurs stocks |
+| suivi_culture | rendement | 1 : 0..* | 1 culture peut avoir plusieurs rendements |
 | conversation | message | 1 : 0..* | 1 conversation contient 0 à plusieurs messages |
 
 ---
 
 ## Statuts des Tables
 
-### kyc.statut
+### kyc.status
 - `en_attente` : En attente de validation
-- `valide` : Validé par l'administrateur
-- `rejete` : Rejeté par l'administrateur
+- `validé` : Validé par l'administrateur
+- `rejeté` : Rejeté par l'administrateur
 
-### commande.statut
+### commande.status
 - `en_attente` : Commande créée, en attente de paiement
-- `payee` : Paiement validé via FedaPay
+- `confirmé` : Paiement validé via FedaPay
 - `en_cours` : Commande en cours de traitement
-- `livree` : Commande livrée
-- `annulee` : Commande annulée
+- `livré` : Commande livrée
+- `annulé` : Commande annulée
 
 ### paiement.statut
-- `en_attente` : Paiement en cours
-- `valide` : Paiement validé
-- `echoue` : Paiement échoué
+- Différentes valeurs selon le traitement FedaPay
 
 ### exploitation.statut
-- `active` : Exploitation active
-- `inactive` : Exploitation inactive
+- Valeurs possibles : active, inactive
 
 ### suivi_culture.statut
 - `en_cours` : Culture en cours
 - `recolte` : Prêt pour récolte
 - `terminee` : Récolte terminée
 
-### signalement.statut
-- `en_attente` : En attente de traitement
-- `traite` : Signalement traité
-- `rejete` : Signalement rejeté
+### equipement.etat
+- `bon` : En bon état (défaut)
+- `moyen` : État moyen
+- `mauvais` : Mauvais état
+
+### admin.niveau
+- `super_admin` : Super administrateur
+- `admin` : Administrateur
+- `moderateur` : Modérateur
+
+### notification.type
+- `commande` : Notification de commande
+- `paiement` : Notification de paiement
+- `kyc` : Notification KYC
+- `systeme` : Notification système

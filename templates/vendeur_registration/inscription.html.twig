@@ -1,0 +1,375 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription Vendeur - KilysAgri{% endblock %}
+
+{% block body %}
+<!-- Header -->
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <a href="{{ path('devenir_vendeur') }}">Devenir vendeur</a>
+        <span class="separator">/</span>
+        <span class="current">Informations</span>
+    </div>
+</nav>
+
+<main class="registration-page">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="registration-card">
+                    <div class="card-header">
+                        <h1><i class="fas fa-store"></i> Créez votre boutique</h1>
+                        <p>Remplissez les informations ci-dessous pour lancer votre boutique</p>
+                    </div>
+                    
+                    <div class="steps-indicator">
+                        <div class="step active">
+                            <div class="step-number">1</div>
+                            <div class="step-label">Informations</div>
+                        </div>
+                        <div class="step-line"></div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-label">Vérification</div>
+                        </div>
+                        <div class="step-line"></div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-label">Validation</div>
+                        </div>
+                    </div>
+
+                    {{ form_start(form) }}
+                    <div class="form-section">
+                        <h3><i class="fas fa-briefcase"></i> Votre expérience</h3>
+                        
+                        <div class="form-group">
+                            {{ form_label(form.experienceVente) }}
+                            {{ form_widget(form.experienceVente) }}
+                            {{ form_errors(form.experienceVente) }}
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3><i class="fas fa-store-alt"></i> À propos de votre boutique</h3>
+                        
+                        <div class="form-group">
+                            {{ form_label(form.nomBoutique) }}
+                            {{ form_widget(form.nomBoutique) }}
+                            {{ form_errors(form.nomBoutique) }}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form_label(form.descriptionBoutique) }}
+                            {{ form_widget(form.descriptionBoutique) }}
+                            {{ form_errors(form.descriptionBoutique) }}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form_label(form.localisation) }}
+                                    {{ form_widget(form.localisation) }}
+                                    {{ form_errors(form.localisation) }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form_label(form.devise) }}
+                                    {{ form_widget(form.devise) }}
+                                    {{ form_errors(form.devise) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3><i class="fas fa-tractor"></i> Votre exploitation</h3>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form_label(form.typeExploitation) }}
+                                    {{ form_widget(form.typeExploitation) }}
+                                    {{ form_errors(form.typeExploitation) }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form_label(form.localisationExploitation) }}
+                                    {{ form_widget(form.localisationExploitation) }}
+                                    {{ form_errors(form.localisationExploitation) }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form_label(form.anneesExperience) }}
+                                    {{ form_widget(form.anneesExperience) }}
+                                    {{ form_errors(form.anneesExperience) }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form_label(form.capaciteProduction) }}
+                                    {{ form_widget(form.capaciteProduction) }}
+                                    {{ form_errors(form.capaciteProduction) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="{{ path('devenir_vendeur') }}" class="btn-back">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </a>
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-check"></i> Continuer vers la vérification
+                        </button>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<style>
+.breadcrumb-nav {
+    background: white;
+    padding: 15px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.breadcrumb-nav .container {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-nav a {
+    color: #0066c0;
+    text-decoration: none;
+}
+
+.breadcrumb-nav .separator {
+    margin: 0 10px;
+    color: #999;
+}
+
+.breadcrumb-nav .current {
+    color: #333;
+}
+
+.registration-page {
+    background: #f8f9fa;
+    padding: 40px 0 60px;
+    min-height: 80vh;
+}
+
+.registration-card {
+    background: white;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.card-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.card-header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 10px;
+}
+
+.card-header h1 i {
+    color: #198754;
+    margin-right: 10px;
+}
+
+.card-header p {
+    color: #666;
+    font-size: 1rem;
+}
+
+.steps-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    background: #e9ecef;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.step.active .step-number {
+    background: #198754;
+    color: white;
+}
+
+.step-label {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.step.active .step-label {
+    color: #198754;
+    font-weight: 600;
+}
+
+.step-line {
+    width: 80px;
+    height: 2px;
+    background: #e9ecef;
+    margin: 0 10px;
+    margin-bottom: 25px;
+}
+
+.form-section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.form-section:last-of-type {
+    border-bottom: none;
+}
+
+.form-section h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-section h3 i {
+    color: #198754;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.form-group .form-control {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+}
+
+.form-group .form-control:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.1);
+    outline: none;
+}
+
+.form-group select.form-control {
+    cursor: pointer;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 25px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    color: #666;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-back:hover {
+    background: #f8f9fa;
+    color: #333;
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(25, 135, 84, 0.4);
+}
+
+@media (max-width: 768px) {
+    .registration-card {
+        padding: 25px;
+    }
+    
+    .steps-indicator {
+        flex-wrap: wrap;
+    }
+    
+    .step-line {
+        width: 40px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .btn-back,
+    .btn-submit {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
+

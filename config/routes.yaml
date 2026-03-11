@@ -1,3 +1,45 @@
+# Routes pour le profil utilisateur
+app_profile:
+    path: /profile
+    controller: App\Controller\ProfileController::index
+    methods: [GET, POST]
+
+app_profile_edit:
+    path: /profile/edit
+    controller: App\Controller\ProfileController::edit
+    methods: [GET]
+
+# Routes pour devenir vendeur
+devenir_vendeur:
+    path: /devenir-vendeur
+    controller: App\Controller\VendeurRegistrationController::index
+    methods: [GET]
+
+devenir_vendeur_step1:
+    path: /devenir-vendeur/etape-1
+    controller: App\Controller\VendeurRegistrationController::step1
+    methods: [GET, POST]
+
+devenir_vendeur_step2:
+    path: /devenir-vendeur/etape-2
+    controller: App\Controller\VendeurRegistrationController::step2
+    methods: [GET, POST]
+
+devenir_vendeur_step3:
+    path: /devenir-vendeur/etape-3
+    controller: App\Controller\VendeurRegistrationController::step3
+    methods: [GET, POST]
+
+devenir_vendeur_step4:
+    path: /devenir-vendeur/etape-4
+    controller: App\Controller\VendeurRegistrationController::step4
+    methods: [GET, POST]
+
+devenir_vendeur_succes:
+    path: /devenir-vendeur/succes
+    controller: App\Controller\VendeurRegistrationController::succes
+    methods: [GET]
+
 # Routes pour les produits
 produits_index:
     path: /produits
@@ -230,6 +272,45 @@ kyc_admin_detail:
     path: /kyc/admin/detail/{id}
     controller: App\Controller\KycController::adminDetail
     methods: [GET]
+
+# Routes Messagerie
+messagerie_index:
+    path: /messagerie
+    controller: App\Controller\MessagerieController::index
+    methods: [GET]
+
+messagerie_conversation:
+    path: /messagerie/{id}
+    controller: App\Controller\MessagerieController::conversation
+    methods: [GET]
+    requirements:
+        id: '\d+'
+
+messagerie_start:
+    path: /messagerie/start/{userId}
+    controller: App\Controller\MessagerieController::startConversation
+    methods: [GET]
+    requirements:
+        userId: '\d+'
+
+messagerie_send:
+    path: /messagerie/send/{conversationId}
+    controller: App\Controller\MessagerieController::sendMessage
+    methods: [POST]
+    requirements:
+        conversationId: '\d+'
+
+messagerie_api_conversations:
+    path: /messagerie/api/conversations
+    controller: App\Controller\MessagerieController::apiConversations
+    methods: [GET]
+
+messagerie_api_messages:
+    path: /messagerie/api/messages/{conversationId}
+    controller: App\Controller\MessagerieController::apiMessages
+    methods: [GET]
+    requirements:
+        conversationId: '\d+'
 
 # Routes API
 app_verify_otp:

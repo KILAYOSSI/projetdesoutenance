@@ -1,0 +1,284 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Étape 3: Localisation - KilysAgri{% endblock %}
+
+{% block body %}
+<main class="step-page">
+    <div class="step-container">
+        <!-- Progress Bar -->
+        <div class="progress-header">
+            <a href="{{ path('devenir_vendeur_step2') }}" class="back-link">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 75%"></div>
+            </div>
+            <div class="step-counter">Étape {{ step }} sur {{ total }}</div>
+        </div>
+
+        <!-- Step Content -->
+        <div class="step-content">
+            <div class="step-icon">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            
+            <h1>Où êtes-vous situé ?</h1>
+            <p class="step-description">Parlez-nous de votre localisation au Benin pour la livraison.</p>
+
+            {{ form_start(form) }}
+            <div class="form-row">
+                <div class="form-group half">
+                    {{ form_label(form.localisation) }}
+                    {{ form_widget(form.localisation) }}
+                    {{ form_errors(form.localisation) }}
+                </div>
+
+                <div class="form-group half">
+                    {{ form_label(form.devise) }}
+                    {{ form_widget(form.devise) }}
+                    {{ form_errors(form.devise) }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.typeExploitation) }}
+                {{ form_widget(form.typeExploitation) }}
+                {{ form_errors(form.typeExploitation) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.localisationExploitation) }}
+                {{ form_widget(form.localisationExploitation) }}
+                {{ form_errors(form.localisationExploitation) }}
+            </div>
+
+            <div class="form-row">
+                <div class="form-group half">
+                    {{ form_label(form.anneesExperience) }}
+                    {{ form_widget(form.anneesExperience) }}
+                    {{ form_errors(form.anneesExperience) }}
+                </div>
+
+                <div class="form-group half">
+                    {{ form_label(form.capaciteProduction) }}
+                    {{ form_widget(form.capaciteProduction) }}
+                    {{ form_errors(form.capaciteProduction) }}
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-next">
+                    Suivant
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</main>
+
+<style>
+.step-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.step-container {
+    width: 100%;
+    max-width: 600px;
+}
+
+.progress-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.back-link {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+}
+
+.back-link:hover {
+    transform: translateX(-3px);
+    color: #198754;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 6px;
+    background: #e9ecef;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #198754 0%, #28a745 100%);
+    border-radius: 3px;
+    transition: width 0.5s ease;
+}
+
+.step-counter {
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 500;
+    min-width: 80px;
+    text-align: right;
+}
+
+.step-content {
+    background: white;
+    border-radius: 20px;
+    padding: 40px 35px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.step-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px;
+}
+
+.step-icon i {
+    font-size: 2rem;
+    color: #198754;
+}
+
+.step-content h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 10px;
+}
+
+.step-description {
+    color: #666;
+    font-size: 1rem;
+    margin-bottom: 30px;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+    text-align: left;
+}
+
+.form-group.half {
+    flex: 1;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s;
+    background: white;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #198754;
+    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.1);
+}
+
+.form-group input::placeholder {
+    color: #adb5bd;
+}
+
+.form-group .invalid-feedback {
+    display: block;
+    color: #dc3545;
+    font-size: 0.8rem;
+    margin-top: 5px;
+}
+
+.form-actions {
+    margin-top: 25px;
+}
+
+.btn-next {
+    width: 100%;
+    background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+    color: white;
+    border: none;
+    padding: 16px 30px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s;
+}
+
+.btn-next:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(25, 135, 84, 0.4);
+}
+
+.btn-next i {
+    transition: transform 0.3s;
+}
+
+.btn-next:hover i {
+    transform: translateX(5px);
+}
+
+@media (max-width: 768px) {
+    .step-content {
+        padding: 30px 20px;
+    }
+    
+    .step-content h1 {
+        font-size: 1.3rem;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+</style>
+{% endblock %}
+

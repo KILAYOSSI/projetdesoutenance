@@ -1,0 +1,327 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Devenir vendeur - KilysAgri{% endblock %}
+
+{% block body %}
+<main class="become-seller-page">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="welcome-card">
+                    <div class="welcome-icon">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    
+                    <h1>Bienvenue{% if app.user and app.user.nomComplet %}, {{ app.user.nomComplet }}{% endif %} !</h1>
+                    
+                    <p class="welcome-text">
+                        Créez votre boutique sur KilysAgri et rejoignez notre marketplace agricole. 
+                        Vendez vos produits directement aux consommateurs du Benin.
+                    </p>
+                    
+                    <div class="features">
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <div class="feature-text">
+                                <strong>Livraison rapide</strong>
+                                <span>dans toute la région</span>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-percent"></i>
+                            </div>
+                            <div class="feature-text">
+                                <strong>Commission faible</strong>
+                                <span>only 5% par vente</span>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="feature-text">
+                                <strong>Paiement sécurisé</strong>
+                                <span>avec Fedapay</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-section">
+                        {% if app.user %}
+                            <a href="{{ path('devenir_vendeur_step1') }}" class="btn-start">
+                                <i class="fas fa-rocket"></i>
+                                Commencer maintenant
+                            </a>
+                            <p class="login-note">Suivez les 4 étapes pour créer votre boutique</p>
+                        {% else %}
+                            <a href="{{ path('app_login') }}?redirect=devenir_vendeur_step1" class="btn-start">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Connectez-vous pour commencer
+                            </a>
+                            <p class="login-note">Vous devez être connecté pour créer une boutique</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-info-circle"></i> Comment ça marche ?</h3>
+                    
+                    <div class="steps-list">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Votre expérience</h4>
+                                <p>Parlez-nous de votre parcours en vente</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Votre boutique</h4>
+                                <p>Choisissez le nom et décrivez votre activité</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Localisation</h4>
+                                <p>Précisez votre position et votre exploitation</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step-item">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>Vérification</h4>
+                                <p>Confirmez votre identité avec une pièce</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<style>
+.become-seller-page {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 100vh;
+    padding: 60px 0;
+}
+
+.welcome-card,
+.info-card {
+    background: white;
+    border-radius: 20px;
+    padding: 50px 40px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.welcome-icon {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px;
+}
+
+.welcome-icon i {
+    font-size: 2.5rem;
+    color: #198754;
+}
+
+.welcome-card h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 15px;
+}
+
+.welcome-text {
+    font-size: 1.1rem;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.features {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 35px;
+    flex-wrap: wrap;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+}
+
+.feature-icon {
+    width: 45px;
+    height: 45px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.feature-icon i {
+    font-size: 1.2rem;
+    color: #198754;
+}
+
+.feature-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.feature-text strong {
+    font-size: 0.9rem;
+    color: #1a1a1a;
+}
+
+.feature-text span {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.action-section {
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.btn-start {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+    color: white;
+    padding: 18px 40px;
+    border-radius: 30px;
+    font-size: 1.15rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.btn-start:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(25, 135, 84, 0.4);
+    color: white;
+}
+
+.login-note {
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.info-card {
+    text-align: left;
+}
+
+.info-card h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.info-card h3 i {
+    color: #198754;
+}
+
+.steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    transition: all 0.3s;
+}
+
+.step-item:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+}
+
+.step-number {
+    width: 35px;
+    height: 35px;
+    background: #198754;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.step-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+}
+
+.step-content p {
+    font-size: 0.85rem;
+    color: #666;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .welcome-card,
+    .info-card {
+        padding: 35px 25px;
+    }
+    
+    .welcome-card h1 {
+        font-size: 1.5rem;
+    }
+    
+    .features {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .feature-item {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
+
